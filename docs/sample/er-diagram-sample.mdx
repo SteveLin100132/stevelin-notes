@@ -1,10 +1,10 @@
 ---
 title: ER Diagram 範例：電商訂單 schema
-description: 示範 er-diagram-renderer plugin：以 *.erd.json 描述資料表，嵌入筆記或開成獨立頁。
+description: 示範 er-diagram-renderer plugin：以 *.erd.json 描述資料表與各層 Wiki 說明，嵌入筆記或開成獨立頁。
 tags: [sample, notecraft, plugin, database]
 category: 範例
 createdAt: '2026-09-26'
-updatedAt: '2026-09-26'
+updatedAt: '2026-09-27'
 ---
 
 import PluginView from '@/components/PluginView.astro'
@@ -16,18 +16,40 @@ import PluginView from '@/components/PluginView.astro'
 
 ## 圖
 
-<PluginView src="sample/ecommerce-order.erd.json" caption="點一張表聚焦它的關聯；hub 表（選項主檔）的連線預設收起" />
+<PluginView src="sample/ecommerce-order.erd.json" caption="Wiki 分頁看各層說明，Diagram 分頁看關聯；hub 表（選項主檔）的連線預設收起" />
 
 同一份資料也有獨立的全寬頁面：[/view/sample/ecommerce-order.erd](/view/sample/ecommerce-order.erd)。
 
+畫面分成兩個分頁，左側導覽樹依 **Schema → 分群 → 資料表** 三層排列：
+
+::::tabs
+:::tab{label="Wiki"}
+像資料庫文件一樣逐頁閱讀：
+
+- **總覽**：統計數字、`meta.description`、各 schema 卡片，以及這份資料的語彙（必填性、徽章、衍生欄）
+- **Schema 頁**：schema 說明與底下每個分群的說明、資料表清單
+- **Table 頁**：表說明、完整欄位表、局部關聯圖（父表 ← 本表 ← 子表）、索引與衍生欄
+
+每頁都有「在 Diagram 聚焦」可跳到關聯圖。
+:::
+:::tab{label="Diagram"}
+整份 schema 的關聯圖：
+
+- 點一張表聚焦它的父表與子表，其餘變淡；聚焦列的「開啟 Wiki」可跳回該表的 Table 頁
+- 上方「範圍」可只畫某個 schema 的表，跨範圍的連線不畫、但會註明條數
+- 拖曳平移、Ctrl＋滾輪縮放，Esc 逐層退出聚焦與全寬
+:::
+::::
+
 ## 這份 schema 在描述什麼
 
-| 模組 | 資料表 | 重點 |
-| :--- | :--- | :--- |
-| 會員 | `member`、`member_address` | 一位會員多個收件地址；`total_spent` 由 trigger 累加 |
-| 訂單與履約 | `sales_order`、`order_item`、`payment`、`shipment` | 訂單可多次付款、拆單出貨；明細保存下單當下的單價快照 |
-| 商品目錄 | `product_category`、`product`、`product_variant` | 分類自我參照成樹；價格與庫存掛在規格（SKU）層 |
-| 共用主檔 | `option_item` | 訂單狀態、付款方式、物流商、縣市、會員等級共用一張選項表 |
+| Schema | 分群 | 資料表 | 重點 |
+| :--- | :--- | :--- | :--- |
+| `member` 會員 | 會員 | `member`、`member_address` | 一位會員多個收件地址；`total_spent` 由 trigger 累加 |
+| `sales` 訂單與履約 | 訂單 | `sales_order`、`order_item` | 明細保存下單當下的單價快照；小計由 trigger 維護 |
+| | 付款與出貨 | `payment`、`shipment` | 訂單可多次付款（失敗重試）、拆單出貨 |
+| `catalog` 商品目錄 | 商品目錄 | `product_category`、`product`、`product_variant` | 分類自我參照成樹；價格與庫存掛在規格（SKU）層 |
+| `core` 共用主檔 | 共用主檔 | `option_item` | 訂單狀態、付款方式、物流商、縣市、會員等級共用一張選項表 |
 
 :::note{title="為什麼 option_item 是 hub 表"}
 五種選項集合都指向同一張表，連線全部畫出來會蓋滿整張圖，所以在 `options.hubTables` 把它列為 hub，
@@ -36,23 +58,42 @@ import PluginView from '@/components/PluginView.astro'
 
 ## 資料檔怎麼寫
 
-檔案結構分兩層：**語彙**（必填性、徽章、衍生欄的叫法）與**內容**（分群、版面、資料表）。
+檔案內容分成三類：
 
-```jsonc title="docs/sample/ecommerce-order.erd.json（節錄）"
+- **語彙**：必填性、徽章、衍生欄的名稱
+- **結構**：schema、分群、版面、資料表
+- **說明**：各層的 `description`，會顯示在 Wiki 頁面
+
+```jsonc title="docs/sample/ecommerce-order.erd.json（節錄）" {6,16-18,20-21,24,29}
 {
   "$schema": "../../.notecraft/plugins/er-diagram-renderer/schema.json",
-  "meta": { "title": "範例：電商訂單 schema", "backTo": "/notes/sample/er-diagram-sample" },
+  "meta": {
+    "title": "範例：電商訂單 schema",
+    "backTo": "/notes/sample/er-diagram-sample",
+    "description": "會員、商品、訂單…的電商資料模型。\n\n## 閱讀順序\n1. 先看 `schema:member`…"
+  },
   "options": { "defaultRows": 5, "hubTables": ["option_item"] },
 
+  // 語彙
   "requirement": [{ "key": "required", "label": "必填", "marker": "solid" }],
   "flags":       [{ "key": "pk", "badge": "PK", "tone": "danger", "label": "主鍵" }],
   "derivations": [{ "key": "trigger", "badge": "TRG", "label": "由 trigger 維護" }],
 
-  "groups": [{ "key": "order", "label": "訂單與履約" }],
-  "layout": { "columns": [{ "key": "c1", "groups": ["member"] }, { "key": "c2", "groups": ["order"] }] },
+  // 結構（v1.2 新增 schemas 層）
+  "schemas": [
+    { "key": "sales", "label": "訂單與履約", "description": "從下單到送達的完整流程…" }
+  ],
+  "groups": [
+    { "key": "order", "label": "訂單", "schema": "sales", "description": "訂單主檔與明細…" },
+    { "key": "fulfillment", "label": "付款與出貨", "schema": "sales" }
+  ],
+  "layout": {
+    "columns": [{ "key": "c1", "groups": ["member"] }, { "key": "c2", "groups": ["order", "fulfillment"] }]
+  },
 
   "tables": [{
     "name": "order_item", "label": "訂單明細", "section": "2.2", "group": "order",
+    "description": "訂單中的每一個購買品項，指向 `product_variant` 而非 `product`。…",
     "columns": [
       { "name": "order_id", "type": "bigint", "required": "required", "fk": "sales_order", "index": true },
       { "name": "line_total", "type": "numeric(12,0)", "required": "system", "derivation": "generated" }
@@ -65,9 +106,26 @@ import PluginView from '@/components/PluginView.astro'
 
 - **關聯只寫在欄位的 `fk`**：連線由 `columns[].fk` 推導，不另存 edges，避免兩份真相
 - **版面決定連線長度**：`layout.columns` 由左到右排，把關係密切的模組放相鄰欄。
-  這份範例把「訂單」放在「會員」與「商品」中間，多數外鍵只跨一欄
+  這份範例把「訂單」放在「會員」與「商品」中間，多數外鍵只跨一欄。
+  同一欄可堆疊多個分群（c2 放了訂單與付款出貨），欄序也決定導覽樹裡分群的順序
 - **`required` 與 `derivation` 的值要對得上語彙**：分別對應 `requirement[].key` 與 `derivations[].key`
+- **分群用 `schema` 指向所屬 schema**：沒寫或寫錯時歸入第一個 schema；
+  完全不寫 `schemas` 也合法（v1.1 格式），導覽會省略 Schema 那一層
 - 加上 `$schema` 後，VS Code 會依 plugin 的 `schema.json` 提供補全與檢查
+
+### description 的寫法
+
+`meta`、`schemas[]`、`groups[]`、`tables[]` 都可以加 `description`，全部選填，缺漏時 Wiki 顯示空狀態。
+內文是精簡版 Markdown：
+
+- 支援 `##`／`###` 標題、段落、清單、`>` 引言、粗體、行內 code 與連結；表格、圖片、HTML 會當純文字顯示
+- **反引號自動連結**：內容恰好是表名時連到 Table 頁，恰好是 schema key 時連到 Schema 頁
+- `meta.description` 的第一段也是頁面描述與搜尋索引的來源，第一段寫成一句完整摘要
+
+:::warning{title="表名與 schema key 撞名"}
+這份範例的 `member` 既是表名也是 schema key。撞名時**表名優先**，所以總覽要連到 schema，
+就要寫成 `` `schema:member` ``（要明確指向表則寫 `` `table:member` ``），顯示時會去掉前綴。
+:::
 
 ## 嵌入方式
 
@@ -78,3 +136,5 @@ import PluginView from '@/components/PluginView.astro'
 ```
 
 `src` 以筆記根目錄 `docs/` 為基準（與 `plugins.json` 的 `files` 相同），不是相對於這篇筆記。
+內嵌時外殼高度固定、導覽預設收起，可用「展開全寬」攤開；要長篇閱讀 Wiki，獨立頁
+`/view/<路徑>` 比較舒適。
