@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="1600" height="600" role="img" aria-label="四種工具的分工與串接：規劃期用 WBS 把範圍拆到末端工作包，再用 Gantt 把工作包排上時間軸；執行期用 Kanban 追蹤卡片在各欄的流動，看出卡片堆積的瓶頸，Task 則記錄每張卡片的時間、人員與狀態欄位。">
+  <defs>
+    <marker id="ly-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="800" height="300" rx="12" fill="#f6f8fb"/>
+
+  <text x="24" y="32" font-size="15" font-weight="800" fill="#112f5d">四種工具，一條由範圍到執行的鏈</text>
+
+  <!-- 期別帶 -->
+  <rect x="24" y="46" width="364" height="20" rx="4" fill="#d6e4f5"/>
+  <text x="206" y="60" font-size="11" font-weight="800" fill="#1b4f9c" text-anchor="middle">規劃期：範圍與時程</text>
+  <rect x="412" y="46" width="364" height="20" rx="4" fill="#fbe7c6"/>
+  <text x="594" y="60" font-size="11" font-weight="800" fill="#a04f15" text-anchor="middle">執行期：流動與紀錄</text>
+
+  <!-- 面板底 -->
+  <g fill="#ffffff" stroke="#e1e6ee" stroke-width="1">
+    <rect x="24" y="76" width="170" height="200" rx="8"/>
+    <rect x="218" y="76" width="170" height="200" rx="8"/>
+    <rect x="412" y="76" width="170" height="200" rx="8"/>
+    <rect x="606" y="76" width="170" height="200" rx="8"/>
+  </g>
+
+  <!-- 面板間箭頭 -->
+  <g stroke="#1b4f9c" stroke-width="1.5">
+    <line x1="196" y1="176" x2="214" y2="176" marker-end="url(#ly-arr)"/>
+    <line x1="390" y1="176" x2="408" y2="176" marker-end="url(#ly-arr)"/>
+    <line x1="584" y1="176" x2="602" y2="176" marker-end="url(#ly-arr)"/>
+  </g>
+
+  <!-- 1. WBS -->
+  <text x="38" y="98" font-size="13" font-weight="800" fill="#112f5d">WBS · 工作包</text>
+  <text x="38" y="114" font-size="10.5" fill="#6c798e">要做哪些事？</text>
+  <g stroke="#adc8e8" stroke-width="1" fill="none">
+    <path d="M109 142 V 150 M66 150 H 152 M66 150 V 158 M152 150 V 158"/>
+    <path d="M66 174 V 182 M48 182 H 86 M48 182 V 190 M86 182 V 190"/>
+    <path d="M152 174 V 182 M132 182 H 170 M132 182 V 190 M170 182 V 190"/>
+  </g>
+  <rect x="79" y="126" width="60" height="16" rx="3" fill="#1b4f9c"/>
+  <text x="109" y="138" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">專案</text>
+  <g fill="#eef4fb" stroke="#1b4f9c" stroke-width="1">
+    <rect x="36" y="158" width="60" height="16" rx="3"/>
+    <rect x="122" y="158" width="60" height="16" rx="3"/>
+  </g>
+  <g font-size="10" font-weight="700" fill="#1b4f9c" text-anchor="middle">
+    <text x="66" y="170">交付物 1</text>
+    <text x="152" y="170">交付物 2</text>
+  </g>
+  <g fill="#fdf4e6" stroke="#e37b24" stroke-width="1">
+    <rect x="32" y="190" width="32" height="16" rx="3"/>
+    <rect x="70" y="190" width="32" height="16" rx="3"/>
+    <rect x="116" y="190" width="32" height="16" rx="3"/>
+    <rect x="154" y="190" width="32" height="16" rx="3"/>
+  </g>
+  <g font-size="9.5" font-weight="700" fill="#a04f15" text-anchor="middle">
+    <text x="48" y="202">1.1</text>
+    <text x="86" y="202">1.2</text>
+    <text x="132" y="202">2.1</text>
+    <text x="170" y="202">2.2</text>
+  </g>
+  <rect x="38" y="226" width="10" height="10" rx="2" fill="#fdf4e6" stroke="#e37b24" stroke-width="1"/>
+  <text x="54" y="235" font-size="10.5" fill="#3a4456">末端節點 = 工作包</text>
+  <text x="38" y="258" font-size="10.5" font-weight="700" fill="#1b4f9c">界定範圍</text>
+
+  <!-- 2. Gantt -->
+  <text x="232" y="98" font-size="13" font-weight="800" fill="#112f5d">Gantt</text>
+  <text x="232" y="114" font-size="10.5" fill="#6c798e">什麼時候做、誰先誰後？</text>
+  <g stroke="#e1e6ee" stroke-width="1">
+    <line x1="258" y1="126" x2="258" y2="206"/>
+    <line x1="287" y1="126" x2="287" y2="206"/>
+    <line x1="316" y1="126" x2="316" y2="206"/>
+    <line x1="345" y1="126" x2="345" y2="206"/>
+    <line x1="374" y1="126" x2="374" y2="206"/>
+  </g>
+  <g font-size="9.5" fill="#6c798e" text-anchor="middle">
+    <text x="272" y="220">W1</text>
+    <text x="301" y="220">W2</text>
+    <text x="330" y="220">W3</text>
+    <text x="359" y="220">W4</text>
+  </g>
+  <g font-size="9.5" font-weight="700" fill="#a04f15">
+    <text x="232" y="141">1.1</text>
+    <text x="232" y="161">1.2</text>
+    <text x="232" y="181">2.1</text>
+    <text x="232" y="201">2.2</text>
+  </g>
+  <g fill="#1b4f9c">
+    <rect x="258" y="132" width="34" height="11" rx="2"/>
+    <rect x="292" y="152" width="26" height="11" rx="2"/>
+    <rect x="318" y="172" width="30" height="11" rx="2"/>
+    <rect x="336" y="192" width="38" height="11" rx="2"/>
+  </g>
+  <g stroke="#6c798e" stroke-width="1" fill="none">
+    <path d="M292 143 V 157"/>
+    <path d="M318 163 V 177"/>
+  </g>
+  <text x="232" y="240" font-size="10.5" fill="#3a4456">工作包排上時間軸與依賴</text>
+  <text x="232" y="258" font-size="10.5" font-weight="700" fill="#1b4f9c">排定時程</text>
+
+  <!-- 3. Kanban -->
+  <text x="426" y="98" font-size="13" font-weight="800" fill="#112f5d">Kanban</text>
+  <text x="426" y="114" font-size="10.5" fill="#6c798e">現在進行到哪了？</text>
+  <g fill="#f6f8fb" stroke="#e1e6ee" stroke-width="1">
+    <rect x="422" y="124" width="34" height="88" rx="3"/>
+    <rect x="460" y="124" width="34" height="88" rx="3"/>
+    <rect x="536" y="124" width="34" height="88" rx="3"/>
+  </g>
+  <rect x="498" y="124" width="34" height="88" rx="3" fill="#fdf4e6" stroke="#fbe7c6" stroke-width="1"/>
+  <g font-size="9.5" font-weight="700" fill="#3a4456" text-anchor="middle">
+    <text x="439" y="136">待辦</text>
+    <text x="477" y="136">進行</text>
+    <text x="515" y="136" fill="#a04f15">待驗</text>
+    <text x="553" y="136">結案</text>
+  </g>
+  <g fill="#ffffff" stroke="#1b4f9c" stroke-width="1">
+    <rect x="427" y="142" width="24" height="12" rx="2"/>
+    <rect x="427" y="158" width="24" height="12" rx="2"/>
+    <rect x="465" y="142" width="24" height="12" rx="2"/>
+    <rect x="465" y="158" width="24" height="12" rx="2"/>
+  </g>
+  <g fill="#ffffff" stroke="#e37b24" stroke-width="1">
+    <rect x="503" y="142" width="24" height="12" rx="2"/>
+    <rect x="503" y="158" width="24" height="12" rx="2"/>
+    <rect x="503" y="174" width="24" height="12" rx="2"/>
+    <rect x="503" y="190" width="24" height="12" rx="2"/>
+  </g>
+  <rect x="541" y="142" width="24" height="12" rx="2" fill="#e8f5ee" stroke="#2e9e6b" stroke-width="1"/>
+  <text x="426" y="240" font-size="10.5" fill="#3a4456">卡片堆積的欄位 = 瓶頸</text>
+  <text x="426" y="258" font-size="10.5" font-weight="700" fill="#a04f15">追蹤流動</text>
+
+  <!-- 4. Task -->
+  <text x="620" y="98" font-size="13" font-weight="800" fill="#112f5d">Task</text>
+  <text x="620" y="114" font-size="10.5" fill="#6c798e">細節與紀錄是什麼？</text>
+  <rect x="620" y="124" width="142" height="90" rx="6" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <rect x="620" y="124" width="4" height="90" rx="2" fill="#e37b24"/>
+  <g font-size="9.5" fill="#6c798e">
+    <text x="632" y="142">預計</text>
+    <text x="632" y="158">實際</text>
+    <text x="632" y="174">驗收</text>
+    <text x="632" y="190">人員</text>
+  </g>
+  <g font-size="9.5" fill="#3a4456" font-variant-numeric="tabular-nums">
+    <text x="660" y="142">03/02 – 03/05</text>
+    <text x="660" y="158">03/02 – 03/08</text>
+    <text x="660" y="174">03/09 – 03/16</text>
+    <text x="660" y="190">執行人 · 驗收人</text>
+  </g>
+  <rect x="632" y="196" width="52" height="13" rx="6.5" fill="#eef4fb"/>
+  <text x="658" y="206" font-size="9" font-weight="700" fill="#1b4f9c" text-anchor="middle">Verified</text>
+  <text x="620" y="240" font-size="10.5" fill="#3a4456">時間欄位反推每段耗時</text>
+  <text x="620" y="258" font-size="10.5" font-weight="700" fill="#a04f15">記錄執行</text>
+</svg>

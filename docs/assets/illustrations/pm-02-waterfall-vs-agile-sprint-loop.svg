@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="1600" height="560" role="img" aria-label="Agile 的迭代迴圈：從 Product Backlog 挑出最優先的項目，進入一個 1 到 4 週的 Sprint，依序規劃、開發、檢視、回顧；每個 Sprint 交付一個可用的增量，產品逐次長大；檢視時取得的使用者回饋與變更，回頭重排 Backlog 的優先序。常見的具體實踐有 Scrum、Kanban、XP。">
+  <defs>
+    <marker id="sl-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="sl-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="800" height="280" rx="12" fill="#f6f8fb"/>
+
+  <text x="24" y="32" font-size="15" font-weight="800" fill="#112f5d">Agile：小步迭代，每一圈都交付、都回饋</text>
+
+  <!-- Product Backlog -->
+  <text x="24" y="70" font-size="11.5" font-weight="800" fill="#112f5d">Product Backlog</text>
+  <rect x="24" y="80" width="140" height="22" rx="4" fill="#1b4f9c"/>
+  <text x="34" y="95" font-size="10.5" font-weight="700" fill="#ffffff">最優先項目</text>
+  <g fill="#ffffff" stroke="#adc8e8" stroke-width="1">
+    <rect x="24" y="108" width="140" height="22" rx="4"/>
+    <rect x="24" y="136" width="140" height="22" rx="4"/>
+    <rect x="24" y="164" width="140" height="22" rx="4"/>
+  </g>
+  <g stroke="#d6e4f5" stroke-width="2" stroke-linecap="round">
+    <line x1="34" y1="119" x2="104" y2="119"/>
+    <line x1="34" y1="147" x2="122" y2="147"/>
+    <line x1="34" y1="175" x2="92" y2="175"/>
+  </g>
+  <text x="94" y="204" font-size="10" fill="#6c798e" text-anchor="middle">依價值排序、隨時可調</text>
+
+  <!-- 取出 -->
+  <path d="M166 91 H 250 V 140 H 326" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#sl-navy)"/>
+  <text x="258" y="132" font-size="10.5" fill="#3a4456">挑進本次 Sprint</text>
+
+  <!-- Sprint 迴圈（圓心 400,140，r 64） -->
+  <circle cx="400" cy="140" r="64" fill="#eef4fb"/>
+  <g fill="none" stroke="#1b4f9c" stroke-width="2.5" marker-end="url(#sl-navy)">
+    <path d="M408.9 76.6 A 64 64 0 0 1 463.4 131.1"/>
+    <path d="M463.4 148.9 A 64 64 0 0 1 408.9 203.4"/>
+    <path d="M391.1 203.4 A 64 64 0 0 1 336.6 148.9"/>
+    <path d="M336.6 131.1 A 64 64 0 0 1 391.1 76.6"/>
+  </g>
+  <text x="400" y="138" font-size="14" font-weight="800" fill="#112f5d" text-anchor="middle">Sprint</text>
+  <text x="400" y="156" font-size="11" fill="#6c798e" text-anchor="middle">1–4 週</text>
+  <g font-size="11.5" font-weight="800" fill="#1b4f9c">
+    <text x="338" y="84" text-anchor="end">規劃</text>
+    <text x="462" y="84">開發</text>
+    <text x="462" y="206">檢視</text>
+    <text x="338" y="206" text-anchor="end">回顧</text>
+  </g>
+
+  <!-- 交付增量 -->
+  <line x1="472" y1="140" x2="600" y2="140" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#sl-navy)"/>
+  <text x="536" y="132" font-size="10.5" fill="#3a4456" text-anchor="middle">交付可用增量</text>
+
+  <text x="612" y="70" font-size="11.5" font-weight="800" fill="#112f5d">產品逐次長大</text>
+  <rect x="612" y="84" width="54" height="24" rx="4" fill="#d6e4f5"/>
+  <rect x="612" y="116" width="108" height="24" rx="4" fill="#adc8e8"/>
+  <rect x="612" y="148" width="162" height="24" rx="4" fill="#1b4f9c"/>
+  <g font-size="10.5" font-weight="700">
+    <text x="620" y="100" fill="#112f5d">S1</text>
+    <text x="620" y="132" fill="#112f5d">S1–S2</text>
+    <text x="620" y="164" fill="#ffffff">S1–S3</text>
+  </g>
+  <text x="612" y="192" font-size="10" fill="#6c798e">每一圈結束，客戶都拿得到能用的東西</text>
+
+  <!-- 回饋 -->
+  <path d="M400 206 V 238 H 94 V 212" fill="none" stroke="#e37b24" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#sl-orange)"/>
+  <text x="247" y="232" font-size="11" font-weight="700" fill="#a04f15" text-anchor="middle">使用者回饋與需求變更 → 重排優先序</text>
+
+  <text x="776" y="262" font-size="10.5" fill="#6c798e" text-anchor="end">常見的具體實踐：Scrum · Kanban · XP</text>
+</svg>

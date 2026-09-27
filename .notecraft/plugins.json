@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    {
+      "plugin": "er-diagram-renderer",
+      "files": [
+        "**/*.erd.json"
+      ]
+    }
+  ]
+}

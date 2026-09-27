@@ -1,0 +1,20 @@
+{
+  "series": [
+    {
+      "id": "pm-basics",
+      "title": "專案管理筆記",
+      "eyebrow": "PROJECT MANAGEMENT",
+      "description": "先搞懂在管什麼，再決定怎麼做、誰來做、用什麼做：從專案與產品的分野出發，一路走到方法論、權責、SDLC 與工具。",
+      "accent": "navy",
+      "icon": "target",
+      "slugs": [
+        "knowledge/project/pm-00-learning-map",
+        "knowledge/project/pm-01-project-vs-product",
+        "knowledge/project/pm-02-waterfall-vs-agile",
+        "knowledge/project/pm-03-role-responsibility",
+        "knowledge/project/pm-04-waterfall-sdlc",
+        "knowledge/project/pm-05-pm-tools"
+      ]
+    }
+  ]
+}

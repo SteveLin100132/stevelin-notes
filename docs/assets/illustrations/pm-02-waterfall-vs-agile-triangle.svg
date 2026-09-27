@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="1600" height="600" role="img" aria-label="倒轉的鐵三角。左：Waterfall 先把範疇固定下來，再依範疇估算需要的時程與成本。右：Agile 先固定時程與成本（時間盒與團隊），再決定這一輪能做多少範疇。深藍實心點代表固定，橘色空心點代表被估算、可以變動。">
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="800" height="300" rx="12" fill="#f6f8fb"/>
+
+  <!-- 左：Waterfall -->
+  <text x="220" y="32" font-size="14" font-weight="800" fill="#112f5d" text-anchor="middle">Waterfall：先凍結範疇</text>
+  <path d="M220 90 L 320 236 L 120 236 Z" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.5"/>
+  <circle cx="220" cy="90" r="7" fill="#1b4f9c"/>
+  <circle cx="120" cy="236" r="7" fill="#ffffff" stroke="#e37b24" stroke-width="2"/>
+  <circle cx="320" cy="236" r="7" fill="#ffffff" stroke="#e37b24" stroke-width="2"/>
+  <text x="220" y="62" font-size="13" font-weight="800" fill="#112f5d" text-anchor="middle">範疇</text>
+  <text x="220" y="77" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">固定</text>
+  <g font-size="13" font-weight="800" fill="#112f5d" text-anchor="middle">
+    <text x="120" y="262">時程</text>
+    <text x="320" y="262">成本</text>
+  </g>
+  <g font-size="10.5" font-weight="700" fill="#a04f15" text-anchor="middle">
+    <text x="120" y="277">估算</text>
+    <text x="320" y="277">估算</text>
+  </g>
+  <g font-size="11" fill="#3a4456" text-anchor="middle">
+    <text x="220" y="196">先把要做什麼定案</text>
+    <text x="220" y="213">再估要多久、花多少</text>
+  </g>
+
+  <line x1="400" y1="24" x2="400" y2="276" stroke="#e1e6ee" stroke-width="1"/>
+
+  <!-- 右：Agile -->
+  <text x="580" y="32" font-size="14" font-weight="800" fill="#112f5d" text-anchor="middle">Agile：先固定時間與資源</text>
+  <path d="M480 90 L 680 90 L 580 236 Z" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.5"/>
+  <circle cx="480" cy="90" r="7" fill="#1b4f9c"/>
+  <circle cx="680" cy="90" r="7" fill="#1b4f9c"/>
+  <circle cx="580" cy="236" r="7" fill="#ffffff" stroke="#e37b24" stroke-width="2"/>
+  <g font-size="13" font-weight="800" fill="#112f5d" text-anchor="middle">
+    <text x="480" y="62">時程</text>
+    <text x="680" y="62">成本</text>
+  </g>
+  <g font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">
+    <text x="480" y="77">固定（時間盒）</text>
+    <text x="680" y="77">固定（團隊）</text>
+  </g>
+  <text x="580" y="262" font-size="13" font-weight="800" fill="#112f5d" text-anchor="middle">範疇</text>
+  <text x="580" y="277" font-size="10.5" font-weight="700" fill="#a04f15" text-anchor="middle">估算</text>
+  <g font-size="11" fill="#3a4456" text-anchor="middle">
+    <text x="580" y="118">時間與人力先定下來</text>
+    <text x="580" y="135">這一輪做多少由它決定</text>
+  </g>
+</svg>

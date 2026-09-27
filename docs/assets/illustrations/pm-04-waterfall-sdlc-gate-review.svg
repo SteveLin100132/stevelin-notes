@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="1520" height="600" role="img" aria-label="閘門審查示意：左邊是階段 N（System Design）與它產出的 SDD；中間是里程碑審查閘門，檢查交付物完整、與上一份文件一致、風險與未結項已記錄、相關方簽核，由 PM、客戶、技術主管參與；右邊兩個結果：放行進入階段 N+1（Coding），或退回補件，補齊後再送審。">
+  <defs>
+    <marker id="gr-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="gr-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="760" height="300" rx="12" fill="#f6f8fb"/>
+
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">閘門審查：上一階段真的完成了嗎？</text>
+
+  <!-- 階段 N -->
+  <rect x="28" y="86" width="176" height="118" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="44" y="110" font-size="11" font-weight="700" fill="#6c798e">階段 N</text>
+  <text x="44" y="128" font-size="13" font-weight="800" fill="#112f5d">System Design</text>
+  <path d="M46 142 h 34 l 10 10 v 34 h -44 Z" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.25"/>
+  <path d="M80 142 v 10 h 10" fill="none" stroke="#1b4f9c" stroke-width="1.25"/>
+  <text x="68" y="172" font-size="10.5" font-weight="800" fill="#1b4f9c" text-anchor="middle">SDD</text>
+  <text x="102" y="160" font-size="11" fill="#3a4456">產出交付物</text>
+  <text x="102" y="176" font-size="10.5" fill="#6c798e">送審</text>
+
+  <line x1="204" y1="145" x2="280" y2="145" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#gr-navy)"/>
+
+  <!-- 閘門 -->
+  <text x="390" y="62" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">Milestone Review 里程碑審查</text>
+  <line x1="284" y1="72" x2="496" y2="72" stroke="#1b4f9c" stroke-width="2"/>
+  <rect x="284" y="72" width="6" height="170" fill="#1b4f9c"/>
+  <rect x="490" y="72" width="6" height="170" fill="#1b4f9c"/>
+
+  <rect x="302" y="86" width="176" height="118" rx="6" fill="#ffffff" stroke="#d6e4f5" stroke-width="1.25"/>
+  <g font-size="11.5" fill="#3a4456">
+    <rect x="314" y="99" width="13" height="13" rx="2" fill="#1b4f9c"/>
+    <path d="M317 105.5 l 3 3 l 5 -6" fill="none" stroke="#ffffff" stroke-width="1.6"/>
+    <text x="335" y="110">交付物完整</text>
+    <rect x="314" y="125" width="13" height="13" rx="2" fill="#1b4f9c"/>
+    <path d="M317 131.5 l 3 3 l 5 -6" fill="none" stroke="#ffffff" stroke-width="1.6"/>
+    <text x="335" y="136">與上一份文件 SRS 一致</text>
+    <rect x="314" y="151" width="13" height="13" rx="2" fill="#1b4f9c"/>
+    <path d="M317 157.5 l 3 3 l 5 -6" fill="none" stroke="#ffffff" stroke-width="1.6"/>
+    <text x="335" y="162">風險與未結項已記錄</text>
+    <rect x="314" y="177" width="13" height="13" rx="2" fill="#ffffff" stroke="#e37b24" stroke-width="1.5"/>
+    <text x="335" y="188">相關方簽核</text>
+  </g>
+
+  <g font-size="10.5" font-weight="700" fill="#3a4456" text-anchor="middle">
+    <rect x="304" y="214" width="46" height="20" rx="10" fill="#e1e6ee"/>
+    <text x="327" y="228">PM</text>
+    <rect x="356" y="214" width="46" height="20" rx="10" fill="#e1e6ee"/>
+    <text x="379" y="228">客戶</text>
+    <rect x="408" y="214" width="70" height="20" rx="10" fill="#e1e6ee"/>
+    <text x="443" y="228">技術主管</text>
+  </g>
+
+  <!-- 結果：放行 -->
+  <line x1="500" y1="120" x2="560" y2="120" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#gr-navy)"/>
+  <rect x="566" y="94" width="166" height="52" rx="8" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.25"/>
+  <text x="582" y="116" font-size="12.5" font-weight="800" fill="#2e9e6b">放行</text>
+  <text x="582" y="134" font-size="11" fill="#3a4456">進入階段 N+1：Coding</text>
+
+  <!-- 結果：退回 -->
+  <line x1="500" y1="186" x2="560" y2="186" stroke="#e37b24" stroke-width="1.5" marker-end="url(#gr-orange)"/>
+  <rect x="566" y="160" width="166" height="52" rx="8" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.25"/>
+  <text x="582" y="182" font-size="12.5" font-weight="800" fill="#a04f15">退回補件</text>
+  <text x="582" y="200" font-size="11" fill="#3a4456">缺簽核：留在階段 N</text>
+
+  <path d="M649 212 V 264 H 116 V 210" fill="none" stroke="#e37b24" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#gr-orange)"/>
+  <text x="560" y="282" font-size="11" font-weight="700" fill="#a04f15" text-anchor="middle">補齊後再送審</text>
+</svg>

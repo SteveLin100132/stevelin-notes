@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="1600" height="600" role="img" aria-label="看趨勢、及早介入。左：連續八個任務的驗收段耗時為 2、2、3、3、4、5、6、8 天，第 6 個任務起超過 4 天的警戒線，數據先示警，但當事人回報沒事，拖到第 8 個任務才被發現。右：越早介入，可以動用的選項越多；第 6 次介入可補人、調範圍、改順序、調整時程，第 7 次只剩調範圍與調整時程，第 8 次才發現時只剩硬扛。">
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="800" height="300" rx="12" fill="#f6f8fb"/>
+
+  <!-- 左：趨勢圖（y = 230 − 16 × 天數；x = 76 + 46 × i） -->
+  <text x="24" y="32" font-size="14" font-weight="800" fill="#112f5d">看趨勢：某一段的耗時連續拉長</text>
+  <text x="24" y="52" font-size="11" fill="#6c798e">驗收段耗時（天）</text>
+
+  <g stroke="#e1e6ee" stroke-width="1">
+    <line x1="56" y1="230" x2="416" y2="230"/>
+    <line x1="56" y1="198" x2="416" y2="198"/>
+    <line x1="56" y1="166" x2="416" y2="166"/>
+    <line x1="56" y1="134" x2="416" y2="134"/>
+    <line x1="56" y1="102" x2="416" y2="102"/>
+    <line x1="56" y1="70" x2="416" y2="70"/>
+  </g>
+  <line x1="56" y1="230" x2="416" y2="230" stroke="#cbd3df" stroke-width="1"/>
+  <g font-size="10" fill="#6c798e" text-anchor="end" font-variant-numeric="tabular-nums">
+    <text x="48" y="233">0</text>
+    <text x="48" y="201">2</text>
+    <text x="48" y="169">4</text>
+    <text x="48" y="137">6</text>
+    <text x="48" y="105">8</text>
+    <text x="48" y="73">10</text>
+  </g>
+  <g font-size="10" fill="#6c798e" text-anchor="middle">
+    <text x="76" y="248">T1</text>
+    <text x="122" y="248">T2</text>
+    <text x="168" y="248">T3</text>
+    <text x="214" y="248">T4</text>
+    <text x="260" y="248">T5</text>
+    <text x="306" y="248">T6</text>
+    <text x="352" y="248">T7</text>
+    <text x="398" y="248">T8</text>
+  </g>
+  <text x="416" y="266" font-size="10" fill="#6c798e" text-anchor="end">連續的任務</text>
+
+  <!-- 警戒線 -->
+  <line x1="56" y1="166" x2="416" y2="166" stroke="#e37b24" stroke-width="1.25" stroke-dasharray="6 4"/>
+  <text x="62" y="160" font-size="10" font-weight="700" fill="#a04f15">警戒 4 天</text>
+
+  <polyline points="76,198 122,198 168,182 214,182 260,166 306,150 352,134 398,102" fill="none" stroke="#1b4f9c" stroke-width="2"/>
+  <g fill="#ffffff" stroke="#1b4f9c" stroke-width="1.5">
+    <circle cx="76" cy="198" r="3.5"/>
+    <circle cx="122" cy="198" r="3.5"/>
+    <circle cx="168" cy="182" r="3.5"/>
+    <circle cx="214" cy="182" r="3.5"/>
+    <circle cx="260" cy="166" r="3.5"/>
+  </g>
+  <g fill="#e37b24">
+    <circle cx="306" cy="150" r="4.5"/>
+    <circle cx="352" cy="134" r="4"/>
+    <circle cx="398" cy="102" r="4"/>
+  </g>
+
+  <!-- 標註 -->
+  <line x1="306" y1="144" x2="306" y2="104" stroke="#e37b24" stroke-width="1"/>
+  <rect x="228" y="80" width="104" height="24" rx="4" fill="#fdf4e6" stroke="#e37b24" stroke-width="1"/>
+  <text x="280" y="96" font-size="10.5" font-weight="800" fill="#a04f15" text-anchor="middle">T6：數據先示警</text>
+  <rect x="120" y="100" width="104" height="22" rx="4" fill="#ffffff" stroke="#cbd3df" stroke-width="1"/>
+  <text x="172" y="115" font-size="10" fill="#6c798e" text-anchor="middle">當事人：再一下就好</text>
+  <text x="414" y="90" font-size="10.5" font-weight="800" fill="#a04f15" text-anchor="end">T8 才被發現</text>
+
+  <line x1="444" y1="24" x2="444" y2="276" stroke="#e1e6ee" stroke-width="1"/>
+
+  <!-- 右：可動用的選項 -->
+  <text x="468" y="32" font-size="14" font-weight="800" fill="#112f5d">越早介入，選項越多</text>
+  <text x="468" y="52" font-size="11" fill="#6c798e">發現時還能動用的處理方式</text>
+
+  <line x1="468" y1="230" x2="776" y2="230" stroke="#cbd3df" stroke-width="1"/>
+
+  <!-- T6 介入 -->
+  <g fill="#eef4fb" stroke="#1b4f9c" stroke-width="1">
+    <rect x="472" y="200" width="92" height="26" rx="5"/>
+    <rect x="472" y="166" width="92" height="26" rx="5"/>
+    <rect x="472" y="132" width="92" height="26" rx="5"/>
+    <rect x="472" y="98" width="92" height="26" rx="5"/>
+  </g>
+  <g font-size="11" font-weight="700" fill="#1b4f9c" text-anchor="middle">
+    <text x="518" y="217">調整時程</text>
+    <text x="518" y="183">改順序</text>
+    <text x="518" y="149">調範圍</text>
+    <text x="518" y="115">補人</text>
+  </g>
+
+  <!-- T7 介入 -->
+  <g fill="#eef4fb" stroke="#adc8e8" stroke-width="1">
+    <rect x="580" y="200" width="92" height="26" rx="5"/>
+    <rect x="580" y="166" width="92" height="26" rx="5"/>
+  </g>
+  <g fill="none" stroke="#cbd3df" stroke-width="1" stroke-dasharray="4 3">
+    <rect x="580" y="132" width="92" height="26" rx="5"/>
+    <rect x="580" y="98" width="92" height="26" rx="5"/>
+  </g>
+  <g font-size="11" font-weight="700" fill="#1b4f9c" text-anchor="middle">
+    <text x="626" y="217">調整時程</text>
+    <text x="626" y="183">調範圍</text>
+  </g>
+
+  <!-- T8 才發現 -->
+  <rect x="688" y="200" width="88" height="26" rx="5" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.25"/>
+  <g fill="none" stroke="#cbd3df" stroke-width="1" stroke-dasharray="4 3">
+    <rect x="688" y="166" width="88" height="26" rx="5"/>
+    <rect x="688" y="132" width="88" height="26" rx="5"/>
+    <rect x="688" y="98" width="88" height="26" rx="5"/>
+  </g>
+  <text x="732" y="217" font-size="11" font-weight="800" fill="#a04f15" text-anchor="middle">硬扛</text>
+
+  <g font-size="10.5" font-weight="700" text-anchor="middle">
+    <text x="518" y="248" fill="#1b4f9c">T6 就介入</text>
+    <text x="626" y="248" fill="#3a4456">T7 介入</text>
+    <text x="732" y="248" fill="#a04f15">T8 才發現</text>
+  </g>
+  <g font-size="10" fill="#6c798e" text-anchor="middle">
+    <text x="518" y="264">4 種選項</text>
+    <text x="626" y="264">2 種</text>
+    <text x="732" y="264">1 種</text>
+  </g>
+</svg>

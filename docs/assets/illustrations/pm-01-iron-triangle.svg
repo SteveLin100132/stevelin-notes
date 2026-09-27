@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" width="100%" role="img" aria-label="專案管理鐵三角示意圖：三角形三個頂點分別是範疇、時程、成本，三邊互相牽制；中央是品質，品質是三者取捨後的結果。">
+  <rect width="720" height="280" rx="12" fill="#f6f8fb"/>
+  <g font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif" text-anchor="middle">
+    <!-- 三角形與內部參考線 -->
+    <polygon points="360,52 236,226 484,226" fill="#eef4fb" stroke="#1b4f9c" stroke-width="2" stroke-linejoin="round"/>
+    <g stroke="#adc8e8" stroke-width="1" stroke-dasharray="4 3">
+      <line x1="360" y1="52" x2="360" y2="166"/>
+      <line x1="236" y1="226" x2="334" y2="184"/>
+      <line x1="484" y1="226" x2="386" y2="184"/>
+    </g>
+    <!-- 頂點 -->
+    <circle cx="360" cy="52" r="6" fill="#1b4f9c"/>
+    <text x="360" y="34" font-size="15" font-weight="700" fill="#112f5d">範疇 Scope</text>
+    <circle cx="236" cy="226" r="6" fill="#1b4f9c"/>
+    <text x="236" y="256" font-size="15" font-weight="700" fill="#112f5d">時程 Time</text>
+    <circle cx="484" cy="226" r="6" fill="#1b4f9c"/>
+    <text x="484" y="256" font-size="15" font-weight="700" fill="#112f5d">成本 Cost</text>
+    <!-- 品質 -->
+    <rect x="322" y="166" width="76" height="30" rx="6" fill="#ffffff" stroke="#ed9b26" stroke-width="1.5"/>
+    <text x="360" y="186" font-size="13" font-weight="700" fill="#a04f15">品質</text>
+    <!-- 邊的說明 -->
+    <text x="262" y="130" font-size="11" fill="#6c798e" text-anchor="end">互相牽制</text>
+    <text x="458" y="130" font-size="11" fill="#6c798e" text-anchor="start">互相牽制</text>
+    <!-- 右側註記 -->
+    <g text-anchor="start" font-size="12" fill="#3a4456">
+      <line x1="548" y1="92" x2="548" y2="196" stroke="#e1e6ee" stroke-width="1"/>
+      <text x="564" y="112" font-weight="700" fill="#112f5d">三個頂點：約束條件</text>
+      <text x="564" y="132" fill="#6c798e">動其中一個，</text>
+      <text x="564" y="150" fill="#6c798e">另外兩個必須跟著調整</text>
+      <text x="564" y="178" font-weight="700" fill="#a04f15">中央：品質</text>
+      <text x="564" y="196" fill="#6c798e">是三者取捨後的結果</text>
+    </g>
+  </g>
+</svg>

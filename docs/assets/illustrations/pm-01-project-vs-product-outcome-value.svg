@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="1600" height="640" role="img" aria-label="成果與價值是兩條獨立的軸。橫軸是專案看的成果（如期、如質、如預算），縱軸是產品看的價值（用戶與商業）。右上是理想：準時交付也有人用；右下是專案成功、產品失敗：準時上線但沒人用；左上是延期超支，但做對了東西；左下是兩頭落空。">
+  <defs>
+    <marker id="ov-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#6c798e"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="800" height="320" rx="12" fill="#f6f8fb"/>
+
+  <text x="24" y="32" font-size="15" font-weight="800" fill="#112f5d">成果與價值是兩條軸：交付成功，不等於產品成功</text>
+
+  <!-- 象限（x 100–760，y 52–272） -->
+  <rect x="100" y="52" width="328" height="108" rx="6" fill="#ffffff" stroke="#e1e6ee" stroke-width="1"/>
+  <rect x="432" y="52" width="328" height="108" rx="6" fill="#e8f5ee" stroke="#2e9e6b" stroke-width="1.25"/>
+  <rect x="100" y="164" width="328" height="108" rx="6" fill="#ffffff" stroke="#e1e6ee" stroke-width="1"/>
+  <rect x="432" y="164" width="328" height="108" rx="6" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.25"/>
+
+  <g font-size="13" font-weight="800">
+    <text x="118" y="84" fill="#112f5d">延期超支，但做對了東西</text>
+    <text x="450" y="84" fill="#2e9e6b">理想：準時交付，也有人用</text>
+    <text x="118" y="196" fill="#6c798e">兩頭落空</text>
+    <text x="450" y="196" fill="#a04f15">專案成功、產品失敗</text>
+  </g>
+  <g font-size="11" fill="#3a4456">
+    <text x="118" y="106">專案指標難看，但用戶與商業價值有出來；</text>
+    <text x="118" y="124">下一輪要補的是規劃與估時</text>
+    <text x="450" y="106">鐵三角守住了，上線後指標也有起色；</text>
+    <text x="450" y="124">兩種眼光都滿意</text>
+    <text x="118" y="218">沒如期交付，交付的也沒人要</text>
+    <text x="450" y="218">如期、如質、如預算上線，</text>
+    <text x="450" y="236">但沒人用、留不住人。只看鐵三角，</text>
+    <text x="450" y="254">會把這裡誤判成成功</text>
+  </g>
+
+  <!-- 軸 -->
+  <line x1="92" y1="276" x2="92" y2="56" stroke="#6c798e" stroke-width="1.25" marker-end="url(#ov-arr)"/>
+  <line x1="96" y1="284" x2="768" y2="284" stroke="#6c798e" stroke-width="1.25" marker-end="url(#ov-arr)"/>
+  <text transform="rotate(-90 64 162)" x="64" y="162" font-size="12" font-weight="800" fill="#a04f15" text-anchor="middle">產品看的：價值</text>
+  <text x="80" y="66" font-size="10" fill="#6c798e" text-anchor="end">高</text>
+  <text x="80" y="272" font-size="10" fill="#6c798e" text-anchor="end">低</text>
+  <text x="430" y="304" font-size="12" font-weight="800" fill="#1b4f9c" text-anchor="middle">專案看的：成果（如期、如質、如預算）</text>
+  <text x="104" y="304" font-size="10" fill="#6c798e">低</text>
+  <text x="756" y="304" font-size="10" fill="#6c798e" text-anchor="end">高</text>
+</svg>

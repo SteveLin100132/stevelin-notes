@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" width="1520" height="660" role="img" aria-label="文件鏈追溯示意，以 DutyMate 為例：PRD 的目標 G1、G2 展開成（G3 匯入舊班表排到下期，沒有往下展開） SRS 的 REQ-01 到 REQ-03，再對應到 SDD 的設計項目與測試案例 TC-01 到 TC-03。REQ-02 排除時段設定發生變更，沿著追溯線，SDD 的排除時段資料表與 TC-02 也要一起改版，以橘色標示。">
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .doc { fill: #ffffff; stroke: #adc8e8; stroke-width: 1.25; }
+    .chip { fill: #eef4fb; stroke: #d6e4f5; stroke-width: 1; }
+    .chip-hot { fill: #fdf4e6; stroke: #e37b24; stroke-width: 1.5; }
+    .chip-off { fill: #ffffff; stroke: #e1e6ee; stroke-width: 1; stroke-dasharray: 3 3; }
+    .id { font-size: 10.5px; font-weight: 800; fill: #1b4f9c; }
+    .id-hot { font-size: 10.5px; font-weight: 800; fill: #a04f15; }
+    .tx { font-size: 11px; fill: #3a4456; }
+    .link { fill: none; stroke: #1b4f9c; stroke-width: 1.25; }
+    .link-hot { fill: none; stroke: #e37b24; stroke-width: 1.75; }
+  </style>
+  <rect width="760" height="330" rx="12" fill="#f6f8fb"/>
+
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">文件即合約：一條需求的追溯線</text>
+  <text x="28" y="54" font-size="11.5" fill="#6c798e">前一份文件是後一份的輸入；改一條需求，就要沿線把後面的文件都改掉</text>
+
+  <!-- 四份文件 -->
+  <g>
+    <path class="doc" d="M30 72 h 132 l 18 18 v 182 h -150 Z"/>
+    <text x="44" y="96" font-size="13" font-weight="800" fill="#112f5d">PRD</text>
+    <text x="44" y="112" font-size="10.5" fill="#6c798e">產品需求</text>
+    <path class="doc" d="M215 72 h 132 l 18 18 v 182 h -150 Z"/>
+    <text x="229" y="96" font-size="13" font-weight="800" fill="#112f5d">SRS</text>
+    <text x="229" y="112" font-size="10.5" fill="#6c798e">系統需求</text>
+    <path class="doc" d="M400 72 h 132 l 18 18 v 182 h -150 Z"/>
+    <text x="414" y="96" font-size="13" font-weight="800" fill="#112f5d">SDD</text>
+    <text x="414" y="112" font-size="10.5" fill="#6c798e">系統設計</text>
+    <path class="doc" d="M585 72 h 132 l 18 18 v 182 h -150 Z"/>
+    <text x="599" y="96" font-size="13" font-weight="800" fill="#112f5d">Test Case</text>
+    <text x="599" y="112" font-size="10.5" fill="#6c798e">測試案例</text>
+  </g>
+
+  <!-- 追溯線（先畫，壓在卡片下） -->
+  <path class="link" d="M170 145 C 192 145, 203 145, 225 145"/>
+  <path class="link" d="M170 145 C 195 145, 200 193, 225 193"/>
+  <path class="link" d="M170 193 C 195 193, 200 241, 225 241"/>
+  <path class="link" d="M355 145 C 377 145, 388 145, 410 145"/>
+  <path class="link-hot" d="M355 193 C 377 193, 388 193, 410 193"/>
+  <path class="link" d="M355 241 C 377 241, 388 241, 410 241"/>
+  <path class="link" d="M540 145 C 562 145, 573 145, 595 145"/>
+  <path class="link-hot" d="M540 193 C 562 193, 573 193, 595 193"/>
+  <path class="link" d="M540 241 C 562 241, 573 241, 595 241"/>
+
+  <!-- PRD 項目 -->
+  <rect class="chip" x="40" y="128" width="130" height="34" rx="6"/>
+  <text class="id" x="50" y="149">G1</text><text class="tx" x="70" y="149">縮短排班時間</text>
+  <rect class="chip" x="40" y="176" width="130" height="34" rx="6"/>
+  <text class="id" x="50" y="197">G2</text><text class="tx" x="70" y="197">出勤可以追蹤</text>
+  <rect class="chip-off" x="40" y="224" width="130" height="34" rx="6"/>
+  <text class="id" x="50" y="245" fill="#6c798e" style="fill:#6c798e">G3</text><text class="tx" x="70" y="245" style="fill:#6c798e">舊班表（下期）</text>
+
+  <!-- SRS 項目 -->
+  <rect class="chip" x="225" y="128" width="130" height="34" rx="6"/>
+  <text class="id" x="235" y="149">REQ-01</text><text class="tx" x="280" y="149">自動推薦班表</text>
+  <rect class="chip-hot" x="225" y="176" width="130" height="34" rx="6"/>
+  <text class="id-hot" x="235" y="197">REQ-02</text><text class="tx" x="280" y="197">排除時段設定</text>
+  <rect x="309" y="167" width="40" height="16" rx="8" fill="#e37b24"/>
+  <text x="329" y="178.5" font-size="9.5" font-weight="800" fill="#ffffff" text-anchor="middle">變更</text>
+  <rect class="chip" x="225" y="224" width="130" height="34" rx="6"/>
+  <text class="id" x="235" y="245">REQ-03</text><text class="tx" x="280" y="245">出勤統計</text>
+
+  <!-- SDD 項目 -->
+  <rect class="chip" x="410" y="128" width="130" height="34" rx="6"/>
+  <text class="id" x="420" y="149">API</text><text class="tx" x="446" y="149">產生草稿班表</text>
+  <rect class="chip-hot" x="410" y="176" width="130" height="34" rx="6"/>
+  <text class="id-hot" x="420" y="197">DB</text><text class="tx" x="446" y="197">排除時段資料表</text>
+  <rect class="chip" x="410" y="224" width="130" height="34" rx="6"/>
+  <text class="id" x="420" y="245">API</text><text class="tx" x="446" y="245">統計報表查詢</text>
+
+  <!-- Test 項目 -->
+  <rect class="chip" x="595" y="128" width="130" height="34" rx="6"/>
+  <text class="id" x="605" y="149">TC-01</text><text class="tx" x="643" y="149">推薦符合限制</text>
+  <rect class="chip-hot" x="595" y="176" width="130" height="34" rx="6"/>
+  <text class="id-hot" x="605" y="197">TC-02</text><text class="tx" x="643" y="197">排除時段生效</text>
+  <rect class="chip" x="595" y="224" width="130" height="34" rx="6"/>
+  <text class="id" x="605" y="245">TC-03</text><text class="tx" x="643" y="245">統計數字正確</text>
+
+  <!-- 圖例 -->
+  <line x1="30" y1="302" x2="58" y2="302" stroke="#1b4f9c" stroke-width="1.25"/>
+  <text x="66" y="306" font-size="11" fill="#3a4456">追溯關係：上游項目展開成下游項目</text>
+  <line x1="300" y1="302" x2="328" y2="302" stroke="#e37b24" stroke-width="1.75"/>
+  <text x="336" y="306" font-size="11" fill="#3a4456">REQ-02 變更後，要同步改版的設計與測試</text>
+</svg>

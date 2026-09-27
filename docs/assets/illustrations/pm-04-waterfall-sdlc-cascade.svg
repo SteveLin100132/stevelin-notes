@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" width="1520" height="640" role="img" aria-label="瀑布隱喻：四個階梯水池由左上往右下排列，分別是規劃、設計、建置與測試、驗收與上線，最後流入維運。每個水池右側有一道閘門，通過才溢流到下一級；一條橘色虛線從維運逆流回規劃，表示越下游回頭修改的代價越大。">
+  <defs>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="760" height="320" rx="12" fill="#f6f8fb"/>
+
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">瀑布：水只往下流</text>
+  <text x="28" y="54" font-size="11.5" fill="#6c798e">每一階都有閘門，通過驗收才溢流到下一級</text>
+
+  <!-- 逆流：回頭修改的代價 -->
+  <path d="M706 222 C 748 70, 430 60, 132 64" fill="none" stroke="#e37b24" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arrow-orange)"/>
+  <text x="600" y="58" font-size="11.5" font-weight="700" fill="#a04f15" text-anchor="middle">往回走：越下游，回頭重做的代價越大</text>
+
+  <!-- 水池 0：規劃 -->
+  <g>
+    <rect x="42" y="82" width="126" height="20" fill="#d6e4f5"/>
+    <path d="M40 70 V104 H170 V70" fill="none" stroke="#1b4f9c" stroke-width="1.5"/>
+    <rect x="167" y="64" width="6" height="24" rx="1" fill="#1b4f9c"/>
+    <path d="M173 84 C 186 86, 192 112, 196 124" fill="none" stroke="#adc8e8" stroke-width="2"/>
+    <path d="M173 90 C 182 94, 186 114, 190 124" fill="none" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="105" y="124" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">規劃</text>
+    <text x="105" y="139" font-size="10.5" fill="#6c798e" text-anchor="middle">Blueprint · SA</text>
+  </g>
+
+  <!-- 水池 1：設計 -->
+  <g>
+    <rect x="192" y="122" width="126" height="20" fill="#d6e4f5"/>
+    <path d="M190 110 V144 H320 V110" fill="none" stroke="#1b4f9c" stroke-width="1.5"/>
+    <rect x="317" y="104" width="6" height="24" rx="1" fill="#1b4f9c"/>
+    <path d="M323 124 C 336 126, 342 152, 346 164" fill="none" stroke="#adc8e8" stroke-width="2"/>
+    <path d="M323 130 C 332 134, 336 154, 340 164" fill="none" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="255" y="164" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">設計</text>
+    <text x="255" y="179" font-size="10.5" fill="#6c798e" text-anchor="middle">SD</text>
+  </g>
+
+  <!-- 閘門說明 -->
+  <line x1="325" y1="108" x2="340" y2="100" stroke="#6c798e" stroke-width="1"/>
+  <text x="344" y="98" font-size="11.5" font-weight="700" fill="#1b4f9c">閘門</text>
+  <text x="344" y="113" font-size="10.5" fill="#6c798e">交付物驗收＋里程碑審查</text>
+
+  <!-- 水池 2：建置與測試 -->
+  <g>
+    <rect x="342" y="162" width="126" height="20" fill="#d6e4f5"/>
+    <path d="M340 150 V184 H470 V150" fill="none" stroke="#1b4f9c" stroke-width="1.5"/>
+    <rect x="467" y="144" width="6" height="24" rx="1" fill="#1b4f9c"/>
+    <path d="M473 164 C 486 166, 492 192, 496 204" fill="none" stroke="#adc8e8" stroke-width="2"/>
+    <path d="M473 170 C 482 174, 486 194, 490 204" fill="none" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="405" y="204" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">建置與測試</text>
+    <text x="405" y="219" font-size="10.5" fill="#6c798e" text-anchor="middle">Coding · SIT</text>
+  </g>
+
+  <!-- 水池 3：驗收與上線 -->
+  <g>
+    <rect x="492" y="202" width="126" height="20" fill="#d6e4f5"/>
+    <path d="M490 190 V224 H620 V190" fill="none" stroke="#1b4f9c" stroke-width="1.5"/>
+    <rect x="617" y="184" width="6" height="24" rx="1" fill="#1b4f9c"/>
+    <path d="M623 204 C 636 206, 642 232, 646 244" fill="none" stroke="#adc8e8" stroke-width="2"/>
+    <path d="M623 210 C 632 214, 636 234, 640 244" fill="none" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="555" y="244" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">驗收與上線</text>
+    <text x="555" y="259" font-size="10.5" fill="#6c798e" text-anchor="middle">UAT · Cutover · Go-Live</text>
+  </g>
+
+  <!-- 下游：維運 -->
+  <g>
+    <rect x="642" y="240" width="86" height="22" fill="#adc8e8"/>
+    <path d="M640 228 V264 H730 V228" fill="none" stroke="#1b4f9c" stroke-width="1.5"/>
+    <text x="685" y="284" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">維運</text>
+    <text x="685" y="299" font-size="10.5" fill="#6c798e" text-anchor="middle">Maintenance</text>
+  </g>
+</svg>

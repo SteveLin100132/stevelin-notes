@@ -1,0 +1,191 @@
+{
+  "$schema": "../../.notecraft/plugins/er-diagram-renderer/schema.json",
+  "meta": {
+    "title": "範例：電商訂單 schema",
+    "description": "會員、商品、訂單、付款與出貨共 10 張表的電商資料模型，示範 er-diagram-renderer 的資料格式",
+    "source": "虛構範例，僅供示範 plugin 用法",
+    "backTo": "/notes/sample/er-diagram-sample"
+  },
+  "options": {
+    "defaultRows": 5,
+    "hubTables": ["option_item"],
+    "sectionPrefix": "§",
+    "hint": "點一張表可聚焦它的關聯，其餘變淡；再點一次、點空白處或按 Esc 取消。欄位右側的圖示 hover 可看該欄說明。",
+    "searchPlaceholder": "搜尋表名或欄位名（例：order、member_id）"
+  },
+  "requirement": [
+    { "key": "required", "label": "必填", "marker": "solid" },
+    { "key": "condition", "label": "條件", "marker": "half", "title": "條件必填，條件見說明" },
+    { "key": "nullable", "label": "可空", "marker": "hollow" },
+    { "key": "system", "label": "系統", "marker": "muted", "title": "系統維護，應用層不可寫入" }
+  ],
+  "flags": [
+    { "key": "pk", "badge": "PK", "tone": "danger", "label": "主鍵" },
+    { "key": "fk", "badge": "FK", "tone": "info", "label": "外鍵" },
+    { "key": "unique", "badge": "UQ", "tone": "success", "label": "唯一" },
+    { "key": "index", "badge": "IX", "tone": "neutral", "label": "索引" }
+  ],
+  "derivations": [
+    { "key": "generated", "badge": "GEN", "label": "資料庫計算欄" },
+    { "key": "trigger", "badge": "TRG", "label": "由 trigger 維護" },
+    { "key": "encrypted", "badge": "ENC", "label": "加密儲存" }
+  ],
+  "groups": [
+    { "key": "member", "label": "會員" },
+    { "key": "order", "label": "訂單與履約" },
+    { "key": "catalog", "label": "商品目錄" },
+    { "key": "core", "label": "共用主檔" }
+  ],
+  "layout": {
+    "columns": [
+      { "key": "c1", "groups": ["member"] },
+      { "key": "c2", "groups": ["order"] },
+      { "key": "c3", "groups": ["catalog"] },
+      { "key": "c4", "groups": ["core"] }
+    ]
+  },
+  "tables": [
+    {
+      "name": "member",
+      "label": "會員主檔",
+      "section": "2.1",
+      "group": "member",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "default": "identity", "pk": true, "note": "代理主鍵" },
+        { "name": "email", "type": "varchar(254)", "required": "required", "unique": true, "pii": true, "note": "登入帳號，不分大小寫比對" },
+        { "name": "display_name", "type": "varchar(60)", "required": "required", "note": "顯示名稱" },
+        { "name": "phone", "type": "varchar(30)", "required": "nullable", "derivation": "encrypted", "pii": true, "note": "手機號碼，加密儲存" },
+        { "name": "tier_id", "type": "bigint", "required": "required", "fk": "option_item", "note": "會員等級，type_code＝member_tier" },
+        { "name": "total_spent", "type": "numeric(12,0)", "required": "system", "default": "0", "derivation": "trigger", "note": "累計消費金額，訂單完成時由 trigger 累加" },
+        { "name": "created_at", "type": "timestamptz", "required": "system", "default": "now()", "note": "註冊時間" }
+      ]
+    },
+    {
+      "name": "member_address",
+      "label": "收件地址",
+      "section": "2.1",
+      "group": "member",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "member_id", "type": "bigint", "required": "required", "fk": "member", "index": true, "note": "所屬會員" },
+        { "name": "recipient", "type": "varchar(60)", "required": "required", "pii": true, "note": "收件人姓名" },
+        { "name": "city_id", "type": "bigint", "required": "required", "fk": "option_item", "note": "縣市，type_code＝city" },
+        { "name": "address_line", "type": "varchar(200)", "required": "required", "pii": true, "note": "詳細地址" },
+        { "name": "is_default", "type": "boolean", "required": "required", "default": "false", "note": "預設地址；每位會員至多一筆（partial unique index）" }
+      ]
+    },
+    {
+      "name": "sales_order",
+      "label": "訂單主檔",
+      "section": "2.2",
+      "group": "order",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "order_no", "type": "varchar(20)", "required": "system", "unique": true, "note": "對外訂單編號，格式 YYYYMMDD-流水號" },
+        { "name": "member_id", "type": "bigint", "required": "required", "fk": "member", "index": true, "note": "下單會員" },
+        { "name": "address_id", "type": "bigint", "required": "condition", "fk": "member_address", "note": "收件地址；僅實體商品訂單必填，純數位商品可空" },
+        { "name": "status_id", "type": "bigint", "required": "required", "fk": "option_item", "index": true, "note": "訂單狀態，type_code＝order_status" },
+        { "name": "subtotal", "type": "numeric(12,0)", "required": "system", "derivation": "trigger", "note": "明細小計加總，由 order_item 的 trigger 維護" },
+        { "name": "shipping_fee", "type": "numeric(8,0)", "required": "required", "default": "0", "note": "運費" },
+        { "name": "total_amount", "type": "numeric(12,0)", "required": "system", "derivation": "generated", "note": "subtotal + shipping_fee" },
+        { "name": "ordered_at", "type": "timestamptz", "required": "system", "default": "now()", "index": true, "note": "下單時間" }
+      ]
+    },
+    {
+      "name": "order_item",
+      "label": "訂單明細",
+      "section": "2.2",
+      "group": "order",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "order_id", "type": "bigint", "required": "required", "fk": "sales_order", "index": true, "note": "所屬訂單" },
+        { "name": "variant_id", "type": "bigint", "required": "required", "fk": "product_variant", "note": "購買的商品規格" },
+        { "name": "quantity", "type": "integer", "required": "required", "note": "數量，> 0" },
+        { "name": "unit_price", "type": "numeric(10,0)", "required": "required", "note": "下單當下的單價快照，不隨商品改價變動" },
+        { "name": "line_total", "type": "numeric(12,0)", "required": "system", "derivation": "generated", "note": "quantity × unit_price" }
+      ]
+    },
+    {
+      "name": "payment",
+      "label": "付款紀錄",
+      "section": "2.3",
+      "group": "order",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "order_id", "type": "bigint", "required": "required", "fk": "sales_order", "index": true, "note": "所屬訂單；一張訂單可有多筆（失敗後重試）" },
+        { "name": "method_id", "type": "bigint", "required": "required", "fk": "option_item", "note": "付款方式，type_code＝pay_method" },
+        { "name": "amount", "type": "numeric(12,0)", "required": "required", "note": "付款金額" },
+        { "name": "gateway_txn_id", "type": "varchar(64)", "required": "condition", "unique": true, "note": "金流交易序號；線上付款必填，貨到付款為空" },
+        { "name": "paid_at", "type": "timestamptz", "required": "nullable", "note": "實際入帳時間；未成功為空" }
+      ]
+    },
+    {
+      "name": "shipment",
+      "label": "出貨單",
+      "section": "2.4",
+      "group": "order",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "order_id", "type": "bigint", "required": "required", "fk": "sales_order", "index": true, "note": "所屬訂單；可拆單出貨" },
+        { "name": "carrier_id", "type": "bigint", "required": "required", "fk": "option_item", "note": "物流商，type_code＝carrier" },
+        { "name": "tracking_no", "type": "varchar(40)", "required": "nullable", "unique": true, "note": "物流追蹤碼，交寄後回填" },
+        { "name": "shipped_at", "type": "timestamptz", "required": "nullable", "note": "交寄時間" },
+        { "name": "delivered_at", "type": "timestamptz", "required": "nullable", "note": "送達時間" }
+      ]
+    },
+    {
+      "name": "product_category",
+      "label": "商品分類",
+      "section": "3.1",
+      "group": "catalog",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "parent_id", "type": "bigint", "required": "nullable", "fk": "product_category", "note": "上層分類；頂層為空（自我參照）" },
+        { "name": "name", "type": "varchar(60)", "required": "required", "note": "分類名稱" },
+        { "name": "sort_order", "type": "integer", "required": "required", "default": "0", "note": "同層排序" }
+      ]
+    },
+    {
+      "name": "product",
+      "label": "商品主檔",
+      "section": "3.2",
+      "group": "catalog",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "category_id", "type": "bigint", "required": "required", "fk": "product_category", "index": true, "note": "所屬分類" },
+        { "name": "name", "type": "varchar(120)", "required": "required", "index": true, "note": "商品名稱" },
+        { "name": "is_digital", "type": "boolean", "required": "required", "default": "false", "note": "數位商品不需出貨，訂單可不填地址" },
+        { "name": "description", "type": "text", "required": "nullable", "note": "商品描述（Markdown）" },
+        { "name": "published_at", "type": "timestamptz", "required": "nullable", "note": "上架時間；空值代表草稿" }
+      ]
+    },
+    {
+      "name": "product_variant",
+      "label": "商品規格",
+      "section": "3.2",
+      "group": "catalog",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "product_id", "type": "bigint", "required": "required", "fk": "product", "index": true, "note": "所屬商品" },
+        { "name": "sku", "type": "varchar(40)", "required": "required", "unique": true, "note": "庫存單位編號" },
+        { "name": "spec_label", "type": "varchar(60)", "required": "required", "note": "規格描述，例：黑色 / M" },
+        { "name": "price", "type": "numeric(10,0)", "required": "required", "note": "目前售價" },
+        { "name": "stock_qty", "type": "integer", "required": "system", "default": "0", "derivation": "trigger", "note": "可售庫存，下單與取消時由 trigger 增減" }
+      ]
+    },
+    {
+      "name": "option_item",
+      "label": "選項主檔",
+      "section": "4.1",
+      "group": "core",
+      "columns": [
+        { "name": "id", "type": "bigint", "required": "system", "pk": true, "note": "代理主鍵" },
+        { "name": "type_code", "type": "varchar(30)", "required": "required", "index": true, "note": "選項集合代碼：order_status、pay_method、carrier、city、member_tier" },
+        { "name": "code", "type": "varchar(30)", "required": "required", "note": "集合內代碼；(type_code, code) 唯一" },
+        { "name": "label", "type": "varchar(60)", "required": "required", "note": "顯示名稱" },
+        { "name": "sort_order", "type": "integer", "required": "required", "default": "0", "note": "集合內排序" },
+        { "name": "is_active", "type": "boolean", "required": "required", "default": "true", "note": "停用後不出現在選單，但舊資料仍可引用" }
+      ]
+    }
+  ]
+}

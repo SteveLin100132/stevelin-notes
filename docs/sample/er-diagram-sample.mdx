@@ -1,0 +1,80 @@
+---
+title: ER Diagram 範例：電商訂單 schema
+description: 示範 er-diagram-renderer plugin：以 *.erd.json 描述資料表，嵌入筆記或開成獨立頁。
+tags: [sample, notecraft, plugin, database]
+category: 範例
+createdAt: '2026-09-26'
+updatedAt: '2026-09-26'
+---
+
+import PluginView from '@/components/PluginView.astro'
+
+# ER Diagram 範例：電商訂單 schema
+
+這篇示範如何用 `er-diagram-renderer` plugin 呈現資料庫 schema。資料寫在同資料夾的
+`ecommerce-order.erd.json`，`.notecraft/plugins.json` 以 `**/*.erd.json` 規則把它交給 plugin 渲染。
+
+## 圖
+
+<PluginView src="sample/ecommerce-order.erd.json" caption="點一張表聚焦它的關聯；hub 表（選項主檔）的連線預設收起" />
+
+同一份資料也有獨立的全寬頁面：[/view/sample/ecommerce-order.erd](/view/sample/ecommerce-order.erd)。
+
+## 這份 schema 在描述什麼
+
+| 模組 | 資料表 | 重點 |
+| :--- | :--- | :--- |
+| 會員 | `member`、`member_address` | 一位會員多個收件地址；`total_spent` 由 trigger 累加 |
+| 訂單與履約 | `sales_order`、`order_item`、`payment`、`shipment` | 訂單可多次付款、拆單出貨；明細保存下單當下的單價快照 |
+| 商品目錄 | `product_category`、`product`、`product_variant` | 分類自我參照成樹；價格與庫存掛在規格（SKU）層 |
+| 共用主檔 | `option_item` | 訂單狀態、付款方式、物流商、縣市、會員等級共用一張選項表 |
+
+:::note{title="為什麼 option_item 是 hub 表"}
+五種選項集合都指向同一張表，連線全部畫出來會蓋滿整張圖，所以在 `options.hubTables` 把它列為 hub，
+連線預設收起；點它時才展開。
+:::
+
+## 資料檔怎麼寫
+
+檔案結構分兩層：**語彙**（必填性、徽章、衍生欄的叫法）與**內容**（分群、版面、資料表）。
+
+```jsonc title="docs/sample/ecommerce-order.erd.json（節錄）"
+{
+  "$schema": "../../.notecraft/plugins/er-diagram-renderer/schema.json",
+  "meta": { "title": "範例：電商訂單 schema", "backTo": "/notes/sample/er-diagram-sample" },
+  "options": { "defaultRows": 5, "hubTables": ["option_item"] },
+
+  "requirement": [{ "key": "required", "label": "必填", "marker": "solid" }],
+  "flags":       [{ "key": "pk", "badge": "PK", "tone": "danger", "label": "主鍵" }],
+  "derivations": [{ "key": "trigger", "badge": "TRG", "label": "由 trigger 維護" }],
+
+  "groups": [{ "key": "order", "label": "訂單與履約" }],
+  "layout": { "columns": [{ "key": "c1", "groups": ["member"] }, { "key": "c2", "groups": ["order"] }] },
+
+  "tables": [{
+    "name": "order_item", "label": "訂單明細", "section": "2.2", "group": "order",
+    "columns": [
+      { "name": "order_id", "type": "bigint", "required": "required", "fk": "sales_order", "index": true },
+      { "name": "line_total", "type": "numeric(12,0)", "required": "system", "derivation": "generated" }
+    ]
+  }]
+}
+```
+
+撰寫時的幾個原則：
+
+- **關聯只寫在欄位的 `fk`**：連線由 `columns[].fk` 推導，不另存 edges，避免兩份真相
+- **版面決定連線長度**：`layout.columns` 由左到右排，把關係密切的模組放相鄰欄。
+  這份範例把「訂單」放在「會員」與「商品」中間，多數外鍵只跨一欄
+- **`required` 與 `derivation` 的值要對得上語彙**：分別對應 `requirement[].key` 與 `derivations[].key`
+- 加上 `$schema` 後，VS Code 會依 plugin 的 `schema.json` 提供補全與檢查
+
+## 嵌入方式
+
+```mdx
+import PluginView from '@/components/PluginView.astro'
+
+<PluginView src="sample/ecommerce-order.erd.json" caption="…" />
+```
+
+`src` 以筆記根目錄 `docs/` 為基準（與 `plugins.json` 的 `files` 相同），不是相對於這篇筆記。

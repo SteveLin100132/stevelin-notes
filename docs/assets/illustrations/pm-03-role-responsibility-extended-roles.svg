@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 372" width="1520" height="744" role="img" aria-label="衍生角色分布圖：中央是 Scrum 核心團隊（PO、SM、Developers），外圍虛線框是專案團隊邊界。左側產品面的 UI/UX Designer 與 Domain Expert 協助 PO 定義做什麼；右側技術面的 Tech Lead、QA Engineer、Data Engineer 協助 Developers 把事做好；Stakeholder 在邊界之外，與 PO 雙向交換需求與回饋。">
+  <defs>
+    <marker id="er-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="er-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+    <marker id="er-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#6c798e"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="760" height="372" rx="12" fill="#f6f8fb"/>
+
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">衍生角色的位置：依主要協作對象分布</text>
+
+  <!-- 外部：Stakeholder -->
+  <rect x="285" y="46" width="190" height="46" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="1.25"/>
+  <text x="299" y="66" font-size="12.5" font-weight="800" fill="#3a4456">Stakeholder</text>
+  <text x="299" y="83" font-size="10.5" fill="#6c798e">用戶 · 客戶 · 管理層 · 投資者</text>
+  <rect x="427" y="55" width="36" height="16" rx="8" fill="#e1e6ee"/>
+  <text x="445" y="67" font-size="9.5" font-weight="700" fill="#3a4456" text-anchor="middle">外部</text>
+
+  <!-- 專案團隊邊界 -->
+  <rect x="24" y="116" width="712" height="240" rx="12" fill="none" stroke="#adc8e8" stroke-width="1.25" stroke-dasharray="6 5"/>
+  <text x="40" y="138" font-size="11" font-weight="700" fill="#6c798e">專案團隊</text>
+
+  <!-- Stakeholder ↔ PO -->
+  <line x1="322" y1="96" x2="322" y2="182" stroke="#6c798e" stroke-width="1.25" marker-start="url(#er-gray)" marker-end="url(#er-gray)"/>
+  <text x="330" y="110" font-size="10.5" font-weight="700" fill="#6c798e">需求與回饋，經 PO 進入團隊</text>
+
+  <!-- 核心團隊 -->
+  <rect x="270" y="150" width="220" height="166" rx="10" fill="#ffffff" stroke="#1b4f9c" stroke-width="1.5"/>
+  <text x="430" y="171" font-size="11" font-weight="800" fill="#112f5d" text-anchor="middle">Scrum 核心團隊</text>
+  <rect x="286" y="186" width="88" height="40" rx="6" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.25"/>
+  <text x="330" y="204" font-size="13" font-weight="800" fill="#a04f15" text-anchor="middle">PO</text>
+  <text x="330" y="219" font-size="9" fill="#6c798e" text-anchor="middle">做什麼</text>
+  <rect x="386" y="186" width="88" height="40" rx="6" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.25"/>
+  <text x="430" y="204" font-size="13" font-weight="800" fill="#a04f15" text-anchor="middle">SM</text>
+  <text x="430" y="219" font-size="9" fill="#6c798e" text-anchor="middle">排除障礙</text>
+  <rect x="286" y="238" width="188" height="62" rx="6" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.25"/>
+  <g fill="#adc8e8">
+    <circle cx="348" cy="253" r="3.5"/><path d="M342 265 Q342 258 348 258 Q354 258 354 265 Z"/>
+    <circle cx="364" cy="253" r="3.5"/><path d="M358 265 Q358 258 364 258 Q370 258 370 265 Z"/>
+    <circle cx="380" cy="253" r="3.5"/><path d="M374 265 Q374 258 380 258 Q386 258 386 265 Z"/>
+    <circle cx="396" cy="253" r="3.5"/><path d="M390 265 Q390 258 396 258 Q402 258 402 265 Z"/>
+    <circle cx="412" cy="253" r="3.5"/><path d="M406 265 Q406 258 412 258 Q418 258 418 265 Z"/>
+  </g>
+  <text x="380" y="287" font-size="13" font-weight="800" fill="#112f5d" text-anchor="middle">Developers</text>
+
+  <!-- 左：產品面 -->
+  <rect x="48" y="170" width="180" height="52" rx="8" fill="#ffffff" stroke="#fbe7c6" stroke-width="1.25"/>
+  <text x="62" y="191" font-size="12.5" font-weight="800" fill="#112f5d">UI/UX Designer</text>
+  <text x="62" y="209" font-size="10.5" fill="#6c798e">介面與體驗設計師</text>
+  <rect x="180" y="199" width="38" height="16" rx="8" fill="#fdf4e6"/>
+  <text x="199" y="211" font-size="9.5" font-weight="700" fill="#a04f15" text-anchor="middle">設計</text>
+
+  <rect x="48" y="244" width="180" height="52" rx="8" fill="#ffffff" stroke="#fbe7c6" stroke-width="1.25"/>
+  <text x="62" y="265" font-size="12.5" font-weight="800" fill="#112f5d">Domain Expert</text>
+  <text x="62" y="283" font-size="10.5" fill="#6c798e">領域專家</text>
+  <rect x="180" y="273" width="38" height="16" rx="8" fill="#fdf4e6"/>
+  <text x="199" y="285" font-size="9.5" font-weight="700" fill="#a04f15" text-anchor="middle">領域</text>
+
+  <line x1="228" y1="196" x2="282" y2="206" stroke="#e37b24" stroke-width="1.25" marker-end="url(#er-orange)"/>
+  <line x1="228" y1="270" x2="282" y2="218" stroke="#e37b24" stroke-width="1.25" marker-end="url(#er-orange)"/>
+
+  <!-- 右：技術面 -->
+  <rect x="532" y="136" width="180" height="50" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="546" y="157" font-size="12.5" font-weight="800" fill="#112f5d">Tech Lead</text>
+  <text x="546" y="174" font-size="10.5" fill="#6c798e">技術主管</text>
+  <rect x="664" y="164" width="38" height="16" rx="8" fill="#eef4fb"/>
+  <text x="683" y="176" font-size="9.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">技術</text>
+
+  <rect x="532" y="198" width="180" height="50" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="546" y="219" font-size="12.5" font-weight="800" fill="#112f5d">QA Engineer</text>
+  <text x="546" y="236" font-size="10.5" fill="#6c798e">品質保證工程師</text>
+  <rect x="664" y="226" width="38" height="16" rx="8" fill="#eef4fb"/>
+  <text x="683" y="238" font-size="9.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">品質</text>
+
+  <rect x="532" y="260" width="180" height="50" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="546" y="281" font-size="12.5" font-weight="800" fill="#112f5d">Data Engineer</text>
+  <text x="546" y="298" font-size="10.5" fill="#6c798e">數據工程師</text>
+  <rect x="664" y="288" width="38" height="16" rx="8" fill="#eef4fb"/>
+  <text x="683" y="300" font-size="9.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">數據</text>
+
+  <line x1="532" y1="161" x2="478" y2="246" stroke="#1b4f9c" stroke-width="1.25" marker-end="url(#er-navy)"/>
+  <line x1="532" y1="223" x2="478" y2="262" stroke="#1b4f9c" stroke-width="1.25" marker-end="url(#er-navy)"/>
+  <line x1="532" y1="285" x2="478" y2="278" stroke="#1b4f9c" stroke-width="1.25" marker-end="url(#er-navy)"/>
+
+  <!-- 欄說明 -->
+  <text x="138" y="340" font-size="11" font-weight="700" fill="#a04f15" text-anchor="middle">產品面：協助 PO 定義「做什麼」</text>
+  <text x="622" y="340" font-size="11" font-weight="700" fill="#1b4f9c" text-anchor="middle">技術面：協助 Developers「把事做好」</text>
+</svg>

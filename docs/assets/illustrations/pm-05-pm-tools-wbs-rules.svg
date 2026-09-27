@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="1600" height="600" role="img" aria-label="WBS 的兩條規則。左：100% Rule，以 DutyMate 的設計階段為例，業務流程 16 小時、Schema 16 小時、API 規格 24 小時、UI Mockup 16 小時，加總 72 小時等於父節點；沒列進 WBS 的工作就不在範圍內。右：8/80 粒度，以對數刻度的工時尺表示，低於 8 小時太細、8 到 80 小時理想、超過 80 小時太大。">
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="800" height="300" rx="12" fill="#f6f8fb"/>
+
+  <!-- 左：100% Rule -->
+  <text x="24" y="32" font-size="14" font-weight="800" fill="#112f5d">100% Rule：子節點加總 = 父節點</text>
+  <text x="24" y="50" font-size="11" fill="#6c798e">範圍與工時都要對得起來，不多也不少</text>
+
+  <rect x="152" y="72" width="150" height="40" rx="6" fill="#1b4f9c"/>
+  <text x="227" y="89" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">2. 設計</text>
+  <text x="227" y="105" font-size="11" fill="#d6e4f5" text-anchor="middle">Σ 72h</text>
+
+  <g stroke="#adc8e8" stroke-width="1.25" fill="none">
+    <path d="M227 112 V 128 M72 128 H 382 M72 128 V 144 M175 128 V 144 M279 128 V 144 M382 128 V 144"/>
+  </g>
+
+  <g fill="#ffffff" stroke="#1b4f9c" stroke-width="1.25">
+    <rect x="28" y="144" width="88" height="44" rx="6"/>
+    <rect x="131" y="144" width="88" height="44" rx="6"/>
+    <rect x="235" y="144" width="88" height="44" rx="6"/>
+    <rect x="338" y="144" width="88" height="44" rx="6"/>
+  </g>
+  <g font-size="10.5" font-weight="700" fill="#112f5d" text-anchor="middle">
+    <text x="72" y="162">2.1 業務流程</text>
+    <text x="175" y="162">2.2 Schema</text>
+    <text x="279" y="162">2.3 API 規格</text>
+    <text x="382" y="162">2.4 UI Mockup</text>
+  </g>
+  <g font-size="11" font-weight="800" fill="#1b4f9c" text-anchor="middle">
+    <text x="72" y="180">16h</text>
+    <text x="175" y="180">16h</text>
+    <text x="279" y="180">24h</text>
+    <text x="382" y="180">16h</text>
+  </g>
+
+  <path d="M28 198 V 206 H 426 V 198" fill="none" stroke="#6c798e" stroke-width="1"/>
+  <text x="227" y="226" font-size="12" font-weight="700" fill="#3a4456" text-anchor="middle">16 + 16 + 24 + 16 = 72h（100%）</text>
+
+  <rect x="104" y="244" width="246" height="30" rx="6" fill="none" stroke="#cbd3df" stroke-width="1.25" stroke-dasharray="5 4"/>
+  <text x="227" y="263" font-size="11" fill="#6c798e" text-anchor="middle">沒列進 WBS 的工作 = 不在這次範圍</text>
+
+  <line x1="452" y1="24" x2="452" y2="276" stroke="#e1e6ee" stroke-width="1"/>
+
+  <!-- 右：8/80 粒度（對數刻度 1h–200h，x = 478 + 296 × log(h)/log(200)） -->
+  <text x="476" y="32" font-size="14" font-weight="800" fill="#112f5d">8/80 粒度：工作包的工時</text>
+  <text x="476" y="50" font-size="11" fill="#6c798e">末端工作包落在 8 到 80 小時之間</text>
+
+  <rect x="478" y="132" width="116" height="30" fill="#e1e6ee"/>
+  <rect x="594" y="132" width="129" height="30" fill="#d6e4f5"/>
+  <rect x="723" y="132" width="51" height="30" fill="#fbe7c6"/>
+  <line x1="594" y1="124" x2="594" y2="170" stroke="#1b4f9c" stroke-width="1.5"/>
+  <line x1="723" y1="124" x2="723" y2="170" stroke="#1b4f9c" stroke-width="1.5"/>
+
+  <g font-size="12" font-weight="800" text-anchor="middle">
+    <text x="536" y="152" fill="#6c798e">太細</text>
+    <text x="658" y="152" fill="#1b4f9c">理想</text>
+    <text x="748" y="152" fill="#a04f15">太大</text>
+  </g>
+
+  <g stroke="#6c798e" stroke-width="1">
+    <line x1="478" y1="162" x2="478" y2="168"/>
+    <line x1="517" y1="162" x2="517" y2="168"/>
+    <line x1="555" y1="162" x2="555" y2="168"/>
+    <line x1="633" y1="162" x2="633" y2="168"/>
+    <line x1="684" y1="162" x2="684" y2="168"/>
+    <line x1="762" y1="162" x2="762" y2="168"/>
+  </g>
+  <g font-size="10" fill="#6c798e" text-anchor="middle" font-variant-numeric="tabular-nums">
+    <text x="478" y="182">1h</text>
+    <text x="517" y="182">2</text>
+    <text x="555" y="182">4</text>
+    <text x="633" y="182">16</text>
+    <text x="684" y="182">40</text>
+    <text x="762" y="182">160</text>
+  </g>
+  <g font-size="10.5" font-weight="800" fill="#1b4f9c" text-anchor="middle">
+    <text x="594" y="118">8h</text>
+    <text x="723" y="118">80h</text>
+  </g>
+
+  <!-- 範例工作包標記 -->
+  <g font-size="10" fill="#3a4456" text-anchor="middle">
+    <path d="M478 88 v 38" stroke="#cbd3df" stroke-width="1" stroke-dasharray="2 2"/>
+    <circle cx="478" cy="132" r="4" fill="#ffffff" stroke="#6c798e" stroke-width="1.25"/>
+    <text x="488" y="82" text-anchor="start">改一段文字 1h</text>
+    <path d="M633 88 v 38" stroke="#adc8e8" stroke-width="1" stroke-dasharray="2 2"/>
+    <circle cx="633" cy="132" r="4" fill="#ffffff" stroke="#1b4f9c" stroke-width="1.25"/>
+    <text x="633" y="82">登入頁 16h</text>
+    <path d="M762 88 v 38" stroke="#fbe7c6" stroke-width="1" stroke-dasharray="2 2"/>
+    <circle cx="762" cy="132" r="4" fill="#ffffff" stroke="#e37b24" stroke-width="1.25"/>
+    <text x="762" y="82">整個後台</text>
+    <text x="762" y="98">160h</text>
+  </g>
+
+  <!-- 三區說明 -->
+  <g font-size="10.5" fill="#3a4456">
+    <text x="478" y="212" font-weight="800" fill="#6c798e">太細</text>
+    <text x="478" y="228">管理成本</text>
+    <text x="478" y="244">超過產出</text>
+    <text x="594" y="212" font-weight="800" fill="#1b4f9c">理想</text>
+    <text x="594" y="228">一個負責人扛得起</text>
+    <text x="594" y="244">驗收標準明確</text>
+    <text x="723" y="212" font-weight="800" fill="#a04f15">太大</text>
+    <text x="723" y="228">難估時</text>
+    <text x="723" y="244">風險被掩蓋</text>
+  </g>
+</svg>

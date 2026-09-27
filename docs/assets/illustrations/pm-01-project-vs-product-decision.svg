@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 270" width="1600" height="540" role="img" aria-label="動工前的四個判斷問題。有預設的結束日期嗎：有則偏向專案，沒有則偏向產品。做完就能驗收結案嗎：能則偏向專案，上線後還要持續經營則偏向產品。需求會一直變嗎：大致固定偏向專案，隨市場與用戶變偏向產品。成功怎麼算：如期、如質、如預算偏向專案，有沒有帶來價值偏向產品。">
+  <defs>
+    <marker id="dc-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="dc-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="800" height="270" rx="12" fill="#f6f8fb"/>
+
+  <text x="24" y="32" font-size="15" font-weight="800" fill="#112f5d">動工前先問：手上這個是專案，還是產品？</text>
+
+  <g font-size="12" font-weight="800" text-anchor="middle">
+    <text x="142" y="60" fill="#1b4f9c">偏向專案</text>
+    <text x="400" y="60" fill="#6c798e">判斷問題</text>
+    <text x="658" y="60" fill="#a04f15">偏向產品</text>
+  </g>
+
+  <!-- 問題（中欄 x 290–510） -->
+  <g fill="#ffffff" stroke="#cbd3df" stroke-width="1.25">
+    <rect x="290" y="72" width="220" height="36" rx="6"/>
+    <rect x="290" y="120" width="220" height="36" rx="6"/>
+    <rect x="290" y="168" width="220" height="36" rx="6"/>
+    <rect x="290" y="216" width="220" height="36" rx="6"/>
+  </g>
+  <g font-size="12" font-weight="700" fill="#112f5d" text-anchor="middle">
+    <text x="400" y="95">有預設的結束日期嗎？</text>
+    <text x="400" y="143">做完就能驗收結案嗎？</text>
+    <text x="400" y="191">需求會一直變嗎？</text>
+    <text x="400" y="239">成功怎麼算？</text>
+  </g>
+
+  <!-- 箭頭 -->
+  <g stroke="#1b4f9c" stroke-width="1.25" marker-end="url(#dc-navy)">
+    <line x1="286" y1="90" x2="266" y2="90"/>
+    <line x1="286" y1="138" x2="266" y2="138"/>
+    <line x1="286" y1="186" x2="266" y2="186"/>
+    <line x1="286" y1="234" x2="266" y2="234"/>
+  </g>
+  <g stroke="#e37b24" stroke-width="1.25" marker-end="url(#dc-orange)">
+    <line x1="514" y1="90" x2="534" y2="90"/>
+    <line x1="514" y1="138" x2="534" y2="138"/>
+    <line x1="514" y1="186" x2="534" y2="186"/>
+    <line x1="514" y1="234" x2="534" y2="234"/>
+  </g>
+
+  <!-- 專案端（x 24–260） -->
+  <g fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.1">
+    <rect x="24" y="72" width="236" height="36" rx="6"/>
+    <rect x="24" y="120" width="236" height="36" rx="6"/>
+    <rect x="24" y="168" width="236" height="36" rx="6"/>
+    <rect x="24" y="216" width="236" height="36" rx="6"/>
+  </g>
+  <g font-size="11.5" fill="#1b4f9c" text-anchor="middle">
+    <text x="142" y="95"><tspan font-weight="800">有</tspan>：交付期限就是終點</text>
+    <text x="142" y="143"><tspan font-weight="800">能</tspan>：交付物明確，驗收即結束</text>
+    <text x="142" y="191"><tspan font-weight="800">大致固定</tspan>：變更走 CR</text>
+    <text x="142" y="239">如期、如質、如預算</text>
+  </g>
+
+  <!-- 產品端（x 540–776） -->
+  <g fill="#fdf4e6" stroke="#e37b24" stroke-width="1.1">
+    <rect x="540" y="72" width="236" height="36" rx="6"/>
+    <rect x="540" y="120" width="236" height="36" rx="6"/>
+    <rect x="540" y="168" width="236" height="36" rx="6"/>
+    <rect x="540" y="216" width="236" height="36" rx="6"/>
+  </g>
+  <g font-size="11.5" fill="#a04f15" text-anchor="middle">
+    <text x="658" y="95"><tspan font-weight="800">沒有</tspan>：只要還有用戶就繼續</text>
+    <text x="658" y="143"><tspan font-weight="800">不能</tspan>：上線後才開始經營</text>
+    <text x="658" y="191"><tspan font-weight="800">會</tspan>：隨市場與用戶調整</text>
+    <text x="658" y="239">有沒有帶來用戶／商業價值</text>
+  </g>
+</svg>

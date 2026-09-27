@@ -1,0 +1,27 @@
+{
+  "name": "stevelin-notes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "個人筆記專案：以 NoteCraftApp 呈現 docs/ 下的 md/mdx 筆記，搭配 AI 生成的圖文互動視覺化元件",
+  "type": "module",
+  "scripts": {
+    "dev": "notecraftapp view ./docs",
+    "dev:lan": "notecraftapp view ./docs --host 0.0.0.0",
+    "serve": "notecraftapp serve ./docs",
+    "serve:static": "notecraftapp serve ./docs --no-watch",
+    "build": "notecraftapp build ./docs",
+    "build:force": "notecraftapp build ./docs --rebuild",
+    "skill:install": "notecraftapp init-skill",
+    "skill:check": "notecraftapp init-skill --check",
+    "skill:update": "notecraftapp init-skill --force",
+    "plugin:list": "notecraftapp install-plugin --list",
+    "plugin:install": "notecraftapp install-plugin",
+    "plugin:remove": "notecraftapp install-plugin --remove"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "notecraftapp": "^1.2.3"
+  }
+}
