@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="1520" height="680" role="img" aria-label="BullMQ 的組成：左側的 Producer（API 服務、排程）呼叫 queue.add 把 Job 放進 Redis 裡的 Queue；右側多個 Worker 從 Queue 取出 Job 執行 processor，並把進度、日誌與結果寫回 Redis。Job 在 Redis 中同時保存資料、狀態、進度與日誌。下方的 QueueEvents 監聽 completed、failed 等事件，Bull Board 讀取同一份資料提供網頁監控。">
+  <defs>
+    <marker id="ar-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="ar-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono, .mono text { font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace; }
+  </style>
+  <rect width="760" height="340" rx="12" fill="#f6f8fb"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">三個角色，都透過 Redis 協作</text>
+
+  <!-- Producer -->
+  <text x="28" y="70" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.08em">PRODUCER</text>
+  <rect x="28" y="80" width="150" height="46" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="42" y="100" font-size="12.5" font-weight="800" fill="#112f5d">API 服務</text>
+  <text x="42" y="116" font-size="10.5" fill="#6c798e" class="mono">queue.add()</text>
+  <rect x="28" y="140" width="150" height="46" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="42" y="160" font-size="12.5" font-weight="800" fill="#112f5d">排程 / 其他服務</text>
+  <text x="42" y="176" font-size="10.5" fill="#6c798e" class="mono">queue.add()</text>
+
+  <path d="M178 103 C210 103 214 125 242 125" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <path d="M178 163 C210 163 214 125 242 125" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <text x="208" y="133" font-size="9" font-weight="800" fill="#1b4f9c" text-anchor="middle" letter-spacing="0.06em">ENQUEUE</text>
+
+  <!-- Redis -->
+  <rect x="230" y="60" width="300" height="200" rx="10" fill="#ffffff" stroke="#1b4f9c" stroke-width="1.5"/>
+  <text x="246" y="84" font-size="13" font-weight="800" fill="#1b4f9c">Redis</text>
+  <text x="294" y="84" font-size="10.5" fill="#6c798e">Job 的資料與狀態都存在這裡</text>
+
+  <rect x="246" y="98" width="268" height="54" rx="6" fill="#eef4fb" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="256" y="111" font-size="9.5" font-weight="700" fill="#6c798e">Queue：etl</text>
+  <g font-size="10" font-weight="800" text-anchor="middle" class="mono">
+    <rect x="258" y="116" width="34" height="28" rx="4" fill="#ffffff" stroke="#adc8e8"/>
+    <text x="275" y="134" fill="#1b4f9c">J6</text>
+    <rect x="300" y="116" width="34" height="28" rx="4" fill="#ffffff" stroke="#adc8e8"/>
+    <text x="317" y="134" fill="#1b4f9c">J5</text>
+    <rect x="342" y="116" width="34" height="28" rx="4" fill="#ffffff" stroke="#adc8e8"/>
+    <text x="359" y="134" fill="#1b4f9c">J4</text>
+    <rect x="384" y="116" width="34" height="28" rx="4" fill="#ffffff" stroke="#adc8e8"/>
+    <text x="401" y="134" fill="#1b4f9c">J3</text>
+    <rect x="426" y="116" width="34" height="28" rx="4" fill="#ffffff" stroke="#adc8e8"/>
+    <text x="443" y="134" fill="#1b4f9c">J2</text>
+    <rect x="468" y="116" width="34" height="28" rx="4" fill="#fdf4e6" stroke="#e37b24"/>
+    <text x="485" y="134" fill="#a04f15">J1</text>
+  </g>
+
+  <!-- Job 細節 -->
+  <path d="M485 144 V160" fill="none" stroke="#e37b24" stroke-width="1.25" stroke-dasharray="3 3"/>
+  <rect x="246" y="162" width="268" height="84" rx="6" fill="#ffffff" stroke="#e1e6ee" stroke-width="1.25"/>
+  <text x="258" y="180" font-size="11" font-weight="800" fill="#a04f15">Job J1 = 資料 + 狀態 + 進度 + 日誌</text>
+  <g font-size="10.5" class="mono">
+    <text x="258" y="198" fill="#6c798e">data</text><text x="330" y="198" fill="#3a4456">{ a: 1, b: 2 }</text>
+    <text x="258" y="214" fill="#6c798e">state</text><text x="330" y="214" fill="#3a4456">wait → active</text>
+    <text x="258" y="230" fill="#6c798e">progress</text><text x="330" y="230" fill="#3a4456">0 → 100</text>
+  </g>
+
+  <!-- Worker -->
+  <text x="582" y="70" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.08em">WORKER</text>
+  <g>
+    <rect x="582" y="80" width="150" height="38" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="596" y="104" font-size="12" font-weight="800" fill="#112f5d">Worker #1</text>
+    <rect x="582" y="128" width="150" height="38" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="596" y="152" font-size="12" font-weight="800" fill="#112f5d">Worker #2</text>
+    <rect x="582" y="176" width="150" height="38" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="596" y="200" font-size="12" font-weight="800" fill="#112f5d">Worker #3</text>
+  </g>
+  <g font-size="9.5" fill="#6c798e" text-anchor="end" class="mono">
+    <text x="722" y="104">processor(job)</text>
+    <text x="722" y="152">processor(job)</text>
+    <text x="722" y="200">processor(job)</text>
+  </g>
+  <path d="M514 125 C548 125 548 99 578 99" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <path d="M514 125 C548 125 548 147 578 147" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <path d="M514 125 C548 125 548 195 578 195" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <text x="548" y="94" font-size="9.5" font-weight="800" fill="#1b4f9c" text-anchor="middle" letter-spacing="0.06em">DEQUEUE</text>
+
+  <!-- 回寫 -->
+  <path d="M657 214 V238 H536" fill="none" stroke="#e37b24" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ar-orange)"/>
+  <text x="600" y="256" font-size="10.5" font-weight="700" fill="#a04f15" text-anchor="middle">寫回進度、日誌、結果</text>
+
+  <!-- 下方：事件與監控 -->
+  <path d="M305 260 V280" fill="none" stroke="#1b4f9c" stroke-width="1.25" stroke-dasharray="4 3" marker-end="url(#ar-navy)"/>
+  <path d="M460 260 V280" fill="none" stroke="#1b4f9c" stroke-width="1.25" stroke-dasharray="4 3" marker-end="url(#ar-navy)"/>
+  <rect x="230" y="284" width="150" height="42" rx="8" fill="#eef4fb" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="244" y="302" font-size="12" font-weight="800" fill="#112f5d">QueueEvents</text>
+  <text x="244" y="318" font-size="10" fill="#6c798e">監聽 completed / failed</text>
+  <rect x="390" y="284" width="140" height="42" rx="8" fill="#eef4fb" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="404" y="302" font-size="12" font-weight="800" fill="#112f5d">Bull Board</text>
+  <text x="404" y="318" font-size="10" fill="#6c798e">網頁監控與操作</text>
+</svg>

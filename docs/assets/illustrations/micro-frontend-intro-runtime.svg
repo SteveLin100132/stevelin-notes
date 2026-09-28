@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="1520" height="760" role="img" aria-label="微前端的工作原理：上方是使用者開啟的 https://app.example.com，由容器應用負責路由管理與惰性載入，頁面被切成頁首、側欄、內容、頁尾四個插槽；下方是四個獨立部署在 Kubernetes 上的子應用，分別用 React、Vue、Angular、Svelte 開發，各自有自己的網址，打包成 JavaScript 並附帶 bootstrap 啟動函式；容器應用在路由命中時才向對應的網址下載 JS，執行 bootstrap 把子應用掛載到插槽裡。">
+  <defs>
+    <marker id="rt-ar-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', Consolas, monospace; }
+  </style>
+  <rect width="760" height="380" rx="12" fill="#f6f8fb"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">微前端的工作原理：容器應用在瀏覽器中組合獨立部署的子應用</text>
+
+  <!-- 瀏覽器視窗 -->
+  <rect x="28" y="52" width="704" height="150" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <rect x="28" y="52" width="704" height="26" rx="10" fill="#eef4fb"/>
+  <rect x="28" y="66" width="704" height="12" fill="#eef4fb"/>
+  <circle cx="44" cy="65" r="4" fill="#cbd3df"/><circle cx="56" cy="65" r="4" fill="#cbd3df"/><circle cx="68" cy="65" r="4" fill="#cbd3df"/>
+  <rect x="84" y="57" width="300" height="16" rx="8" fill="#ffffff" stroke="#d6e4f5" stroke-width="1"/>
+  <text x="96" y="69" font-size="10" fill="#3a4456" class="mono">https://app.example.com/</text>
+  <g font-size="10" font-weight="800">
+    <rect x="530" y="57" width="88" height="16" rx="8" fill="#1b4f9c"/>
+    <text x="574" y="68.5" fill="#ffffff" text-anchor="middle">路由管理</text>
+    <rect x="626" y="57" width="88" height="16" rx="8" fill="#1b4f9c"/>
+    <text x="670" y="68.5" fill="#ffffff" text-anchor="middle">惰性載入</text>
+  </g>
+  <text x="44" y="94" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.06em">HOST / SHELL 容器應用</text>
+
+  <!-- 插槽 -->
+  <g font-size="10.5" font-weight="700" text-anchor="middle">
+    <rect x="44" y="100" width="672" height="24" rx="4" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="380" y="116" fill="#1b4f9c">頁首插槽（Header）</text>
+    <rect x="44" y="130" width="140" height="34" rx="4" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="114" y="151" fill="#1b4f9c">側欄插槽</text>
+    <rect x="190" y="130" width="526" height="34" rx="4" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="453" y="151" fill="#1b4f9c">內容插槽（Content）</text>
+    <rect x="44" y="170" width="672" height="24" rx="4" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="380" y="186" fill="#1b4f9c">頁尾插槽（Footer）</text>
+  </g>
+
+  <!-- 子應用 -->
+  <g>
+    <!-- 四欄 -->
+    <rect x="28" y="236" width="164" height="118" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <rect x="208" y="236" width="164" height="118" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <rect x="388" y="236" width="164" height="118" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <rect x="568" y="236" width="164" height="118" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <g font-size="11" font-weight="800" fill="#112f5d">
+      <text x="44" y="258">Header 子應用</text>
+      <text x="224" y="258">Sidebar 子應用</text>
+      <text x="404" y="258">Content 子應用</text>
+      <text x="584" y="258">Footer 子應用</text>
+    </g>
+    <g font-size="9.5" fill="#1b4f9c" class="mono">
+      <text x="44" y="273">header.example.com</text>
+      <text x="224" y="273">sidebar.example.com</text>
+      <text x="404" y="273">content.example.com</text>
+      <text x="584" y="273">footer.example.com</text>
+    </g>
+    <!-- 框架標籤 -->
+    <g font-size="10" font-weight="800" text-anchor="middle">
+      <rect x="44" y="282" width="56" height="18" rx="9" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="72" y="294.5" fill="#1b4f9c">React</text>
+      <rect x="224" y="282" width="56" height="18" rx="9" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="252" y="294.5" fill="#1b4f9c">Vue</text>
+      <rect x="404" y="282" width="56" height="18" rx="9" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="432" y="294.5" fill="#1b4f9c">Angular</text>
+      <rect x="584" y="282" width="56" height="18" rx="9" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="612" y="294.5" fill="#1b4f9c">Svelte</text>
+    </g>
+    <!-- JS + bootstrap -->
+    <g font-size="9.5" class="mono" text-anchor="middle">
+      <rect x="108" y="282" width="34" height="18" rx="3" fill="#1b4f9c"/><text x="125" y="294.5" fill="#ffffff">JS</text>
+      <rect x="288" y="282" width="34" height="18" rx="3" fill="#1b4f9c"/><text x="305" y="294.5" fill="#ffffff">JS</text>
+      <rect x="468" y="282" width="34" height="18" rx="3" fill="#1b4f9c"/><text x="485" y="294.5" fill="#ffffff">JS</text>
+      <rect x="648" y="282" width="34" height="18" rx="3" fill="#1b4f9c"/><text x="665" y="294.5" fill="#ffffff">JS</text>
+    </g>
+    <g font-size="9.5" fill="#3a4456">
+      <text x="44" y="318">bootstrap(): 掛載 / 卸載</text>
+      <text x="224" y="318">bootstrap(): 掛載 / 卸載</text>
+      <text x="404" y="318">bootstrap(): 掛載 / 卸載</text>
+      <text x="584" y="318">bootstrap(): 掛載 / 卸載</text>
+    </g>
+    <!-- K8s 標示（簡化的容器方塊） -->
+    <g font-size="9" fill="#6c798e">
+      <rect x="44" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><rect x="60" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><text x="80" y="340">獨立部署於 K8s</text>
+      <rect x="224" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><rect x="240" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><text x="260" y="340">獨立部署於 K8s</text>
+      <rect x="404" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><rect x="420" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><text x="440" y="340">獨立部署於 K8s</text>
+      <rect x="584" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><rect x="600" y="330" width="14" height="12" rx="2" fill="none" stroke="#6c798e" stroke-width="1"/><text x="620" y="340">獨立部署於 K8s</text>
+    </g>
+  </g>
+
+  <!-- 子應用 → 插槽 -->
+  <g stroke="#1b4f9c" stroke-width="1.25" fill="none">
+    <path d="M110 236 V 214 H 60 V 124" marker-end="url(#rt-ar-navy)"/>
+    <path d="M290 236 V 222 H 114 V 164" marker-end="url(#rt-ar-navy)"/>
+    <path d="M470 236 V 222 H 453 V 164" marker-end="url(#rt-ar-navy)"/>
+    <path d="M650 236 V 214 H 700 V 194" marker-end="url(#rt-ar-navy)"/>
+  </g>
+  <text x="380" y="222" font-size="9.5" fill="#6c798e" text-anchor="middle">路由命中時才下載對應的 JS，執行 bootstrap 掛載到插槽</text>
+
+  <text x="28" y="372" font-size="10" fill="#3a4456">容器應用只負責「什麼時候載入誰、放在哪裡」；每個子應用各自打包、各自部署、各自決定框架。</text>
+</svg>

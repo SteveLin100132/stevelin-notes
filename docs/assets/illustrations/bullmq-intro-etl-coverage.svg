@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" width="1520" height="640" role="img" aria-label="資料處理的五個過程：提取、轉換、載入、分析、呈現，其中前三個 ETL 是本文討論範圍。下方的長條顯示 ETL 需求由哪種工具承接：Nifi 約 80%，擅長即時整合與資料路由；Airflow 約 5%，負責批次排程工作流；剩下約 15% 需要暫存分批、多次迴圈或特殊邏輯，只能自行開發，也就是 BullMQ 的舞台。">
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  </style>
+  <rect width="760" height="320" rx="12" fill="#f6f8fb"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">資料處理的五個過程，與 ETL 需求由誰承接</text>
+
+  <!-- 五個過程 -->
+  <g stroke-width="1.25">
+    <path d="M28 52 H152 L164 72 L152 92 H28 Z" fill="#d6e4f5" stroke="#1b4f9c"/>
+    <path d="M170 52 H294 L306 72 L294 92 H170 L182 72 Z" fill="#d6e4f5" stroke="#1b4f9c"/>
+    <path d="M312 52 H436 L448 72 L436 92 H312 L324 72 Z" fill="#d6e4f5" stroke="#1b4f9c"/>
+    <path d="M454 52 H578 L590 72 L578 92 H454 L466 72 Z" fill="#ffffff" stroke="#cbd3df"/>
+    <path d="M596 52 H720 L732 72 L720 92 H596 L608 72 Z" fill="#ffffff" stroke="#cbd3df"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="94" y="70" font-size="13" font-weight="800" fill="#112f5d">提取</text>
+    <text x="94" y="85" font-size="10" fill="#1b4f9c">Extract</text>
+    <text x="238" y="70" font-size="13" font-weight="800" fill="#112f5d">轉換</text>
+    <text x="238" y="85" font-size="10" fill="#1b4f9c">Transform</text>
+    <text x="380" y="70" font-size="13" font-weight="800" fill="#112f5d">載入</text>
+    <text x="380" y="85" font-size="10" fill="#1b4f9c">Load</text>
+    <text x="522" y="70" font-size="13" font-weight="700" fill="#6c798e">分析</text>
+    <text x="522" y="85" font-size="10" fill="#6c798e">Analysis</text>
+    <text x="664" y="70" font-size="13" font-weight="700" fill="#6c798e">呈現</text>
+    <text x="664" y="85" font-size="10" fill="#6c798e">Visualize</text>
+  </g>
+  <path d="M28 102 v8 H448 v-8" fill="none" stroke="#1b4f9c" stroke-width="1.25"/>
+  <text x="238" y="128" font-size="11.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">ETL：本文討論的範圍</text>
+
+  <!-- 涵蓋比例 -->
+  <text x="28" y="160" font-size="11" font-weight="700" fill="#6c798e">ETL 需求占比（當時團隊的粗估）</text>
+  <rect x="28" y="168" width="563" height="34" fill="#1b4f9c"/>
+  <rect x="591" y="168" width="35" height="34" fill="#112f5d"/>
+  <rect x="626" y="168" width="106" height="34" fill="#e37b24"/>
+  <line x1="591" y1="168" x2="591" y2="202" stroke="#ffffff" stroke-width="1.5"/>
+  <line x1="626" y1="168" x2="626" y2="202" stroke="#ffffff" stroke-width="1.5"/>
+  <text x="44" y="190" font-size="12.5" font-weight="800" fill="#ffffff">Nifi · 80%</text>
+  <text x="608" y="190" font-size="10.5" font-weight="800" fill="#ffffff" text-anchor="middle">5%</text>
+  <text x="679" y="190" font-size="12.5" font-weight="800" fill="#ffffff" text-anchor="middle">15%</text>
+
+  <!-- 引線 -->
+  <g fill="none" stroke-width="1.25">
+    <path d="M309 202 V214 H234 V226" stroke="#1b4f9c"/>
+    <path d="M608 202 V214 H519 V226" stroke="#112f5d"/>
+    <path d="M679 202 V214 H665 V226" stroke="#e37b24"/>
+  </g>
+
+  <!-- 說明卡 -->
+  <rect x="28" y="226" width="412" height="72" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="42" y="248" font-size="12" font-weight="800" fill="#1b4f9c">Nifi</text>
+  <text x="42" y="267" font-size="11" fill="#3a4456">即時資料整合、ETL，以及複雜的資料路由與流程控制</text>
+  <text x="42" y="285" font-size="10.5" fill="#6c798e">不適合：需要暫存後分批處理、或要多次 Loop 才能完整輸出的資料</text>
+
+  <rect x="452" y="226" width="134" height="72" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="466" y="248" font-size="12" font-weight="800" fill="#112f5d">Airflow</text>
+  <text x="466" y="267" font-size="11" fill="#3a4456">自動化批次工作流</text>
+  <text x="466" y="285" font-size="10.5" fill="#6c798e">批次型資料申請</text>
+
+  <rect x="598" y="226" width="134" height="72" rx="8" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.25"/>
+  <text x="612" y="248" font-size="12" font-weight="800" fill="#a04f15">自行開發</text>
+  <text x="612" y="267" font-size="11" fill="#3a4456">分批、迴圈、特殊邏輯</text>
+  <text x="612" y="285" font-size="10.5" font-weight="800" fill="#a04f15">BullMQ 的舞台</text>
+</svg>

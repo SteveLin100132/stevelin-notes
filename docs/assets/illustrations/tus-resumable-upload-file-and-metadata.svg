@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" width="1520" height="660" role="img" aria-label="TUS 把一次上傳拆成兩份資料：使用者把檔案拖放進 Uppy，Uppy 透過 TUS 協議送到 TUS Server；伺服器把檔案本體的位元組寫入檔案儲存，另外把描述這次上傳的 Metadata 存成一份 JSON，內容包含 id、size、offset、metadata 與 creation_date，其中 offset 記錄目前已收到多少位元組，是斷線後續傳的依據。">
+  <defs>
+    <marker id="fm-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="fm-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', Consolas, monospace; }
+  </style>
+  <rect x="0.5" y="0.5" width="759" height="329" rx="12" fill="#ffffff" stroke="#e1e6ee"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">一次上傳，兩份資料：檔案本體 + Metadata</text>
+
+  <!-- Client -->
+  <rect x="28" y="70" width="150" height="150" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="44" y="92" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.06em">CLIENT</text>
+  <rect x="44" y="104" width="118" height="70" rx="6" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.25" stroke-dasharray="5 4"/>
+  <path d="M90 116 h 20 l 8 8 v 28 h -28 Z" fill="#ffffff" stroke="#1b4f9c" stroke-width="1.25"/>
+  <path d="M110 116 v 8 h 8" fill="none" stroke="#1b4f9c" stroke-width="1.25"/>
+  <text x="103" y="168" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">拖放檔案</text>
+  <text x="44" y="196" font-size="12.5" font-weight="800" fill="#112f5d">Uppy</text>
+  <text x="44" y="211" font-size="10.5" fill="#6c798e">選檔、進度、自動續傳</text>
+
+  <line x1="182" y1="145" x2="258" y2="145" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#fm-navy)"/>
+  <text x="220" y="136" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">TUS 協議</text>
+  <text x="220" y="162" font-size="10" fill="#6c798e" text-anchor="middle" class="mono">POST / PATCH</text>
+
+  <!-- TUS Server -->
+  <rect x="264" y="90" width="136" height="110" rx="8" fill="#1b4f9c"/>
+  <text x="280" y="112" font-size="10.5" font-weight="800" fill="#adc8e8" letter-spacing="0.06em">SERVER</text>
+  <text x="280" y="136" font-size="13" font-weight="800" fill="#ffffff">TUS Server</text>
+  <text x="280" y="156" font-size="10.5" fill="#d6e4f5" class="mono">@tus/server</text>
+  <text x="280" y="184" font-size="10.5" fill="#d6e4f5">拆成兩份寫出</text>
+
+  <!-- 分流 -->
+  <path d="M400 124 H 430 V 96 H 456" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#fm-navy)"/>
+  <path d="M400 168 H 430 V 196 H 456" fill="none" stroke="#e37b24" stroke-width="1.5" marker-end="url(#fm-orange)"/>
+  <text x="436" y="88" font-size="10.5" font-weight="800" fill="#1b4f9c">1</text>
+  <text x="436" y="216" font-size="10.5" font-weight="800" fill="#a04f15">2</text>
+
+  <!-- 1 檔案本體 -->
+  <rect x="462" y="66" width="270" height="62" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="478" y="88" font-size="12.5" font-weight="800" fill="#112f5d">檔案本體</text>
+  <text x="548" y="88" font-size="10.5" fill="#6c798e">原始位元組，寫進 Storage</text>
+  <g fill="#1b4f9c">
+    <rect x="478" y="100" width="18" height="16" rx="2"/>
+    <rect x="499" y="100" width="18" height="16" rx="2"/>
+    <rect x="520" y="100" width="18" height="16" rx="2"/>
+    <rect x="541" y="100" width="18" height="16" rx="2"/>
+    <rect x="562" y="100" width="18" height="16" rx="2"/>
+    <rect x="583" y="100" width="18" height="16" rx="2"/>
+  </g>
+  <g fill="#ffffff" stroke="#cbd3df" stroke-dasharray="3 2">
+    <rect x="604" y="100" width="18" height="16" rx="2"/>
+    <rect x="625" y="100" width="18" height="16" rx="2"/>
+    <rect x="646" y="100" width="18" height="16" rx="2"/>
+  </g>
+  <line x1="602" y1="96" x2="602" y2="120" stroke="#e37b24" stroke-width="2"/>
+  <text x="672" y="113" font-size="10.5" font-weight="700" fill="#a04f15">offset</text>
+
+  <!-- 2 Metadata JSON -->
+  <rect x="462" y="150" width="270" height="162" rx="8" fill="#ffffff" stroke="#e37b24" stroke-width="1.25"/>
+  <text x="478" y="172" font-size="12.5" font-weight="800" fill="#112f5d">Metadata</text>
+  <text x="548" y="172" font-size="10.5" fill="#6c798e">描述這次上傳的 JSON</text>
+  <g font-size="10.5" class="mono" fill="#3a4456">
+    <text x="478" y="194">{</text>
+    <text x="490" y="210">"id": "test/1373d49c…",</text>
+    <text x="490" y="226">"size": 539335594,</text>
+    <rect x="486" y="231" width="160" height="17" rx="3" fill="#fdf4e6"/>
+    <text x="490" y="243" fill="#a04f15" font-weight="700">"offset": 321912832,</text>
+    <text x="490" y="259">"metadata": { "filename": … },</text>
+    <text x="490" y="275">"creation_date": "2024-08-16…"</text>
+    <text x="478" y="291">}</text>
+  </g>
+  <line x1="650" y1="240" x2="684" y2="240" stroke="#e37b24" stroke-width="1.25"/>
+  <text x="688" y="236" font-size="10" font-weight="700" fill="#a04f15">續傳</text>
+  <text x="688" y="249" font-size="10" font-weight="700" fill="#a04f15">依據</text>
+
+  <!-- 說明 -->
+  <text x="28" y="258" font-size="11.5" font-weight="700" fill="#3a4456">斷線後，用戶端先問伺服器：</text>
+  <text x="28" y="276" font-size="11.5" fill="#3a4456">「這個檔案的 offset 是多少？」</text>
+  <text x="28" y="298" font-size="11.5" fill="#3a4456">再從 offset 往後補傳，</text>
+  <text x="28" y="316" font-size="11.5" fill="#3a4456">已傳的位元組不必重來。</text>
+  <path d="M232 280 C 300 280 330 244 452 242" fill="none" stroke="#e37b24" stroke-width="1.25" stroke-dasharray="4 3" marker-end="url(#fm-orange)"/>
+</svg>

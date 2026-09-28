@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="1520" height="680" role="img" aria-label="NiFi Registry 的部署架構：左側 DEV、QAS、PRD 三個 NiFi 各自設定一個 Registry Client，透過 REST API 連到中間的 NiFi Registry。DEV 把 Process Group commit 成新版本，QAS 與 PRD 從 Registry import 或 change version。NiFi Registry 內部以 Bucket 組織 Flow 與版本，並有使用者與權限控管；右側是兩種儲存：Flow 內容交給 Flow Persistence Provider（檔案系統、Git、資料庫三選一），中繼資料存在 Metadata Database（預設 H2，可換 PostgreSQL 或 MySQL）。">
+  <defs>
+    <marker id="ar-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="ar-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace; }
+  </style>
+  <rect x="0.5" y="0.5" width="759" height="339" rx="12" fill="#ffffff" stroke="#e1e6ee"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">多個 NiFi 共用一個 Registry，版本集中保存</text>
+
+  <!-- NiFi instances -->
+  <text x="28" y="70" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.08em">NIFI 環境</text>
+  <g>
+    <rect x="28" y="80" width="170" height="58" rx="8" fill="#ffffff" stroke="#e37b24" stroke-width="1.5"/>
+    <text x="42" y="102" font-size="13" font-weight="800" fill="#112f5d">NiFi DEV</text>
+    <text x="42" y="122" font-size="10.5" fill="#6c798e" class="mono">Registry Client</text>
+    <rect x="28" y="152" width="170" height="58" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="42" y="174" font-size="13" font-weight="800" fill="#112f5d">NiFi QAS</text>
+    <text x="42" y="194" font-size="10.5" fill="#6c798e" class="mono">Registry Client</text>
+    <rect x="28" y="224" width="170" height="58" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <text x="42" y="246" font-size="13" font-weight="800" fill="#112f5d">NiFi PRD</text>
+    <text x="42" y="266" font-size="10.5" fill="#6c798e" class="mono">Registry Client</text>
+  </g>
+
+  <!-- arrows -->
+  <path d="M198 109 C236 109 236 150 266 150" fill="none" stroke="#e37b24" stroke-width="1.75" marker-end="url(#ar-orange)"/>
+  <text x="232" y="100" font-size="10" font-weight="800" fill="#a04f15" text-anchor="middle" letter-spacing="0.06em">COMMIT</text>
+  <path d="M266 186 C236 186 236 181 202 181" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <path d="M266 200 C236 200 236 253 202 253" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <text x="234" y="226" font-size="10" font-weight="800" fill="#1b4f9c" text-anchor="middle" letter-spacing="0.06em">IMPORT</text>
+  <text x="234" y="298" font-size="10" fill="#6c798e" text-anchor="middle">REST API</text>
+  <text x="234" y="312" font-size="10" fill="#6c798e" text-anchor="middle" class="mono">:18080 / :18443</text>
+
+  <!-- Registry -->
+  <rect x="270" y="80" width="220" height="202" rx="10" fill="#ffffff" stroke="#1b4f9c" stroke-width="1.5"/>
+  <text x="286" y="104" font-size="13.5" font-weight="800" fill="#1b4f9c">NiFi Registry</text>
+  <rect x="286" y="116" width="188" height="92" rx="6" fill="#eef4fb" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="298" y="134" font-size="10.5" font-weight="800" fill="#1b4f9c">Bucket：etl</text>
+  <g class="mono" font-size="10">
+    <text x="298" y="154" fill="#3a4456">order-sync</text>
+    <circle cx="398" cy="151" r="4.5" fill="#adc8e8"/>
+    <circle cx="418" cy="151" r="4.5" fill="#adc8e8"/>
+    <circle cx="438" cy="151" r="4.5" fill="#1b4f9c"/>
+    <line x1="402.5" y1="151" x2="413.5" y2="151" stroke="#adc8e8"/>
+    <line x1="422.5" y1="151" x2="433.5" y2="151" stroke="#adc8e8"/>
+    <text x="298" y="176" fill="#3a4456">log-archive</text>
+    <circle cx="398" cy="173" r="4.5" fill="#adc8e8"/>
+    <circle cx="418" cy="173" r="4.5" fill="#1b4f9c"/>
+    <line x1="402.5" y1="173" x2="413.5" y2="173" stroke="#adc8e8"/>
+    <text x="298" y="197" fill="#6c798e">Flow → v1 → v2 → v3</text>
+  </g>
+  <rect x="286" y="218" width="90" height="48" rx="6" fill="#ffffff" stroke="#e1e6ee" stroke-width="1.25"/>
+  <text x="296" y="238" font-size="10.5" font-weight="800" fill="#112f5d">使用者 / 群組</text>
+  <text x="296" y="254" font-size="10" fill="#6c798e">LDAP、憑證</text>
+  <rect x="384" y="218" width="90" height="48" rx="6" fill="#ffffff" stroke="#e1e6ee" stroke-width="1.25"/>
+  <text x="394" y="238" font-size="10.5" font-weight="800" fill="#112f5d">Bucket 權限</text>
+  <text x="394" y="254" font-size="10" fill="#6c798e">讀取、寫入、刪除</text>
+
+  <!-- Storage -->
+  <path d="M490 150 H528" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <path d="M490 246 H528" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+
+  <text x="532" y="70" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.08em">儲存（可抽換）</text>
+  <rect x="532" y="80" width="200" height="130" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="546" y="100" font-size="11.5" font-weight="800" fill="#112f5d">Flow Persistence Provider</text>
+  <text x="546" y="116" font-size="10" fill="#6c798e">Flow 快照內容，三選一</text>
+  <g font-size="10.5">
+    <rect x="546" y="126" width="172" height="22" rx="4" fill="#eef4fb"/>
+    <text x="556" y="141" fill="#1b4f9c" font-weight="700">FileSystem</text>
+    <text x="708" y="141" fill="#6c798e" text-anchor="end">預設</text>
+    <rect x="546" y="152" width="172" height="22" rx="4" fill="#fdf4e6"/>
+    <text x="556" y="167" fill="#a04f15" font-weight="700">Git</text>
+    <text x="708" y="167" fill="#a04f15" text-anchor="end">可 push 到遠端</text>
+    <rect x="546" y="178" width="172" height="22" rx="4" fill="#eef4fb"/>
+    <text x="556" y="193" fill="#1b4f9c" font-weight="700">Database</text>
+    <text x="708" y="193" fill="#6c798e" text-anchor="end">與中繼資料同庫</text>
+  </g>
+
+  <rect x="532" y="222" width="200" height="60" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="546" y="242" font-size="11.5" font-weight="800" fill="#112f5d">Metadata Database</text>
+  <text x="546" y="260" font-size="10" fill="#6c798e">Bucket、Flow 與版本清單</text>
+  <text x="546" y="274" font-size="10" fill="#3a4456" class="mono">H2（預設）/ PostgreSQL / MySQL</text>
+</svg>

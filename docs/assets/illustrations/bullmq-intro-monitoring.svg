@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="1520" height="600" role="img" aria-label="監控告警鏈：一，BullMQ 的 Queue 與 Worker 產生各狀態的 Job 數量；二，Exporter 以 prom-client 把數量暴露在 /metrics；三，Prometheus 定期抓取並用 Alert Rule 判斷；四，Alertmanager 分組、去重後路由；五，Opsgenie 依 P3、P5 分級，以 Email 或 Outlook 通知值班。下方左側是一條告警規則範例，右側說明 Bull Board 是給人看的即時畫面，兩者分工。">
+  <defs>
+    <marker id="mo-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono, .mono text { font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace; }
+  </style>
+  <rect width="760" height="300" rx="12" fill="#f6f8fb"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">從 Queue 狀態到值班通知</text>
+
+  <!-- 五個節點 -->
+  <g stroke-width="1.25">
+    <rect x="31" y="60" width="122" height="84" rx="8" fill="#ffffff" stroke="#adc8e8"/>
+    <rect x="175" y="60" width="122" height="84" rx="8" fill="#ffffff" stroke="#adc8e8"/>
+    <rect x="319" y="60" width="122" height="84" rx="8" fill="#ffffff" stroke="#adc8e8"/>
+    <rect x="463" y="60" width="122" height="84" rx="8" fill="#ffffff" stroke="#adc8e8"/>
+    <rect x="607" y="60" width="122" height="84" rx="8" fill="#fdf4e6" stroke="#e37b24"/>
+  </g>
+  <g font-size="13" font-weight="800" text-anchor="middle">
+    <text x="92" y="86" fill="#112f5d">BullMQ</text>
+    <text x="236" y="86" fill="#112f5d">Exporter</text>
+    <text x="380" y="86" fill="#112f5d">Prometheus</text>
+    <text x="524" y="86" fill="#112f5d">Alertmanager</text>
+    <text x="668" y="86" fill="#a04f15">Opsgenie</text>
+  </g>
+  <g font-size="10.5" text-anchor="middle" fill="#3a4456">
+    <text x="92" y="108" class="mono">completed 20</text>
+    <text x="92" y="126" class="mono" fill="#a04f15" font-weight="700">failed 12</text>
+    <text x="236" y="108" class="mono">GET /metrics</text>
+    <text x="236" y="126">prom-client gauge</text>
+    <text x="380" y="108">定期 scrape</text>
+    <text x="380" y="126">Alert Rule 判斷</text>
+    <text x="524" y="108">分組、去重</text>
+    <text x="524" y="126">路由到接收端</text>
+    <text x="668" y="108">P3 / P5 分級</text>
+    <text x="668" y="126">Email · Outlook</text>
+  </g>
+  <g fill="none" stroke="#1b4f9c" stroke-width="1.5">
+    <line x1="153" y1="102" x2="171" y2="102" marker-end="url(#mo-navy)"/>
+    <line x1="297" y1="102" x2="315" y2="102" marker-end="url(#mo-navy)"/>
+    <line x1="441" y1="102" x2="459" y2="102" marker-end="url(#mo-navy)"/>
+    <line x1="585" y1="102" x2="603" y2="102" marker-end="url(#mo-navy)"/>
+  </g>
+  <g font-size="10.5" font-weight="700" fill="#6c798e" text-anchor="middle">
+    <text x="92" y="164">1 蒐集狀態</text>
+    <text x="236" y="164">2 暴露指標</text>
+    <text x="380" y="164">3 評估規則</text>
+    <text x="524" y="164">4 彙整告警</text>
+    <text x="668" y="164">5 通知值班</text>
+  </g>
+
+  <!-- 規則範例 -->
+  <rect x="31" y="186" width="410" height="94" rx="8" fill="#ffffff" stroke="#e1e6ee" stroke-width="1.25"/>
+  <text x="45" y="206" font-size="11" font-weight="800" fill="#1b4f9c">Alert Rule 範例：失敗 Job 持續偏高</text>
+  <g font-size="10.5" class="mono" fill="#3a4456">
+    <text x="45" y="226">- alert: EtlQueueFailedHigh</text>
+    <text x="45" y="242">  expr: bullmq_jobs{queue="etl",state="failed"} &gt; 10</text>
+    <text x="45" y="258">  for: 5m</text>
+    <text x="45" y="274">  labels: { severity: P3 }</text>
+  </g>
+
+  <!-- 分工 -->
+  <rect x="463" y="186" width="266" height="94" rx="8" fill="#eef4fb" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="477" y="206" font-size="11" font-weight="800" fill="#1b4f9c">兩條路，各司其職</text>
+  <text x="477" y="228" font-size="10.5" fill="#3a4456">告警鏈：沒人盯著時，由規則主動通知</text>
+  <text x="477" y="248" font-size="10.5" fill="#3a4456">Bull Board：收到通知後，進去看細節、</text>
+  <text x="477" y="266" font-size="10.5" fill="#3a4456">重試失敗 Job 或暫停 Queue</text>
+</svg>

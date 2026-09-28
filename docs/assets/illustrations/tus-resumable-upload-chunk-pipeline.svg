@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" width="1520" height="640" role="img" aria-label="大檔案分片上傳示意：左邊 100 GB 原始檔案被切成五個 20 GB 的 Chunk，以三條併發連線上傳；Chunk 1、2 已完成，Chunk 3 傳到 45% 失敗、進入重試，Chunk 4 傳到 35%，Chunk 5 排隊中；伺服器端依序接收各 Chunk，全部到齊後合併並做完整性檢查，還原成 100 GB 的檔案；下方整體進度為 56%，等於已收位元組除以總大小。">
+  <defs>
+    <marker id="cp-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="cp-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+    <marker id="cp-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#cbd3df"/>
+    </marker>
+    <pattern id="cp-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="#fbe7c6"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#e37b24" stroke-width="1.5" opacity="0.55"/>
+    </pattern>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', Consolas, monospace; }
+  </style>
+  <rect x="0.5" y="0.5" width="759" height="319" rx="12" fill="#ffffff" stroke="#e1e6ee"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">大檔案上傳的標準做法：切片、併發、合併</text>
+
+  <!-- 欄位標題 -->
+  <g font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.06em">
+    <text x="28" y="66">SOURCE</text>
+    <text x="196" y="66">SPLIT · SEND CHUNKS</text>
+    <text x="470" y="66">RECEIVE CHUNKS</text>
+    <text x="632" y="66">CONCATENATE</text>
+  </g>
+
+  <!-- 原始檔案 -->
+  <path d="M40 100 h 70 l 22 22 v 100 h -92 Z" fill="#ffffff" stroke="#1b4f9c" stroke-width="1.5"/>
+  <path d="M110 100 v 22 h 22" fill="none" stroke="#1b4f9c" stroke-width="1.5"/>
+  <g fill="#d6e4f5">
+    <rect x="52" y="140" width="68" height="14" rx="2"/>
+    <rect x="52" y="158" width="68" height="14" rx="2"/>
+    <rect x="52" y="176" width="68" height="14" rx="2"/>
+    <rect x="52" y="194" width="68" height="14" rx="2"/>
+  </g>
+  <text x="86" y="244" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">原始檔案</text>
+  <text x="86" y="260" font-size="11" fill="#6c798e" text-anchor="middle">100 GB</text>
+
+  <line x1="140" y1="162" x2="182" y2="162" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#cp-navy)"/>
+  <text x="161" y="152" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">切割</text>
+
+  <!-- Chunks（寄送端） -->
+  <g font-size="11" font-weight="700">
+    <!-- C1 -->
+    <rect x="196" y="82" width="176" height="26" rx="4" fill="#d6e4f5"/>
+    <rect x="196" y="82" width="176" height="26" rx="4" fill="#1b4f9c"/>
+    <text x="206" y="99.5" fill="#ffffff">Chunk 1 · 20 GB</text>
+    <text x="364" y="99.5" fill="#ffffff" text-anchor="end">100%</text>
+    <!-- C2 -->
+    <rect x="196" y="118" width="176" height="26" rx="4" fill="#1b4f9c"/>
+    <text x="206" y="135.5" fill="#ffffff">Chunk 2 · 20 GB</text>
+    <text x="364" y="135.5" fill="#ffffff" text-anchor="end">100%</text>
+    <!-- C3 失敗 -->
+    <rect x="196" y="154" width="176" height="26" rx="4" fill="#ffffff" stroke="#e37b24" stroke-width="1.25"/>
+    <rect x="196" y="154" width="79" height="26" rx="4" fill="url(#cp-hatch)"/>
+    <text x="206" y="171.5" fill="#a04f15">Chunk 3 · 20 GB</text>
+    <text x="364" y="171.5" fill="#a04f15" text-anchor="end">45% 失敗</text>
+    <!-- C4 -->
+    <rect x="196" y="190" width="176" height="26" rx="4" fill="#d6e4f5"/>
+    <rect x="196" y="190" width="62" height="26" rx="4" fill="#1b4f9c"/>
+    <text x="206" y="207.5" fill="#ffffff">Chunk 4</text>
+    <text x="364" y="207.5" fill="#3a4456" text-anchor="end">35%</text>
+    <!-- C5 -->
+    <rect x="196" y="226" width="176" height="26" rx="4" fill="#ffffff" stroke="#cbd3df" stroke-width="1.25" stroke-dasharray="4 3"/>
+    <text x="206" y="243.5" fill="#6c798e">Chunk 5 · 20 GB</text>
+    <text x="364" y="243.5" fill="#6c798e" text-anchor="end">排隊中</text>
+  </g>
+
+  <!-- 重試迴圈 -->
+  <path d="M275 180 C 275 196 250 196 236 186" fill="none" stroke="#e37b24" stroke-width="1.25" stroke-dasharray="4 3" marker-end="url(#cp-orange)"/>
+
+  <!-- 併發連線 -->
+  <g stroke-width="1.5">
+    <line x1="380" y1="95" x2="462" y2="95" stroke="#1b4f9c" marker-end="url(#cp-navy)"/>
+    <line x1="380" y1="131" x2="462" y2="131" stroke="#1b4f9c" marker-end="url(#cp-navy)"/>
+    <line x1="380" y1="167" x2="416" y2="167" stroke="#e37b24"/>
+    <path d="M412 161 l 10 12 M422 161 l -10 12" stroke="#e37b24"/>
+    <line x1="380" y1="203" x2="462" y2="203" stroke="#1b4f9c" marker-end="url(#cp-navy)"/>
+    <line x1="380" y1="239" x2="462" y2="239" stroke="#cbd3df" stroke-dasharray="4 3" marker-end="url(#cp-gray)"/>
+  </g>
+  <text x="421" y="84" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">併發上傳</text>
+  <text x="421" y="188" font-size="10" font-weight="700" fill="#a04f15" text-anchor="middle">只重試這一片</text>
+
+  <!-- 伺服器接收 -->
+  <rect x="470" y="76" width="140" height="184" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <g font-size="11" font-weight="700">
+    <rect x="482" y="86" width="116" height="18" rx="3" fill="#1b4f9c"/>
+    <text x="540" y="99" fill="#ffffff" text-anchor="middle">C1 已到齊</text>
+    <rect x="482" y="122" width="116" height="18" rx="3" fill="#1b4f9c"/>
+    <text x="540" y="135" fill="#ffffff" text-anchor="middle">C2 已到齊</text>
+    <rect x="482" y="158" width="116" height="18" rx="3" fill="#ffffff" stroke="#e37b24" stroke-width="1.25" stroke-dasharray="4 3"/>
+    <text x="540" y="171" fill="#a04f15" text-anchor="middle">C3 等待重傳</text>
+    <rect x="482" y="194" width="116" height="18" rx="3" fill="#d6e4f5"/>
+    <rect x="482" y="194" width="41" height="18" rx="3" fill="#1b4f9c"/>
+    <text x="590" y="207" fill="#3a4456" text-anchor="end">C4 接收中</text>
+    <rect x="482" y="230" width="116" height="18" rx="3" fill="#ffffff" stroke="#cbd3df" stroke-width="1.25" stroke-dasharray="4 3"/>
+    <text x="540" y="243" fill="#6c798e" text-anchor="middle">C5</text>
+  </g>
+
+  <line x1="614" y1="168" x2="640" y2="168" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#cp-navy)"/>
+
+  <!-- 還原檔案 -->
+  <path d="M648 110 h 58 l 20 20 v 90 h -78 Z" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <path d="M706 110 v 20 h 20" fill="none" stroke="#1b4f9c" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="687" y="172" font-size="11" font-weight="700" fill="#1b4f9c" text-anchor="middle">合併</text>
+  <text x="687" y="244" font-size="12.5" font-weight="800" fill="#112f5d" text-anchor="middle">還原檔案</text>
+  <text x="687" y="260" font-size="11" fill="#6c798e" text-anchor="middle">+ 完整性檢查</text>
+
+  <!-- 整體進度 -->
+  <text x="28" y="298" font-size="11.5" font-weight="700" fill="#3a4456">整體進度</text>
+  <rect x="96" y="287" width="220" height="14" rx="3" fill="#d6e4f5"/>
+  <rect x="96" y="287" width="123" height="14" rx="3" fill="#1b4f9c"/>
+  <text x="326" y="298" font-size="11.5" font-weight="800" fill="#112f5d">56%</text>
+  <text x="470" y="298" font-size="10.5" fill="#6c798e">= 已收位元組（56 GB）÷ 總大小（100 GB）</text>
+</svg>

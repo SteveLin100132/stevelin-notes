@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" width="1520" height="500" role="img" aria-label="Webpack 把所有東西都當作模組：左側是以 index.js 為進入點的相依圖，一路引用到 .js、.sass、.svg、.png 等各種檔案；中間的 Webpack 依相依圖遞迴解析並打包；右側輸出成瀏覽器可直接載入的 .js、.css 與圖片等靜態資源。Module Federation 就是建立在這個模組系統之上，讓模組可以跨應用在執行期共享。">
+  <defs>
+    <marker id="wp-ar-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', Consolas, monospace; }
+  </style>
+  <rect width="760" height="250" rx="12" fill="#f6f8fb"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">Webpack：任何東西都是模組，依相依圖打包成靜態資源</text>
+
+  <!-- 左：相依圖 -->
+  <rect x="28" y="52" width="300" height="176" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="44" y="74" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.06em">SOURCE 相依圖（Dependency Graph）</text>
+  <g class="mono" font-size="10" font-weight="700" text-anchor="middle">
+    <rect x="60" y="126" width="64" height="22" rx="4" fill="#1b4f9c"/>
+    <text x="92" y="141" fill="#ffffff">index.js</text>
+    <rect x="152" y="90" width="52" height="20" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="178" y="104" fill="#1b4f9c">app.js</text>
+    <rect x="152" y="128" width="52" height="20" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="178" y="142" fill="#1b4f9c">.sass</text>
+    <rect x="152" y="166" width="52" height="20" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="178" y="180" fill="#1b4f9c">.svg</text>
+    <rect x="232" y="72" width="52" height="20" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="258" y="86" fill="#1b4f9c">util.js</text>
+    <rect x="232" y="104" width="52" height="20" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="258" y="118" fill="#1b4f9c">.png</text>
+    <rect x="232" y="136" width="52" height="20" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="258" y="150" fill="#1b4f9c">.sass</text>
+    <rect x="232" y="188" width="52" height="20" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="258" y="202" fill="#1b4f9c">.png</text>
+  </g>
+  <g stroke="#adc8e8" stroke-width="1.25" fill="none">
+    <path d="M124 137 H 138 V 100 H 152"/>
+    <path d="M124 137 H 152 V 138"/>
+    <path d="M124 137 H 138 V 176 H 152"/>
+    <path d="M204 100 H 218 V 82 H 232"/>
+    <path d="M204 100 H 218 V 114 H 232"/>
+    <path d="M204 100 H 218 V 146 H 232"/>
+    <path d="M204 176 H 218 V 198 H 232"/>
+  </g>
+  <text x="44" y="216" font-size="9.5" fill="#3a4456">從進入點遞迴找出所有 import 到的檔案</text>
+
+  <!-- 中：webpack -->
+  <line x1="332" y1="140" x2="372" y2="140" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#wp-ar-navy)"/>
+  <rect x="380" y="96" width="104" height="88" rx="10" fill="#1b4f9c"/>
+  <text x="432" y="130" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Webpack</text>
+  <text x="432" y="148" font-size="9.5" fill="#d6e4f5" text-anchor="middle">loader 轉換</text>
+  <text x="432" y="162" font-size="9.5" fill="#d6e4f5" text-anchor="middle">plugin 擴充</text>
+  <line x1="488" y1="140" x2="528" y2="140" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#wp-ar-navy)"/>
+
+  <!-- 右：輸出 -->
+  <rect x="536" y="52" width="196" height="176" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="552" y="74" font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.06em">OUTPUT 靜態資源</text>
+  <g class="mono" font-size="10" font-weight="700">
+    <rect x="552" y="88" width="164" height="22" rx="4" fill="#1b4f9c"/><text x="564" y="103" fill="#ffffff">main.js</text>
+    <rect x="552" y="116" width="164" height="22" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="564" y="131" fill="#1b4f9c">main.css</text>
+    <rect x="552" y="144" width="164" height="22" rx="4" fill="#eef4fb" stroke="#adc8e8" stroke-width="1"/><text x="564" y="159" fill="#1b4f9c">logo.svg / hero.png</text>
+    <rect x="552" y="172" width="164" height="22" rx="4" fill="#fdf4e6" stroke="#e37b24" stroke-width="1"/><text x="564" y="187" fill="#a04f15">remoteEntry.js</text>
+  </g>
+  <text x="552" y="216" font-size="9.5" fill="#a04f15">Module Federation 額外輸出的入口清單</text>
+</svg>

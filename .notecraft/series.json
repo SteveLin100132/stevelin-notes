@@ -15,6 +15,20 @@
         "knowledge/project/pm-04-waterfall-sdlc",
         "knowledge/project/pm-05-pm-tools"
       ]
+    },
+    {
+      "id": "tech-sharing",
+      "title": "技術分享筆記",
+      "eyebrow": "TECH SHARING",
+      "description": "技術主題分享的整理：從實務痛點出發，認識 NiFi Registry 的流程版本控制、BullMQ 的背景任務佇列、TUS 的可續傳檔案上傳，以及用 Module Federation 實現的微前端。",
+      "accent": "orange",
+      "icon": "code",
+      "slugs": [
+        "technology-sharing/nifi-registry-intro",
+        "technology-sharing/bullmq-intro",
+        "technology-sharing/tus-resumable-upload",
+        "technology-sharing/micro-frontend-intro"
+      ]
     }
   ]
 }

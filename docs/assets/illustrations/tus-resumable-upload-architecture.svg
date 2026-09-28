@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" width="1520" height="640" role="img" aria-label="TUS、Uppy 與 MinIO 的系統架構：左欄 Client 由 Angular 承載 Uppy 上傳元件，負責拖放檔案、顯示進度、自動恢復上傳；中欄 Server 是 Node.js 上的 TUS Server，負責接收分片、回報 Upload-Offset、驗證身分；右欄 Storage 是相容 S3 的 MinIO，bucket 裡保存檔案本體與 .info metadata。Client 與 Server 之間走 TUS 協議，Server 與 MinIO 之間走 S3 API 的 multipart upload。">
+  <defs>
+    <marker id="ar-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+    <marker id="ar-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#e37b24"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', Consolas, monospace; }
+  </style>
+  <rect x="0.5" y="0.5" width="759" height="319" rx="12" fill="#ffffff" stroke="#e1e6ee"/>
+  <text x="28" y="34" font-size="15" font-weight="800" fill="#112f5d">TUS + Uppy + MinIO：三層各司其職</text>
+
+  <!-- 三欄 -->
+  <g>
+    <rect x="28" y="56" width="200" height="236" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <rect x="280" y="56" width="200" height="236" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+    <rect x="532" y="56" width="200" height="236" rx="10" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  </g>
+  <g font-size="10.5" font-weight="800" fill="#6c798e" letter-spacing="0.06em">
+    <text x="44" y="78">CLIENT</text>
+    <text x="296" y="78">SERVER</text>
+    <text x="548" y="78">STORAGE</text>
+  </g>
+
+  <!-- Client：Angular 外框包 Uppy -->
+  <rect x="44" y="90" width="168" height="110" rx="8" fill="#eef4fb" stroke="#d6e4f5" stroke-width="1.25"/>
+  <text x="56" y="108" font-size="10.5" font-weight="700" fill="#6c798e">Angular（前端框架）</text>
+  <rect x="56" y="118" width="144" height="70" rx="6" fill="#1b4f9c"/>
+  <text x="70" y="140" font-size="13" font-weight="800" fill="#ffffff">Uppy</text>
+  <text x="70" y="158" font-size="10" fill="#d6e4f5" class="mono">@uppy/angular</text>
+  <text x="70" y="174" font-size="10" fill="#d6e4f5" class="mono">@uppy/tus</text>
+  <g font-size="11" fill="#3a4456">
+    <text x="48" y="224">· 拖放選檔、多檔管理</text>
+    <text x="48" y="244">· 顯示上傳進度</text>
+    <text x="48" y="264">· 斷線後自動恢復上傳</text>
+  </g>
+
+  <!-- Server -->
+  <rect x="296" y="90" width="168" height="110" rx="8" fill="#eef4fb" stroke="#d6e4f5" stroke-width="1.25"/>
+  <text x="308" y="108" font-size="10.5" font-weight="700" fill="#6c798e">Node.js（Express / Koa…）</text>
+  <rect x="308" y="118" width="144" height="70" rx="6" fill="#1b4f9c"/>
+  <text x="322" y="140" font-size="13" font-weight="800" fill="#ffffff">TUS Server</text>
+  <text x="322" y="158" font-size="10" fill="#d6e4f5" class="mono">@tus/server</text>
+  <text x="322" y="174" font-size="10" fill="#d6e4f5" class="mono">@tus/s3-store</text>
+  <g font-size="11" fill="#3a4456">
+    <text x="300" y="224">· 建立上傳、接收分片</text>
+    <text x="300" y="244">· 回報 Upload-Offset</text>
+    <text x="300" y="264">· 驗證身分、命名檔案</text>
+  </g>
+
+  <!-- Storage：MinIO bucket -->
+  <rect x="548" y="90" width="168" height="110" rx="8" fill="#eef4fb" stroke="#d6e4f5" stroke-width="1.25"/>
+  <text x="560" y="108" font-size="10.5" font-weight="700" fill="#6c798e">MinIO（相容 S3）</text>
+  <path d="M566 122 h 132 l -10 64 h -112 Z" fill="#ffffff" stroke="#1b4f9c" stroke-width="1.5"/>
+  <text x="632" y="138" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">bucket</text>
+  <rect x="584" y="146" width="96" height="14" rx="2" fill="#1b4f9c"/>
+  <text x="632" y="157" font-size="9.5" fill="#ffffff" text-anchor="middle" class="mono">test/1373d49c…</text>
+  <rect x="584" y="164" width="96" height="14" rx="2" fill="#fdf4e6" stroke="#e37b24" stroke-width="1"/>
+  <text x="632" y="175" font-size="9.5" fill="#a04f15" text-anchor="middle" class="mono">….info</text>
+  <g font-size="11" fill="#3a4456">
+    <text x="552" y="224">· 保存檔案本體</text>
+    <text x="552" y="244">· 保存 metadata（.info）</text>
+    <text x="552" y="264">· 分散式、可水平擴展</text>
+  </g>
+
+  <!-- 連線 -->
+  <line x1="202" y1="142" x2="304" y2="142" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <line x1="304" y1="166" x2="202" y2="166" stroke="#e37b24" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar-orange)"/>
+  <text x="254" y="304" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">TUS 協議</text>
+  <line x1="454" y1="154" x2="570" y2="154" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+  <text x="506" y="304" font-size="10.5" font-weight="700" fill="#1b4f9c" text-anchor="middle">S3 multipart upload</text>
+  <g font-size="9.5" class="mono">
+    <text x="254" y="136" fill="#1b4f9c" text-anchor="middle">PATCH</text>
+    <text x="254" y="182" fill="#a04f15" text-anchor="middle">Offset</text>
+  </g>
+</svg>
