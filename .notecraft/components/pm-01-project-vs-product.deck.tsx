@@ -112,10 +112,6 @@ const line = (color: string, width = 2, extra: CSSProperties = {}): CSSPropertie
 });
 const fs = (f: string, s: string, w = 1.5): CSSProperties => ({ fill: f, stroke: s, strokeWidth: w, strokeLinejoin: "round" });
 
-function Blob({ cx, cy, rx, ry, color }: { cx: number; cy: number; rx: number; ry: number; color: string }) {
-  return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} style={fill(color)} />;
-}
-
 /** 文件：紙張、摺角、色條、內文線 */
 function Doc({ p, x, y, w, h, acc, rot = 0 }: { p: P; x: number; y: number; w: number; h: number; acc: string; rot?: number }) {
   const rows: number[] = [];
@@ -550,7 +546,7 @@ function Note({ c, children }: { c: DeckThemeTokens; children: ReactNode }) {
 /** 插圖／說明面板 */
 function Panel({ c, children, style }: { c: DeckThemeTokens; children: ReactNode; style?: CSSProperties }) {
   return (
-    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.sunken, ...style }}>
+    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.slide, ...style }}>
       {children}
     </div>
   );
@@ -681,8 +677,6 @@ function WhyBand({ c, art, title, children }: { c: DeckThemeTokens; art: ReactNo
 function ForkScene({ p }: { p: P }) {
   return (
     <Svg vb={[700, 450]} label="插圖：一份掛著問號的新任務文件，路分成兩條；左邊走到終點旗，交付打勾的包裹；右邊進入螢幕上持續上升的曲線與循環箭頭">
-      <Blob cx={180} cy={318} rx={168} ry={128} color={p.sky} />
-      <Blob cx={522} cy={318} rx={168} ry={128} color={p.sky} />
       <Doc p={p} x={310} y={18} w={80} h={100} acc={p.gold} />
       <QMark p={p} x={392} y={22} r={16} />
       <Arrow x1={316} y1={124} cx={226} cy={140} x2={196} y2={206} color={p.navy} w={3} />
@@ -876,9 +870,9 @@ function QuadrantPage({ dark }: CustomSlideProps) {
   const p = ilPalette(dark);
   type Cell = { k: string; v: string; onTime: boolean; used: boolean; bg: string; border?: string; danger?: boolean };
   const cells: Cell[] = [
-    { k: "延期超支，但做對了東西", v: "專案指標難看，但用戶與商業價值有出來。", onTime: false, used: true, bg: c.sunken },
+    { k: "延期超支，但做對了東西", v: "專案指標難看，但用戶與商業價值有出來。", onTime: false, used: true, bg: c.slide },
     { k: "理想：準時交付，也有人用", v: "鐵三角守住，上線後指標也有起色。", onTime: true, used: true, bg: c.brandSoft },
-    { k: "兩頭落空", v: "沒如期交付，交付的也沒人要。", onTime: false, used: false, bg: c.sunken },
+    { k: "兩頭落空", v: "沒如期交付，交付的也沒人要。", onTime: false, used: false, bg: c.slide },
     { k: "專案成功、產品失敗", v: "如期如質如預算上線，但沒人用、留不住人。", onTime: true, used: false, bg: c.accentSoft, border: V.orange400, danger: true },
   ];
   const axis: CSSProperties = { fontSize: DS.micro, fontWeight: 700, color: c.muted };
@@ -907,7 +901,7 @@ function QuadrantPage({ dark }: CustomSlideProps) {
                     padding: "12px 16px",
                     borderRadius: 12,
                     background: cell.bg,
-                    border: cell.border ? `2px solid ${cell.border}` : `1px solid ${c.borderSoft}`,
+                    border: cell.border ? `2px solid ${cell.border}` : `1px solid ${c.border}`,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
@@ -1205,7 +1199,6 @@ function TradeoffShape({ vertices, center, tone, c, label, size }: { vertices: V
 function ScopeCreepArt({ p }: { p: P }) {
   return (
     <Svg vb={[320, 150]} label="插圖：客戶剪影遞出多一項功能的需求文件，把日曆的截止日與預算表往外推">
-      <Blob cx={160} cy={82} rx={150} ry={64} color={p.sky2} />
       <Person p={p} x={46} y={52} s={1} />
       <Ground p={p} x={10} y={114} w={120} />
       <Doc p={p} x={80} y={30} w={62} h={80} acc={p.gold} />
@@ -1222,7 +1215,6 @@ function ScopeCreepArt({ p }: { p: P }) {
 function PaywallArt({ p }: { p: P }) {
   return (
     <Svg vb={[320, 150]} label="插圖：螢幕跳出上鎖的付費牆，兩個淡色剪影轉身離開">
-      <Blob cx={160} cy={82} rx={150} ry={64} color={p.sky2} />
       <Monitor p={p} x={20} y={14} w={150} h={100} bar={p.gold}>
         <rect x={40} y={42} width={110} height={52} rx={6} style={fill(p.gold)} opacity={0.25} />
         <Lock p={p} x={95} y={68} r={18} />

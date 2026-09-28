@@ -64,6 +64,9 @@ note-deck 反過來：**先像簡報設計師一樣把整份 deck 構想出來�
 先讀 `references/deck-contract.md`（技術契約，違反會編譯失敗或被裁切）、`references/report-layout.md`（報告式版面）、`references/illustration-kit.md`（插圖），並打開範例 deck 對照。
 從 `pm-01-project-vs-product.deck.tsx` 整段複製 `── 插圖工具組 ──`、`── 概念小圖 ──`、`── 版面零件 ──` 三段進新 deck（`pm-02-waterfall-vs-agile.deck.tsx` 另有 `Stamp`、`Diamond`、`StackRow`、`CaseRow`、`DefCard`、`NextBand` 可用）。
 複製後先看 deck-contract.md〈常見錯誤〉：lucide icon 與工具組元件同名時要用別名匯入。
+**範例 deck 仍留有舊寫法，複製時要改掉**（作者明確回饋，兩條都是硬規則）：
+- 不帶 `Blob` 元件、刪掉所有 `<Blob />`：插圖底下不墊淺藍橢圓或任何大色塊。
+- `Panel` 等放插圖的區塊底色改 `c.slide`（+ 1px `c.border` 細框），不用 `c.sunken` 或灰／灰藍底，讓區塊保持乾淨、插圖對比清楚。
 `references/visual-recipes.md` 是較早的單一大圖版面，只在頁面內容真的只有一件事時參考。
 
 - 內容頁預設採**報告式版面**：右上 `pill` 放一句結論、內容分 2–3 個編號小節、欄間細線、頁底說明帶或結論條（見 report-layout.md）
@@ -82,7 +85,8 @@ note-deck 反過來：**先像簡報設計師一樣把整份 deck 構想出來�
    - dev 開著時**不要**跑 `npm run build`（共用 data-store，會讓 dev 全站 500）。
    - 重啟前可先確認模組能編譯：在瀏覽器執行 `await import('/@fs/<絕對路徑>.deck.tsx')`，檢查 `default.slides.length`。
 2. 開 `/present/<slug>`，讀 console 的 `[deck]` 警告（溢出 / 項數超標；縮覽側欄會渲染每一頁，一次載入就涵蓋全部）。
-3. 逐頁截圖，亮色與暗色主題各一輪。檢查：裁切、文字碰撞、換行斷在怪位置、大片空白、暗色下看不見的色塊或文字。
+3. 逐頁截圖，亮色與暗色主題各一輪。檢查：裁切、文字碰撞、換行斷在怪位置、大片空白、暗色下看不見的色塊或文字，
+   以及插圖底下是否殘留墊底橢圓、插圖面板是否誤用灰底（`grep -n "Blob\|c.sunken"` 應查無插圖相關用法）。
 4. 修完再截一次，直到全數通過。
 
 Browser pane 操作要點（實測）：

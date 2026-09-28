@@ -108,10 +108,6 @@ const line = (color: string, width = 2, extra: CSSProperties = {}): CSSPropertie
 });
 const fs = (f: string, s: string, w = 1.5): CSSProperties => ({ fill: f, stroke: s, strokeWidth: w, strokeLinejoin: "round" });
 
-function Blob({ cx, cy, rx, ry, color }: { cx: number; cy: number; rx: number; ry: number; color: string }) {
-  return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} style={fill(color)} />;
-}
-
 /** 文件：紙張、摺角、色條、內文線 */
 function Doc({ p, x, y, w, h, acc, rot = 0 }: { p: P; x: number; y: number; w: number; h: number; acc: string; rot?: number }) {
   const rows: number[] = [];
@@ -546,7 +542,7 @@ function Note({ c, children }: { c: DeckThemeTokens; children: ReactNode }) {
 /** 插圖／說明面板 */
 function Panel({ c, children, style }: { c: DeckThemeTokens; children: ReactNode; style?: CSSProperties }) {
   return (
-    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.sunken, ...style }}>
+    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.slide, ...style }}>
       {children}
     </div>
   );
@@ -862,8 +858,6 @@ function LayersScene({ p }: { p: P }) {
   ];
   return (
     <Svg vb={[720, 390]} label="插圖：規劃期把專案拆成交付物與 1.1、1.2、2.1、2.2 工作包，再排上 W1 到 W4 的甘特時間軸；執行期用四欄看板追蹤卡片流動，待驗欄堆積最多，旁邊一張 Task 卡記錄預計、實際、驗收日期與執行人、驗收人">
-      <Blob cx={170} cy={210} rx={168} ry={180} color={p.sky} />
-      <Blob cx={550} cy={210} rx={168} ry={180} color={p.sky} />
       <Chip p={p} x={86} y={6} w={170} text="規劃期：範圍與時程" color={p.navy} />
       <Chip p={p} x={464} y={6} w={170} text="執行期：流動與紀錄" color={p.orange} />
       <line x1={360} y1={20} x2={360} y2={380} style={line(p.grey, 2, { strokeDasharray: "3 8" })} />

@@ -417,7 +417,8 @@ function TermsPage({ dark }: CustomSlideProps) {
             gap: DGAP.md,
             padding: 28,
             borderRadius: "var(--radius-lg)",
-            background: c.sunken,
+            background: c.slide,
+            border: `1px solid ${c.border}`,
             minWidth: 0,
           }}
         >
@@ -596,7 +597,8 @@ function RoadmapColumn({ ch, i, c }: { ch: Chapter; i: number; c: DeckThemeToken
         style={{
           height: 140,
           borderRadius: 12,
-          background: c.sunken,
+          background: c.slide,
+          border: `1px solid ${c.border}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

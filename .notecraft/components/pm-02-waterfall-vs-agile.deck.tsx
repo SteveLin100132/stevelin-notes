@@ -108,10 +108,6 @@ const line = (color: string, width = 2, extra: CSSProperties = {}): CSSPropertie
 });
 const fs = (f: string, s: string, w = 1.5): CSSProperties => ({ fill: f, stroke: s, strokeWidth: w, strokeLinejoin: "round" });
 
-function Blob({ cx, cy, rx, ry, color }: { cx: number; cy: number; rx: number; ry: number; color: string }) {
-  return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} style={fill(color)} />;
-}
-
 /** 文件：紙張、摺角、色條、內文線 */
 function Doc({ p, x, y, w, h, acc, rot = 0 }: { p: P; x: number; y: number; w: number; h: number; acc: string; rot?: number }) {
   const rows: number[] = [];
@@ -546,7 +542,7 @@ function Note({ c, children }: { c: DeckThemeTokens; children: ReactNode }) {
 /** 插圖／說明面板 */
 function Panel({ c, children, style }: { c: DeckThemeTokens; children: ReactNode; style?: CSSProperties }) {
   return (
-    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.sunken, ...style }}>
+    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.slide, ...style }}>
       {children}
     </div>
   );
@@ -966,7 +962,6 @@ function SprintScene({ p }: { p: P }) {
   const blockColors = [p.navy, p.blue, p.lblue];
   return (
     <Svg vb={[600, 400]} label="插圖：Product Backlog 看板挑出最優先的金色卡片進入 Sprint 循環（規劃、開發、檢視、回顧），每一圈交付的增量積木越疊越高；使用者的回饋再用虛線繞回看板重排優先序">
-      <Blob cx={300} cy={206} rx={292} ry={176} color={p.sky} />
       {/* Backlog */}
       <Chip p={p} x={33} y={70} w={74} text="Backlog" color={p.navy} />
       <Board p={p} x={10} y={96} w={120} h={150} cols={[4, 3]} hi={[0, 0]} />

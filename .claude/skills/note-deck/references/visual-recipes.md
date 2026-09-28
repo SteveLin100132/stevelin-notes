@@ -42,7 +42,7 @@ function ArrowGlyph({ color }: { color: string }) { … }
 
 ## 3. 名詞卡 2×2（定義 + 小示意圖）
 
-`grid 2×2`，每張卡 `c.sunken` 底：左邊 190×150 的 `c.slide` 小框放示意圖，右邊名詞（`DS.h3`）+ 英文（`c.accent`）+ 定義（`DS.body`，約 45 字內）。
+`grid 2×2`，每張卡 `c.slide` 底 + 1px 細框（不用灰底）：左邊 190×150 的細框小區放示意圖，右邊名詞（`DS.h3`）+ 英文（`c.accent`）+ 定義（`DS.body`，約 45 字內）。
 
 示意圖例：
 - 瀑布：四段色塊由左上往右下遞降，段間折線
@@ -56,7 +56,7 @@ function ArrowGlyph({ color }: { color: string }) { … }
 
 - **pill 與節點用固定高度**（`PILL_H = 44`、`NODE_H = 106`），箭頭欄 `paddingTop = PILL_H + gap + NODE_H / 2 − 8`，箭頭才會對準節點中線
 - 節點：`V.blue700` 底、白字、`CH 0n` 用 `V.orange300`、名稱 `whiteSpace: nowrap`
-- 示意圖區：高 90、`c.sunken` 底，SVG 寬 200（viewBox 240×90）
+- 示意圖區：高 90、`c.slide` 底 + 細框（不用灰底、不墊橢圓），SVG 寬 200（viewBox 240×90）
 - 狀態：`CheckCircle2` + 「已完成」（`c.good`），icon 與文字並行
 - 有「前置閱讀」這類補充時，交給 chrome 的 `callout`（`icon: "lightbulb", tone: "orange"`），內容區高度變 538
 

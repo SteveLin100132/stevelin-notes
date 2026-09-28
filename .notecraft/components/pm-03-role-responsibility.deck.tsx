@@ -102,10 +102,6 @@ const line = (color: string, width = 2, extra: CSSProperties = {}): CSSPropertie
 });
 const fs = (f: string, s: string, w = 1.5): CSSProperties => ({ fill: f, stroke: s, strokeWidth: w, strokeLinejoin: "round" });
 
-function Blob({ cx, cy, rx, ry, color }: { cx: number; cy: number; rx: number; ry: number; color: string }) {
-  return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} style={fill(color)} />;
-}
-
 /** 文件：紙張、摺角、色條、內文線 */
 function Doc({ p, x, y, w, h, acc, rot = 0 }: { p: P; x: number; y: number; w: number; h: number; acc: string; rot?: number }) {
   const rows: number[] = [];
@@ -540,7 +536,7 @@ function Note({ c, children }: { c: DeckThemeTokens; children: ReactNode }) {
 /** 插圖／說明面板 */
 function Panel({ c, children, style }: { c: DeckThemeTokens; children: ReactNode; style?: CSSProperties }) {
   return (
-    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.sunken, ...style }}>
+    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.slide, ...style }}>
       {children}
     </div>
   );
@@ -915,8 +911,6 @@ function MiniOneA({ p }: { p: P }) {
 function SwapScene({ p }: { p: P }) {
   return (
     <Svg vb={[700, 360]} label="插圖：同樣四個人，左邊排成由上而下的指揮鏈，右邊圍成一圈、中間是團隊，外圍兩人服務團隊">
-      <Blob cx={160} cy={190} rx={150} ry={160} color={p.sky} />
-      <Blob cx={540} cy={190} rx={160} ry={160} color={p.sky} />
       {/* 左：樹狀指揮鏈 */}
       <line x1={160} y1={82} x2={160} y2={122} style={line(p.navy, 2.5)} />
       <path d="M160 190V214M100 214H220M100 214V240M220 214V240" style={line(p.navy, 2.5)} />
@@ -950,7 +944,6 @@ function SwapScene({ p }: { p: P }) {
 function ScrumScene({ p }: { p: P }) {
   return (
     <Svg vb={[600, 300]} label="插圖：中央大圓是自組織的開發團隊；左邊 PO 把 Backlog 卡片餵進團隊，右邊 SM 把障礙方塊推出圈外">
-      <Blob cx={300} cy={160} rx={290} ry={140} color={p.sky} />
       <circle cx={300} cy={160} r={100} style={{ fill: p.paper, stroke: p.orange, strokeWidth: 2.5 }} />
       <Person p={p} x={266} y={128} s={0.6} />
       <Person p={p} x={334} y={128} s={0.6} />
@@ -981,7 +974,6 @@ function RaciFlowScene({ p }: { p: P }) {
   const letters: Letter[] = ["C", "R", "A", "I"];
   return (
     <Svg vb={[640, 250]} label="插圖：PRD 撰寫的權責流向。Tech Lead 事前與 PM 雙向討論（C），PM 在筆電前撰寫（R），PO 在文件上蓋章簽核（A），QA 事後收到單向通知信封（I）">
-      <Blob cx={320} cy={130} rx={316} ry={110} color={p.sky} />
       {xs.map((x, i) => (
         <g key={x}>
           <rect x={x - 17} y={6} width={34} height={34} rx={8} style={fill(LETTER[letters[i]].bg)} />

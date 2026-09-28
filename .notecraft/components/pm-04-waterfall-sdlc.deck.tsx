@@ -101,10 +101,6 @@ const line = (color: string, width = 2, extra: CSSProperties = {}): CSSPropertie
 });
 const fs = (f: string, s: string, w = 1.5): CSSProperties => ({ fill: f, stroke: s, strokeWidth: w, strokeLinejoin: "round" });
 
-function Blob({ cx, cy, rx, ry, color }: { cx: number; cy: number; rx: number; ry: number; color: string }) {
-  return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} style={fill(color)} />;
-}
-
 /** 文件：紙張、摺角、色條、內文線 */
 function Doc({ p, x, y, w, h, acc, rot = 0 }: { p: P; x: number; y: number; w: number; h: number; acc: string; rot?: number }) {
   const rows: number[] = [];
@@ -539,7 +535,7 @@ function Note({ c, children }: { c: DeckThemeTokens; children: ReactNode }) {
 /** 插圖／說明面板 */
 function Panel({ c, children, style }: { c: DeckThemeTokens; children: ReactNode; style?: CSSProperties }) {
   return (
-    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.sunken, ...style }}>
+    <div style={{ border: `1px solid ${c.border}`, borderRadius: 14, background: c.slide, ...style }}>
       {children}
     </div>
   );
@@ -844,7 +840,6 @@ function CascadeScene({ p }: { p: P }) {
   const W = 190;
   return (
     <Svg vb={[700, 430]} label="插圖：規劃、設計、建置與測試、驗收與上線四個水池由上往下排列，最後流入維運；每個水池右側有一道閘門，通過驗收才溢流到下一級；一條從下游逆流回上游的橘色虛線，越往上代價越大">
-      <Blob cx={350} cy={230} rx={340} ry={196} color={p.sky} />
       {pools.map((pl, i) => (
         <g key={pl.t}>
           <rect x={pl.x} y={pl.y} width={W} height={52} rx={8} style={{ fill: p.lblue, stroke: p.navy, strokeWidth: 1.5 }} />
@@ -872,7 +867,6 @@ function GateScene({ p }: { p: P }) {
   const checks = ["交付物完整", "與 SRS 一致", "風險已記錄", "相關方簽核"];
   return (
     <Svg vb={[640, 420]} label="插圖：System Design 階段產出的 SDD 送進里程碑審查，逐項檢查交付物完整、與 SRS 一致、風險已記錄、相關方簽核；PM、客戶、技術主管簽核後放行到 Coding，缺項則退回補件">
-      <Blob cx={320} cy={220} rx={312} ry={196} color={p.sky} />
       {/* 階段 N 的交付物 */}
       <Chip p={p} x={20} y={96} w={96} text="System Design" color={p.navy} />
       <Doc p={p} x={28} y={124} w={80} h={104} acc={p.navy} />
