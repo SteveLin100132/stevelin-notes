@@ -563,6 +563,20 @@ import NestjsScaffoldGracefulShutdown from '@notes/components/nestjs-scaffold-gr
 | 限流的 IP 與儲存 | 未設 `trust proxy`；計數存在單一實例的記憶體 | 見上方「速率限制」的提醒 |
 | Node.js 16 polyfill | `main.ts` 開頭為 Node 16 補上 `globalThis.crypto` | 專案已要求 Node 22，可以移除 |
 
+## 待完善項目
+
+除了上面的修正，腳手架還缺幾塊正式專案一定會用到的基礎建設。目前規劃如下：
+
+| 項目 | 狀態 | 現況 | 方向 |
+| :--- | :--- | :--- | :--- |
+| OpenAPI Codegen | :badge[未開始]{variant="neutral"} | 已有 `/openapi.json`，但還沒有從它產生前端型別或 client | 從 `/openapi.json` 產生前端可直接使用的型別與 API client，並納入 CI 檢查文件與程式碼是否同步 |
+| Authentication | :badge[規劃中]{variant="info"} | 尚未有任何登入或身分驗證機制 | 介接 [Casdoor](https://casdoor.org/)（OIDC），後端驗證 Casdoor 簽發的 JWT，以全域 Guard 掛上 |
+| Authorization | :badge[未開始]{variant="neutral"} | 尚未有角色或權限控管 | 待 Authentication 完成後決定，評估沿用 Casdoor 的權限模型或在後端自行實作 RBAC |
+| Validation 選型 | :badge[待評估]{variant="warning"} | 沒有 `ValidationPipe`，請求參數未做驗證 | 比較 `class-validator` 與 schema 型方案（如 Zod），需考慮和 Swagger 文件產生的整合 |
+| ORM 選型 | :badge[待評估]{variant="warning"} | 暫用 TypeORM + better-sqlite3，`synchronize: true` | 比較 TypeORM、Prisma、Drizzle 等，重點看 migration 流程、型別安全與正式資料庫支援 |
+
+狀態說明：:badge[未開始]{variant="neutral" size="sm"} 尚未動工、:badge[待評估]{variant="warning" size="sm"} 需要先做技術選型、:badge[規劃中]{variant="info" size="sm"} 方向已定、:badge[進行中]{variant="tip" size="sm"} 實作中、:badge[完成]{variant="success" size="sm"} 已併入腳手架。
+
 ## 小結：新增一個業務模組時要做的事
 
 基礎建設都就位後，新增功能時只需要專注在業務本身：
