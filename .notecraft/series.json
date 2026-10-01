@@ -42,6 +42,19 @@
         "view:technology-sharing/nestjs-api-scaffold.openapi",
         "technology-sharing/nestjs-openapi-codegen"
       ]
+    },
+    {
+      "id": "payroll-101",
+      "title": "從人到薪：台灣計薪流程入門",
+      "eyebrow": "PAYROLL 101",
+      "description": "人員身份、出勤、加班、休假、勞健保、勞退一路到計薪",
+      "accent": "navy",
+      "icon": "layers",
+      "slugs": [
+        "knowledge/payroll/00-end-to-end-flow",
+        "knowledge/payroll/01-employee-status",
+        "knowledge/payroll/02-working-hours"
+      ]
     }
   ]
 }
