@@ -1,0 +1,133 @@
+---
+title: OpenAPI 範例：訂單服務 API
+description: 示範 openapi-renderer plugin：把 *.openapi.json 渲染成 API 文件，並在筆記裡內嵌總覽或單一 operation 卡片。
+tags: [sample, notecraft, plugin, openapi, api]
+category: 範例
+createdAt: '2026-10-01'
+updatedAt: '2026-10-01'
+---
+
+import PluginView from '@/components/PluginView.astro'
+
+# OpenAPI 範例：訂單服務 API
+
+這篇示範如何用 `openapi-renderer` plugin 呈現 API 文件。spec 放在同資料夾的
+`orders.openapi.json`（複製自 plugin 的 `example/`），`.notecraft/plugins.json` 以 `**/*.openapi.json`
+規則把它交給 plugin 渲染。
+
+## 總覽
+
+不指定 `operation` 時，內嵌的是整份 API 的總覽縮影：
+
+<PluginView src="sample/orders.openapi.json" caption="API 規模、各 tag 的 method 分布、伺服器與驗證方式" />
+
+完整文件有獨立的全寬頁面：[/view/sample/orders.openapi](/view/sample/orders.openapi)。
+
+文件頁分成四種頁面，左側導覽依 **tag → operation** 排列，下方另有 Schemas：
+
+::::tabs
+:::tab{label="總覽"}
+API 規模、各 tag 的 method 分布、`servers` 與 `securitySchemes`；`info.description` 以 Markdown 顯示。
+:::
+:::tab{label="Operation"}
+- 參數依 path／query／header／cookie 分組，path-level 參數會併入
+- Request Body 與 Responses 顯示欄位樹與範例；同一個 status 有多種 content-type 時可切換
+- 附 cURL／fetch 範例請求（只供複製，不會實際送出）
+:::
+:::tab{label="Schema"}
+欄位樹、被哪些 operation 直接或間接使用，以及與其他 schema 的參照關係。
+:::
+:::tab{label="導覽"}
+可依 path／summary 篩選、依 method 複選；網址 hash 對應目前位置，可直接分享。
+:::
+::::
+
+## 單一 operation 卡片
+
+指定 `options.operation` 只顯示一支 API，`anchor` 讓「開啟完整檢視頁」直接跳到那一支。
+
+### 建立訂單
+
+`createOrder` 涵蓋了這份 spec 大部分的邊界案例：必填 header、兩種 request content-type、
+`oneOf` + `discriminator` 的配送方式、`anyOf` 的付款方式，以及多個錯誤回應。
+
+<PluginView src="sample/orders.openapi.json" options={{ operation: "createOrder" }} anchor="op/createOrder" />
+
+### 刪除訂單（已棄用）
+
+`deprecated: true` 的 operation 會加上棄用標記：
+
+<PluginView src="sample/orders.openapi.json" options={{ operation: "deleteOrder" }} anchor="op/deleteOrder" />
+
+:::warning{title="每處內嵌都帶整份 spec"}
+`PluginView` 會把整份 spec inline 在頁面裡，這篇放了三處就是三份。大型 spec 只內嵌少數幾處，
+其餘用連結指到文件頁的深連結。
+:::
+
+## 這份 spec 在示範什麼
+
+| 情境 | 位置 |
+| :--- | :--- |
+| 循環 `$ref` | `Category.parent`／`children` 指回自己；`Member` ↔ `OrgUnit` 互相參照 |
+| `oneOf` + `discriminator` | `Shipping`：宅配（`HomeDelivery`）或門市自取（`StorePickup`），依 `method` 判斷 |
+| `anyOf` | `CreateOrderInput.payment`：信用卡、企業月結或兩者 |
+| `allOf` | `ValidationProblem` 擴充 `Problem`；`CreateOrderInput.customer` 擴充 `CustomerRef` |
+| 多種 content-type | `listOrders` 回應 JSON 或 CSV；`createOrder` 接受 JSON 或 multipart |
+| 深層巢狀 | `LineItemInput.options.gift.card.*` |
+| deprecated | `deleteOrder`、參數 `legacy_sort`、欄位 `couponCode`／`legacy_code` |
+| 不需驗證 | `healthz` 以 `security: []` 覆寫全域 `bearerAuth` |
+
+## 深連結
+
+文件頁的 hash 對應目前位置：
+
+| 位置 | 連結 |
+| :--- | :--- |
+| Tag | [/view/sample/orders.openapi#tag/orders](/view/sample/orders.openapi#tag/orders) |
+| Operation | [/view/sample/orders.openapi#op/listOrders](/view/sample/orders.openapi#op/listOrders) |
+| 指定回應 | [/view/sample/orders.openapi#op/createOrder/responses/409](/view/sample/orders.openapi#op/createOrder/responses/409) |
+| Schema | [/view/sample/orders.openapi#schema/Shipping](/view/sample/orders.openapi#schema/Shipping) |
+
+沒有 operationId 的 operation 用 `method/path`，例如 `#op/get/pet/{petId}`。
+
+## 設定方式
+
+`.notecraft/plugins.json` 登記 plugin 與檔案規則：
+
+```jsonc title=".notecraft/plugins.json"
+{
+  "plugins": [
+    { "plugin": "openapi-renderer", "files": ["**/*.openapi.json"] }
+  ]
+}
+```
+
+路由只去掉 `.json`：`sample/orders.openapi.json` → `/view/sample/orders.openapi`。
+文件頁的標題與描述取自 `info.title`／`info.description`；要顯示「回到來源筆記」，在 spec 頂層加：
+
+```json title="docs/sample/orders.openapi.json（節錄）" {3}
+{
+  "openapi": "3.1.0",
+  "x-notecraft-back-to": "/notes/sample/openapi-sample",
+  "info": { "title": "TrendMile 訂單服務 API", "version": "2.4.0" }
+}
+```
+
+嵌入語法：
+
+```mdx
+import PluginView from '@/components/PluginView.astro'
+
+{/* 總覽縮影 */}
+<PluginView src="sample/orders.openapi.json" />
+
+{/* 單一 operation；沒有 operationId 時寫 method/path，例：get/pet/{petId} */}
+<PluginView src="sample/orders.openapi.json" options={{ operation: "createOrder" }} anchor="op/createOrder" />
+```
+
+`src` 以筆記根目錄 `docs/` 為基準，不是相對於這篇筆記。`anchor` 不會從 `options` 自動推導，要自己寫。
+
+:::note{title="支援範圍"}
+OpenAPI 3.0.x／3.1.x 完整支援；資料檔只吃 JSON（YAML 要先轉檔）；外部 `$ref` 不解析。
+站台是純靜態，不提供「試打 API」，範例區只給可複製的 cURL／fetch。
+:::
