@@ -5,6 +5,12 @@
       "files": [
         "**/*.erd.json"
       ]
+    },
+    {
+      "plugin": "openapi-renderer",
+      "files": [
+        "**/*.openapi.json"
+      ]
     }
   ]
 }
