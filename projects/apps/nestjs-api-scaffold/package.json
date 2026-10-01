@@ -21,6 +21,7 @@
     "report:open": "allure open allure-report",
     "report:watch": "allure watch allure-results --no-new-only -o allure-report-watch",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
+    "openapi:export": "ts-node src/openapi/export-openapi.ts",
     "migration:run": "echo 'No migrations in this phase (synchronize:true)'"
   },
   "keywords": [],

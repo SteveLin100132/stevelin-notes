@@ -1,5 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiResponseDto } from "../common/dto/api-response.dto";
+import { PingDto } from "./dto/ping.dto";
 
 /**
  * 連通性測試端點。
@@ -21,9 +23,13 @@ export class PingController {
     summary: "連通性測試",
     description: "受全域 Rate Limit 限制，可用於驗證 THROTTLE_TTL / THROTTLE_LIMIT 設定",
   })
-  @ApiResponse({ status: 200, description: "服務可連線" })
+  @ApiResponse({
+    status: 200,
+    description: "服務可連線",
+    schema: ApiResponseDto.of(PingDto),
+  })
   @ApiResponse({ status: 429, description: "超過 Rate Limit" })
-  getPing(): { pong: true } {
+  getPing(): PingDto {
     return { pong: true };
   }
 }

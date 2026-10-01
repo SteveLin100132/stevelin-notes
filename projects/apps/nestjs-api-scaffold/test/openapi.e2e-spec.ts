@@ -1,10 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "../src/app.module";
-import { ApiResponseDto } from "../src/common/dto/api-response.dto";
-import { getRegisteredDtos } from "../src/common/decorators/register-dto.decorator";
+import { buildOpenApiDocument } from "../src/openapi/openapi-document";
 
 describe("OpenAPI JSON endpoint (e2e)", () => {
   let app: INestApplication;
@@ -20,14 +19,7 @@ describe("OpenAPI JSON endpoint (e2e)", () => {
     // 原因：NestJS Test.createTestingModule 不執行 main.ts bootstrap()，
     // 因此必須在測試環境中手動重現 Swagger document 建立與 Express route 掛載流程，
     // 以確保測試環境與正式環境行為一致（environment parity）。
-    const swaggerConfig = new DocumentBuilder()
-      .setTitle("API")
-      .setDescription("REST API\n\n📄 [OpenAPI JSON Spec](/openapi.json)")
-      .setVersion("1.0")
-      .build();
-    const document = SwaggerModule.createDocument(app, swaggerConfig, {
-      extraModels: [ApiResponseDto, ...getRegisteredDtos()],
-    });
+    const document = buildOpenApiDocument(app);
     SwaggerModule.setup("api-docs", app, document);
 
     // 掛載 /openapi.json Express route（鏡像 main.ts bootstrap() 邏輯）

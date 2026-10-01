@@ -9,10 +9,9 @@ if (!globalThis.crypto) {
 }
 
 import { NestFactory } from "@nestjs/core";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
-import { ApiResponseDto } from "./common/dto/api-response.dto";
-import { getRegisteredDtos } from "./common/decorators/register-dto.decorator";
+import { buildOpenApiDocument } from "./openapi/openapi-document";
 import { Logger } from "@nestjs/common";
 import * as http from "node:http";
 import { createShutdownHandler } from "./shutdown";
@@ -71,15 +70,7 @@ async function bootstrap() {
 
   // Swagger UI 設定（FR-001、FR-002）
   // 文件路徑：GET /api-docs（UI）、GET /api-docs-json（OpenAPI JSON）
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle("API")
-    .setDescription("REST API\n\n📄 [OpenAPI JSON Spec](/openapi.json)")
-    .setVersion("1.0")
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig, {
-    // ApiResponseDto 永遠需要（wrapper schema）；其餘 DTO 由 @RegisterDto() 自動收集
-    extraModels: [ApiResponseDto, ...getRegisteredDtos()],
-  });
+  const document = buildOpenApiDocument(app);
   SwaggerModule.setup("api-docs", app, document);
 
   // 直接取得底層 Express Application 實例，掛載 /openapi.json raw JSON route。

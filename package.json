@@ -26,7 +26,9 @@
     "api:test:all": "npm --prefix projects/apps/nestjs-api-scaffold run test:all",
     "api:report:generate": "npm --prefix projects/apps/nestjs-api-scaffold run report:generate",
     "api:report:open": "npm --prefix projects/apps/nestjs-api-scaffold run report:open",
-    "api:report:watch": "npm --prefix projects/apps/nestjs-api-scaffold run report:watch"
+    "api:report:watch": "npm --prefix projects/apps/nestjs-api-scaffold run report:watch",
+    "api:openapi:export": "npm --prefix projects/apps/nestjs-api-scaffold run openapi:export",
+    "api:client:generate": "npm --prefix projects/packages/api-client run generate"
   },
   "engines": {
     "node": ">=22.0.0"

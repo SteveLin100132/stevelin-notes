@@ -12,6 +12,17 @@ npm run migration:run
 npm run start:dev
 ```
 
+## OpenAPI spec 與前端 client
+
+```bash
+npm run openapi:export   # 輸出 openapi.json（不啟動 server，DB 用記憶體）
+```
+
+`openapi.json` 是 [`packages/api-client`](../../packages/api-client) 以 Orval 產生 React client 的輸入。
+`operationId` 直接取 controller 的 method 名稱（`getPing` → `useGetPing`），因此 **handler method 名稱在全專案內必須唯一**，
+重名時以 `@ApiOperation({ operationId })` 指定。document 的建構集中在 `src/openapi/openapi-document.ts`，
+`main.ts`、e2e 測試與 export script 共用。
+
 ## 測試
 
 ```bash

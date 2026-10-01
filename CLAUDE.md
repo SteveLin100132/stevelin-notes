@@ -21,7 +21,8 @@ stevelin-notes/
 ├─ projects/                      ← 程式範例／腳手架／服務（Turborepo + npm workspaces，獨立於筆記）
 │  ├─ apps/<kebab-case-name>/     ← 各 app，package name 與資料夾同名
 │  │  └─ nestjs-api-scaffold/     ← NestJS 後端 API 腳手架
-│  ├─ packages/                   ← 共用套件（目前空）
+│  ├─ packages/                   ← 共用套件
+│  │  └─ api-client/              ← Orval 從 nestjs-api-scaffold 的 OpenAPI 產生的 React API client
 │  └─ package.json / turbo.json   ← monorepo 根，有自己的 node_modules 與 lockfile
 └─ package.json
 ```
@@ -50,6 +51,8 @@ viewer app 與 build 快取在 `~/.notecraft/`（`app-<version>/`、`cache/<hash
 | `npm run api:build` / `api:start` / `api:test` | build／build 後以正式模式啟動／跑 unit tests          |
 | `npm run api:test:e2e` / `api:test:all` | 跑 e2e／unit + e2e（`test:all` 的 Allure 結果同時包含兩者）       |
 | `npm run api:report:generate` / `api:report:open` / `api:report:watch` | 產生／開啟／即時監看 Allure 報告（讀 app 目錄下的 `allure-results/`） |
+| `npm run api:openapi:export` | 輸出 OpenAPI spec 到 `projects/apps/nestjs-api-scaffold/openapi.json`（不啟動 server） |
+| `npm run api:client:generate` | 輸出 spec 後以 Orval 產生 `projects/packages/api-client`（React／TanStack Query hooks + MSW mock）；Orval 需 Node ≥ 22.18 |
 
 `projects/` 底下的專案是一般 Node 專案，可以正常跑 `tsc`、`nest build`、jest 等工具（下方的驗證規則只適用於筆記）。
 進 `projects/` 後用 `npm run <task> -- --filter=<app>` 操作單一 app。
