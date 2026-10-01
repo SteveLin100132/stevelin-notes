@@ -39,6 +39,7 @@
       "icon": "layers",
       "slugs": [
         "technology-sharing/nestjs-api-scaffold-infra",
+        "view:technology-sharing/nestjs-api-scaffold.openapi",
         "technology-sharing/nestjs-openapi-codegen"
       ]
     }
