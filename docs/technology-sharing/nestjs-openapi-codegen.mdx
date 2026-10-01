@@ -10,7 +10,7 @@ updatedAt: '2026-10-01'
 # 從 NestJS 到 React：OpenAPI Codegen
 
 :::note{title="範圍"}
-本篇以本專案的 `projects/apps/nestjs-api-scaffold`（NestJS 11、`@nestjs/swagger` 11）與 `projects/packages/api-client`（Orval 8、TanStack Query 5）為例，所有產出名稱與錯誤訊息都是實際執行的結果。腳手架本身的基礎建設請見 [NestJS API 腳手架盤點](./nestjs-api-scaffold-infra.mdx)。
+本篇以本專案的 `projects/apps/nestjs-api-scaffold`（NestJS 11、`@nestjs/swagger` 11）與 `projects/packages/api-client`（Orval 8、TanStack Query 5）為例，所有產出名稱與錯誤訊息都是實際執行的結果。腳手架本身的基礎建設請見 [NestJS API 腳手架盤點](./nestjs-api-scaffold-infra.mdx)，產出的 OpenAPI 文件可在 [API 文件頁](/view/technology-sharing/nestjs-api-scaffold.openapi) 瀏覽。
 :::
 
 前後端分開開發時，同一個 API 的形狀通常會被寫兩次：後端的 DTO 一份，前端的 `interface` 和 `fetch` 呼叫又一份。兩份程式碼沒有任何連結，後端把欄位改名、前端照樣編譯通過，問題要等到使用者畫面壞掉才浮現。
@@ -163,6 +163,13 @@ npm run api:openapi:export
 ```
 
 `openapi.json` **提交進版本控制**。它是前後端之間的契約，PR 裡這個檔案的 diff 就是一份 API 變更紀錄，reviewer 不用讀後端程式碼也能看出這次改了哪些介面。
+
+這份契約目前長什麼樣子，可以直接看 [nestjs-api-scaffold 的 API 文件](/view/technology-sharing/nestjs-api-scaffold.openapi)：
+每支 operation 的參數、`ApiResponseDto` 包裝後的回應結構，以及 schema 之間的參照，都和 Orval 讀到的內容一致。
+
+import PluginView from '@/components/PluginView.astro'
+
+<PluginView src="technology-sharing/nestjs-api-scaffold.openapi.json" caption="由 api:openapi:export 輸出的 spec 快照；點「開啟完整檢視頁」看各 operation 與 schema" />
 
 ## 第三步：用 Orval 產生 client
 
