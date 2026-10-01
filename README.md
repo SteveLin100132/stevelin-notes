@@ -21,7 +21,7 @@ npm install
 ```
 
 ```bash
-npm run dev
+npm run notes:dev
 ```
 
 首次執行會把 viewer app 複製到 `~/.notecraft/app-<version>/` 並安裝相依套件，約需 3 分鐘。
@@ -30,15 +30,15 @@ npm run dev
 
 | 指令 | 作用 |
 | :--- | :--- |
-| `npm run dev` | 開發模式（HMR，可在 UI 新增／編輯筆記） |
-| `npm run dev:lan` | 同上，綁 `0.0.0.0` 讓區網裝置瀏覽 |
-| `npm run serve` | build 後靜態服務，背景 rebuild 並自動刷新（AI 生成元件時建議用這個觀察） |
-| `npm run serve:static` | 純靜態、唯讀，不監看 |
-| `npm run build` / `build:force` | build 靜態站到 `~/.notecraft/cache/<hash>/dist/`（`force` 忽略快取） |
+| `npm run notes:dev` | 開發模式（HMR，可在 UI 新增／編輯筆記） |
+| `npm run notes:dev:lan` | 同上，綁 `0.0.0.0` 讓區網裝置瀏覽 |
+| `npm run notes:serve` | build 後靜態服務，背景 rebuild 並自動刷新（AI 生成元件時建議用這個觀察） |
+| `npm run notes:serve:static` | 純靜態、唯讀，不監看 |
+| `npm run notes:build` / `notes:build:force` | build 靜態站到 `~/.notecraft/cache/<hash>/dist/`（`force` 忽略快取） |
 | `npm run skill:install` / `skill:check` / `skill:update` | 安裝、檢查、升級 Claude Code skill 到 `.claude/` |
 | `npm run plugin:list` / `plugin:install` / `plugin:remove <id>` | 管理結構化 JSON 渲染 plugin |
 
-額外參數用 `--` 傳入，例如 `npm run dev -- --port 5000`。
+額外參數用 `--` 傳入，例如 `npm run notes:dev -- --port 5000`。
 
 ## 專案結構
 
@@ -87,4 +87,4 @@ viewer app 與 build 快取放在 `~/.notecraft/`，不在專案內。
 
 - 找不到 `node`：本機以 nvm 管理，先執行 `nvm use 22.16.0`。
 - build 異常或想重來：刪除 `~/.notecraft/cache/`；舊版的 `~/.notecraft/app-<舊版>/` 可直接刪除。
-- 新增的 `.deck.tsx` 需重啟 `npm run dev` 才會被收錄。
+- 新增的 `.deck.tsx` 需重啟 `npm run notes:dev` 才會被收錄。

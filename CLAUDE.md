@@ -36,12 +36,12 @@ viewer app 與 build 快取在 `~/.notecraft/`（`app-<version>/`、`cache/<hash
 
 | 指令                         | 作用                                                                |
 | :--------------------------- | :------------------------------------------------------------------ |
-| `npm run dev`                | `notecraftapp view ./docs`：Astro dev server，HMR + 可在 UI 新增／編輯筆記 |
-| `npm run dev:lan`            | 同上，綁 `0.0.0.0` 讓區網裝置可看                                   |
-| `npm run serve`              | `notecraftapp serve ./docs`：build 後靜態服務，背景 rebuild + SSE 自動刷新（**AI 生成元件時開這個觀察**） |
-| `npm run serve:static`       | 純靜態、唯讀，不監看                                                |
-| `npm run build`              | build 靜態站到 `~/.notecraft/cache/<hash>/dist/`（也是驗證生成元件的方式） |
-| `npm run build:force`        | 忽略快取強制 rebuild                                                |
+| `npm run notes:dev`          | `notecraftapp view ./docs`：Astro dev server，HMR + 可在 UI 新增／編輯筆記 |
+| `npm run notes:dev:lan`      | 同上，綁 `0.0.0.0` 讓區網裝置可看                                   |
+| `npm run notes:serve`        | `notecraftapp serve ./docs`：build 後靜態服務，背景 rebuild + SSE 自動刷新（**AI 生成元件時開這個觀察**） |
+| `npm run notes:serve:static` | 純靜態、唯讀，不監看                                                |
+| `npm run notes:build`        | build 靜態站到 `~/.notecraft/cache/<hash>/dist/`（也是驗證生成元件的方式） |
+| `npm run notes:build:force`  | 忽略快取強制 rebuild                                                |
 | `npm run skill:install`      | 安裝 content-visualize / content-present / trendlink-design skill 到 `.claude/` |
 | `npm run skill:check`        | 比對已安裝 skill 與套件內版本                                       |
 | `npm run skill:update`       | 強制覆寫升級 skill                                                  |
@@ -57,11 +57,11 @@ viewer app 與 build 快取在 `~/.notecraft/`（`app-<version>/`、`cache/<hash
 `projects/` 底下的專案是一般 Node 專案，可以正常跑 `tsc`、`nest build`、jest 等工具（下方的驗證規則只適用於筆記）。
 進 `projects/` 後用 `npm run <task> -- --filter=<app>` 操作單一 app。
 
-額外 flag 用 `--` 傳：`npm run dev -- --port 5000`。npm scripts 只是捷徑，
+額外 flag 用 `--` 傳：`npm run notes:dev -- --port 5000`。npm scripts 只是捷徑，
 也可以直接 `npx notecraftapp <子命令> ./docs`。
 
-**驗證規則**：不要在本專案跑 `tsc` 或 `astro build`（這裡沒有 astro 專案設定）。生成元件後用 `npm run build`
-驗證，或觀察使用者開著的 `npm run serve`。skill / subagent 文件中寫的 `npx notecraftapp build ./notes`，
+**驗證規則**：不要在本專案跑 `tsc` 或 `astro build`（這裡沒有 astro 專案設定）。生成元件後用 `npm run notes:build`
+驗證，或觀察使用者開著的 `npm run notes:serve`。skill / subagent 文件中寫的 `npx notecraftapp build ./notes`，
 在本專案的筆記目錄是 `./docs`。
 
 ## 撰寫筆記的規範
@@ -314,7 +314,7 @@ function handler(req: Request) { // (1)!
 
 偏好設計導向的版面時，說「用 note-deck 做 `docs/xxx.mdx` 的簡報」→ 專案自有的 note-deck skill
 （`.claude/skills/note-deck/`）先輸出整份設計構想、確認後才寫 deck，內容頁依內容形狀自由設計並配插圖。
-產物與播放路徑同上。新建的 deck 檔要重啟 `npm run dev` 才會被收錄。
+產物與播放路徑同上。新建的 deck 檔要重啟 `npm run notes:dev` 才會被收錄。
 
 ## 環境備註（Windows）
 

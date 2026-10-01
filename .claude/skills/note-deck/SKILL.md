@@ -80,9 +80,9 @@ note-deck 反過來：**先像簡報設計師一樣把整份 deck 構想出來�
 
 **`tsc` 與 build 抓不到被裁掉的內容**，截圖是唯一可靠的一層。
 
-1. 找作者開著的 dev server（`npm run dev`，預設 4321）。
+1. 找作者開著的 dev server（`npm run notes:dev`，預設 4321）。
    - **新建的 deck 檔需要重啟 dev server 才會被收錄**（`import.meta.glob` 不會在 dev 中途收新檔）；覆寫既有 deck 則 HMR 即可。需要重啟時請作者自己重啟，不要替他殺掉程序。
-   - dev 開著時**不要**跑 `npm run build`（共用 data-store，會讓 dev 全站 500）。
+   - dev 開著時**不要**跑 `npm run notes:build`（共用 data-store，會讓 dev 全站 500）。
    - 重啟前可先確認模組能編譯：在瀏覽器執行 `await import('/@fs/<絕對路徑>.deck.tsx')`，檢查 `default.slides.length`。
 2. 開 `/present/<slug>`，讀 console 的 `[deck]` 警告（溢出 / 項數超標；縮覽側欄會渲染每一頁，一次載入就涵蓋全部）。
 3. 逐頁截圖，亮色與暗色主題各一輪。檢查：裁切、文字碰撞、換行斷在怪位置、大片空白、暗色下看不見的色塊或文字，

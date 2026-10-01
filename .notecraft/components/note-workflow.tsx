@@ -16,7 +16,7 @@ const STEPS: Step[] = [
   { key: "write", title: "寫下文字", banner: "在 docs/ 新增 MDX，先把概念寫清楚", body: "在 docs/ 用 MDX 寫筆記，先把概念用文字講清楚。", Icon: PenLine },
   { key: "mark", title: "下標記", banner: "在需要圖表的位置加上 @ai-visualize", body: "只在有助理解的位置寫 @ai-visualize，描述互動方式與要畫的圖形。", Icon: Braces },
   { key: "generate", title: "AI 生成", banner: "Claude Code 產出元件並寫回筆記", body: "請 Claude 處理標記：產出 React 元件、寫回筆記，標記狀態改為 generated。", Icon: Sparkles },
-  { key: "read", title: "圖文閱讀", banner: "瀏覽器自動刷新，元件可直接操作", body: "npm run serve 自動刷新，讀者可以直接操作圖表。", Icon: MousePointerClick },
+  { key: "read", title: "圖文閱讀", banner: "瀏覽器自動刷新，元件可直接操作", body: "npm run notes:serve 自動刷新，讀者可以直接操作圖表。", Icon: MousePointerClick },
 ];
 
 /* trendlink-design 色票（viewer 的 Tailwind 不掃描 .notecraft/components，故直接對應 token 值） */
@@ -302,7 +302,7 @@ function Browser({ L, reduce }: { L: Layout; reduce: boolean }) {
       <path transform={`translate(${x + 154} ${base + 25})`} d="M0 0 L0 13 L3.2 10 L5.6 15.5 L7.8 14.5 L5.4 9 L9.5 9 Z" fill="#ffffff" stroke={INK} strokeWidth={1.2} strokeLinejoin="round" />
       <circle cx={x + 20} cy={y + ED.h - 10} r={3} fill={SUCCESS} />
       <text x={x + 28} y={y + ED.h - 7} fontSize={9} fill={MUTED} fontFamily={FONT}>
-        npm run serve · 已自動刷新
+        npm run notes:serve · 已自動刷新
       </text>
     </Fade>
   );

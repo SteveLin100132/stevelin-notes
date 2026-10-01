@@ -4,31 +4,31 @@
     {
       "name": "notes-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": ["run", "notes:dev"],
       "port": 4321
     },
     {
       "name": "notes-serve",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "serve", "--", "--port", "4400", "--no-open"],
+      "runtimeArgs": ["run", "notes:serve", "--", "--port", "4400", "--no-open"],
       "port": 4400
     },
     {
       "name": "notes-serve-node22",
       "runtimeExecutable": "bash",
-      "runtimeArgs": ["-lc", "source ~/.nvm/nvm.sh && nvm use 22.16.0 >/dev/null && npm run serve -- --port 4400 --no-open"],
+      "runtimeArgs": ["-lc", "source ~/.nvm/nvm.sh && nvm use 22.16.0 >/dev/null && npm run notes:serve -- --port 4400 --no-open"],
       "port": 4400
     },
     {
       "name": "notes-dev-alt",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "4330"],
+      "runtimeArgs": ["run", "notes:dev", "--", "--port", "4330"],
       "port": 4330
     },
     {
       "name": "notes-dev-deck",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "4340"],
+      "runtimeArgs": ["run", "notes:dev", "--", "--port", "4340"],
       "port": 4340
     }
   ]

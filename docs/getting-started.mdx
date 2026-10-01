@@ -12,7 +12,7 @@ updatedAt: '2026-09-26'
 這裡的筆記以文字為主：先把概念寫清楚；遇到流程、取捨或比較這類「用看的比較快」的內容，再搭配互動圖表幫助理解。
 
 :::tip{title="啟動方式"}
-開發時跑 `npm run dev`；請 Claude 生成視覺化時，另開終端機跑 `npm run serve`，寫檔後瀏覽器會自動刷新。
+開發時跑 `npm run notes:dev`；請 Claude 生成視覺化時，另開終端機跑 `npm run notes:serve`，寫檔後瀏覽器會自動刷新。
 :::
 
 ## 寫作流程
@@ -43,7 +43,7 @@ import NoteWorkflow from '@notes/components/note-workflow'
 
 ::::steps
 :::step{title="建立新筆記" status="current"}
-在 `docs/<主題>/` 新增 `.mdx`，或在 `npm run dev` 的 UI 按「+ 新增筆記」。
+在 `docs/<主題>/` 新增 `.mdx`，或在 `npm run notes:dev` 的 UI 按「+ 新增筆記」。
 :::
 :::step{title="寫下 @ai-visualize 標記"}
 只在有助理解的地方下標記；prompt 寫出 :badge[互動]{variant="info" size="sm"} 與 :badge[圖形]{variant="warning" size="sm"} 兩段，格式見 `CLAUDE.md`。
