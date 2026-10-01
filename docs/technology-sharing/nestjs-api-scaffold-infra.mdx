@@ -17,21 +17,23 @@ updatedAt: '2026-10-01'
 
 ## 盤點總覽
 
-| 基礎建設 | NestJS 機制 | 實作 | 主要檔案 |
-| :--- | :--- | :--- | :--- |
-| HTTP 安全標頭 | Middleware | `helmet`，依 `NODE_ENV` 切換策略 | `common/middleware/helmet.middleware.ts` |
-| 請求追蹤 Trace ID | Middleware + AsyncLocalStorage | 沿用或產生 `X-Trace-Id`，整條請求共用 | `common/trace/` |
-| 速率限制 | Guard | `@nestjs/throttler` 的 `ThrottlerGuard` | `app.module.ts` |
-| 請求日誌 | Interceptor | `LoggingInterceptor`，依狀態碼分 LOG / WARN / ERROR | `common/interceptors/logging.interceptor.ts` |
-| 統一回應格式 | Interceptor | `ResponseInterceptor`，包成 `ApiResponseDto` | `common/interceptors/response.interceptor.ts` |
-| 例外處理 | Exception Filter | `AllExceptionsFilter`，遮蔽未預期錯誤的細節 | `common/filters/all-exceptions.filter.ts` |
-| 設定管理 | `@nestjs/config` | `.env` + `ConfigService` | `.env.example`、`app.module.ts` |
-| Prometheus 指標 | 自訂 Module | `prom-client`，`GET /metrics` | `metrics/` |
-| API 文件 | `@nestjs/swagger` | `/api-docs`、`/openapi.json` | `main.ts`、`common/dto/` |
-| 資料庫 | `@nestjs/typeorm` | TypeORM + better-sqlite3 | `app.module.ts` |
-| 健康檢查 | 自訂 Module | `GET /health`，以 `SELECT 1` 做深度檢查 | `health/` |
-| 優雅關機 | Lifecycle hook + process signal | SIGTERM / SIGINT 時等請求做完，逾時強制結束 | `shutdown.ts`、`main.ts` |
-| 自動化測試 | Jest + Supertest | unit 與 e2e 測試，Allure 報告 | `test/`、`src/**/*.spec.ts` |
+| 基礎建設 | NestJS 機制 | 套件／模組 | 實作 | 主要檔案 |
+| :--- | :--- | :--- | :--- | :--- |
+| HTTP 安全標頭 | Middleware | `helmet`（第三方） | `HelmetMiddleware` 包裝 helmet，依 `NODE_ENV` 切換策略 | `common/middleware/helmet.middleware.ts` |
+| 請求追蹤 Trace ID | Middleware | `AsyncLocalStorage`、`crypto.randomUUID()`（Node.js） | 沿用或產生 `X-Trace-Id`，整條請求共用 | `common/trace/` |
+| 速率限制 | Guard | `@nestjs/throttler`（官方）：`ThrottlerModule`、`ThrottlerGuard`、`@SkipThrottle()` | 以 `APP_GUARD` 全域掛上，預設 100 次 / 60 秒 | `app.module.ts` |
+| 請求日誌 | Interceptor | `Logger`（Nest 內建）、`rxjs` 的 `tap` / `catchError` | `LoggingInterceptor`，依狀態碼分 LOG / WARN / ERROR | `common/interceptors/logging.interceptor.ts` |
+| 統一回應格式 | Interceptor | `Reflector`、`SetMetadata`（Nest 內建）、`rxjs` 的 `map` | `ResponseInterceptor`，包成 `ApiResponseDto` | `common/interceptors/response.interceptor.ts` |
+| 例外處理 | Exception Filter | `@Catch()`、`HttpException`、`Logger`（Nest 內建） | `AllExceptionsFilter`，遮蔽未預期錯誤的細節 | `common/filters/all-exceptions.filter.ts` |
+| 設定管理 | Dynamic Module | `@nestjs/config`（官方）：`ConfigModule`、`ConfigService` | `.env` + `ConfigService`，其他模組以 `forRootAsync` 注入 | `.env.example`、`app.module.ts` |
+| Prometheus 指標 | 自訂 Module | `prom-client`（第三方）：`Registry`、`Counter`、`Histogram` | `MetricsService` + `GET /metrics` | `metrics/` |
+| API 文件 | Decorator + Dynamic Module | `@nestjs/swagger`（官方）：`SwaggerModule`、`DocumentBuilder`、`@ApiProperty` 等 | `/api-docs`、`/openapi.json` | `main.ts`、`openapi/`、`common/dto/` |
+| 資料庫 | Dynamic Module | `@nestjs/typeorm`（官方）、`typeorm`、`better-sqlite3`（第三方） | `TypeOrmModule.forRootAsync`，SQLite 檔案或 `:memory:` | `app.module.ts` |
+| 健康檢查 | 自訂 Module | `DataSource`（`typeorm`）；`@nestjs/terminus`（官方，已引入、尚未使用其 indicator） | `GET /health`，以 `SELECT 1` 做深度檢查 | `health/` |
+| 優雅關機 | Lifecycle hook + process signal | `app.enableShutdownHooks()`（Nest 內建）、`process.on`（Node.js） | SIGTERM / SIGINT 時等請求做完，逾時強制結束 | `shutdown.ts`、`main.ts` |
+| 自動化測試 | Testing Module | `@nestjs/testing`（官方）、`jest`、`ts-jest`、`supertest`、`allure-jest`、`allure`（第三方） | unit 與 e2e 測試，Allure 報告 | `test/`、`src/**/*.spec.ts` |
+
+「套件／模組」欄的來源分四類：**Nest 內建**指 `@nestjs/common`、`@nestjs/core` 本身提供的 API；**官方**指 NestJS 團隊維護、需另外安裝的 `@nestjs/*` 套件；**第三方**是社群套件；**Node.js** 是執行環境內建的模組，不需要安裝。
 
 :::tip{title="兩個和直覺不太一樣的位置"}
 - **請求日誌放在 Interceptor，不是 Middleware。** Interceptor 包住 handler，拿得到執行後的最終狀態碼與丟出的例外；Middleware 只看得到請求進來的那一刻。
