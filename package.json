@@ -16,7 +16,12 @@
     "skill:update": "notecraftapp init-skill --force",
     "plugin:list": "notecraftapp install-plugin --list",
     "plugin:install": "notecraftapp install-plugin",
-    "plugin:remove": "notecraftapp install-plugin --remove"
+    "plugin:remove": "notecraftapp install-plugin --remove",
+    "projects:install": "npm --prefix projects install",
+    "api:dev": "npm --prefix projects run dev -- --filter=nestjs-api-scaffold",
+    "api:build": "npm --prefix projects run build -- --filter=nestjs-api-scaffold",
+    "api:start": "npm --prefix projects run start -- --filter=nestjs-api-scaffold",
+    "api:test": "npm --prefix projects run test -- --filter=nestjs-api-scaffold"
   },
   "engines": {
     "node": ">=22.0.0"

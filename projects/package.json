@@ -1,0 +1,25 @@
+{
+  "name": "stevelin-projects",
+  "version": "0.0.0",
+  "private": true,
+  "description": "stevelin-notes 的程式範例、腳手架與服務（Turborepo monorepo）",
+  "packageManager": "npm@10.9.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "lint": "turbo run lint"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "turbo": "^2.11.5"
+  }
+}

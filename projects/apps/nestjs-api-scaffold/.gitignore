@@ -1,0 +1,30 @@
+# 依賴與建構產物
+node_modules/
+dist/
+build/
+
+# 覆蓋率報告
+coverage/
+
+# Allure 測試報告（本地產物，不提交）
+allure-results/
+allure-report/
+
+# 環境變數（不得提交至版本庫）
+.env
+.env*
+
+# 資料庫檔案
+data/*.sqlite
+
+# 系統暫存
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+
+# IDE
+.vscode/
+.idea/
+!.env.example

@@ -18,6 +18,11 @@ stevelin-notes/
 │  ├─ series.json                 ← （選用）系列閱讀路徑
 │  └─ plugins.json                ← （選用）plugin 映射
 ├─ .claude/                       ← `npm run skill:install` 安裝的 skill 與 subagent（勿手改）
+├─ projects/                      ← 程式範例／腳手架／服務（Turborepo + npm workspaces，獨立於筆記）
+│  ├─ apps/<kebab-case-name>/     ← 各 app，package name 與資料夾同名
+│  │  └─ nestjs-api-scaffold/     ← NestJS 後端 API 腳手架
+│  ├─ packages/                   ← 共用套件（目前空）
+│  └─ package.json / turbo.json   ← monorepo 根，有自己的 node_modules 與 lockfile
 └─ package.json
 ```
 
@@ -40,6 +45,12 @@ viewer app 與 build 快取在 `~/.notecraft/`（`app-<version>/`、`cache/<hash
 | `npm run skill:check`        | 比對已安裝 skill 與套件內版本                                       |
 | `npm run skill:update`       | 強制覆寫升級 skill                                                  |
 | `npm run plugin:list` / `plugin:install` / `plugin:remove <id>` | 管理結構化 JSON 渲染 plugin |
+| `npm run projects:install`   | 安裝 `projects/` monorepo 依賴（首次或新增 app 後）                  |
+| `npm run api:dev`            | 以 watch 模式啟動 `nestjs-api-scaffold`（`http://localhost:3000`，Swagger 在 `/api-docs`） |
+| `npm run api:build` / `api:start` / `api:test` | build／build 後以正式模式啟動／跑 unit tests          |
+
+`projects/` 底下的專案是一般 Node 專案，可以正常跑 `tsc`、`nest build`、jest 等工具（下方的驗證規則只適用於筆記）。
+進 `projects/` 後用 `npm run <task> -- --filter=<app>` 操作單一 app。
 
 額外 flag 用 `--` 傳：`npm run dev -- --port 5000`。npm scripts 只是捷徑，
 也可以直接 `npx notecraftapp <子命令> ./docs`。
