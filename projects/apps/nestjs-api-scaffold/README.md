@@ -47,7 +47,7 @@ npm run report:generate
 npm run report:open
 ```
 
-**4. 即時監控模式**（自動偵測 `allure-results/` 變化，`Ctrl+C` 關閉）：
+**4. 即時監控模式**（啟動時先讀入既有的 `allure-results/`，之後持續偵測新結果並自動刷新，`Ctrl+C` 關閉）：
 
 ```bash
 npm run report:watch
@@ -55,7 +55,9 @@ npm run report:watch
 
 ### 注意事項
 
-- `allure-results/` 與 `allure-report/` 已列入 `.gitignore`，不會提交至版本庫
+- `allure-results/`、`allure-report/` 與 `allure-report-watch/` 已列入 `.gitignore`，不會提交至版本庫
+- `report:watch` 輸出到獨立的 `allure-report-watch/`：Allure 3 的 `watch` 啟動時會先刪除輸出目錄，若與 `report:generate` 共用 `allure-report/`，會把已產生的報告清掉
+- `report:watch` 帶 `--no-new-only`：Allure 3 預設只處理 watch 啟動**之後**新寫入的結果，不加這個參數時，先跑完測試再開 watch 會得到空報告
 - `npm test` 與 `npm run test:e2e` 各自執行前會**清空** `allure-results/`（嚴格清空策略）
 - `npm run test:all` 先跑 unit（清空後寫入）再追加 e2e，`allure-results/` 最終**同時包含兩者結果**
 - `allure` v3 CLI 為純 Node.js 工具，已列為 devDependency，**無需系統 Java 環境**

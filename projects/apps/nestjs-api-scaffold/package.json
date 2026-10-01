@@ -19,7 +19,7 @@
     "test:all": "npm test && npm run test:e2e:append",
     "report:generate": "allure generate allure-results -o allure-report",
     "report:open": "allure open allure-report",
-    "report:watch": "allure watch allure-results",
+    "report:watch": "allure watch allure-results --no-new-only -o allure-report-watch",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "migration:run": "echo 'No migrations in this phase (synchronize:true)'"
   },

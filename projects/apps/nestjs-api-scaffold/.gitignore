@@ -9,6 +9,7 @@ coverage/
 # Allure 測試報告（本地產物，不提交）
 allure-results/
 allure-report/
+allure-report-watch/
 
 # 環境變數（不得提交至版本庫）
 .env

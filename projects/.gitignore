@@ -5,6 +5,7 @@ coverage/
 .turbo/
 allure-results/
 allure-report/
+allure-report-watch/
 .env
 .env.*
 !.env.example

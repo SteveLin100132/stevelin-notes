@@ -48,6 +48,8 @@ viewer app 與 build 快取在 `~/.notecraft/`（`app-<version>/`、`cache/<hash
 | `npm run projects:install`   | 安裝 `projects/` monorepo 依賴（首次或新增 app 後）                  |
 | `npm run api:dev`            | 以 watch 模式啟動 `nestjs-api-scaffold`（`http://localhost:3000`，Swagger 在 `/api-docs`） |
 | `npm run api:build` / `api:start` / `api:test` | build／build 後以正式模式啟動／跑 unit tests          |
+| `npm run api:test:e2e` / `api:test:all` | 跑 e2e／unit + e2e（`test:all` 的 Allure 結果同時包含兩者）       |
+| `npm run api:report:generate` / `api:report:open` / `api:report:watch` | 產生／開啟／即時監看 Allure 報告（讀 app 目錄下的 `allure-results/`） |
 
 `projects/` 底下的專案是一般 Node 專案，可以正常跑 `tsc`、`nest build`、jest 等工具（下方的驗證規則只適用於筆記）。
 進 `projects/` 後用 `npm run <task> -- --filter=<app>` 操作單一 app。
