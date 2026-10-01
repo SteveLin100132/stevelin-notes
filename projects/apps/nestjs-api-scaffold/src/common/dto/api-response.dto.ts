@@ -1,8 +1,4 @@
-import {
-  ApiProperty,
-  ApiPropertyOptional,
-  getSchemaPath,
-} from "@nestjs/swagger";
+import { ApiHideProperty, ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "@nestjs/common";
 
 /**
@@ -65,11 +61,12 @@ export class ApiResponseDto<T = unknown> {
    * - 錯誤時固定為 `null`
    *
    * Swagger 中此欄位的實際 schema 由 `ApiResponseDto.of()` 工廠方法注入。
+   *
+   * 基底 schema 刻意**不含** `data`（`@ApiHideProperty()`）：若在這裡宣告，
+   * 會產出沒有欄位定義的 `type: object`，codegen 轉成 `{ [key: string]: unknown }`，
+   * 與 `of()` 注入的具體型別交集後，前端讀不存在的欄位也不會報錯（型別安全被稀釋）。
    */
-  @ApiPropertyOptional({
-    description: "原始回應資料（錯誤時為 null）",
-    nullable: true,
-  })
+  @ApiHideProperty()
   data!: T | null;
 
   /**
@@ -113,6 +110,7 @@ export class ApiResponseDto<T = unknown> {
         {
           properties: {
             data: {
+              description: "原始回應資料（錯誤時為 null）",
               nullable: true,
               allOf: [{ $ref: getSchemaPath(DataClass) }],
             },

@@ -11,5 +11,6 @@ import type { ApiResponseDto } from './apiResponseDto';
 import type { HealthStatusDto } from './healthStatusDto';
 
 export type GetHealth200 = ApiResponseDto & ({
+  /** 原始回應資料（錯誤時為 null） */
   data?: HealthStatusDto | null;
 });

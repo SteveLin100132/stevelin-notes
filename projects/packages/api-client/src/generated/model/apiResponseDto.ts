@@ -7,7 +7,6 @@
  * 📄 [OpenAPI JSON Spec](/openapi.json)
  * OpenAPI spec version: 1.0
  */
-import type { ApiResponseDtoData } from './apiResponseDtoData';
 
 export interface ApiResponseDto {
   /** 是否成功 */
@@ -16,11 +15,6 @@ export interface ApiResponseDto {
   code: number;
   /** 成功或錯誤訊息 */
   message: string;
-  /**
-     * 原始回應資料（錯誤時為 null）
-     * @nullable
-     */
-  data?: ApiResponseDtoData;
   /** 回應產生的 ISO 8601 UTC 時間字串 */
   timestamp: string;
   /** 請求追蹤 UUID v4，可用於日誌關聯 */

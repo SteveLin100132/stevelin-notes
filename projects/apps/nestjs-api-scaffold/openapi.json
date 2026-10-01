@@ -19,6 +19,7 @@
                     {
                       "properties": {
                         "data": {
+                          "description": "原始回應資料（錯誤時為 null）",
                           "nullable": true,
                           "allOf": [
                             {
@@ -97,6 +98,7 @@
                     {
                       "properties": {
                         "data": {
+                          "description": "原始回應資料（錯誤時為 null）",
                           "nullable": true,
                           "allOf": [
                             {
@@ -149,11 +151,6 @@
             "type": "string",
             "description": "成功或錯誤訊息",
             "example": "OK"
-          },
-          "data": {
-            "type": "object",
-            "description": "原始回應資料（錯誤時為 null）",
-            "nullable": true
           },
           "timestamp": {
             "type": "string",

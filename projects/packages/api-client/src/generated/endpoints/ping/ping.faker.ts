@@ -16,5 +16,5 @@ import type {
 } from '../../model';
 
 
-export const getGetPingResponseMock = (): GetPing200 => ({...{success: faker.datatype.boolean(), code: faker.number.float({fractionDigits: 2}), message: faker.string.alpha({length: {min: 10, max: 20}}), data: faker.helpers.arrayElement([{}, null]), timestamp: faker.string.alpha({length: {min: 10, max: 20}}), traceId: faker.string.alpha({length: {min: 10, max: 20}})},...{data: faker.helpers.arrayElement([{pong: faker.datatype.boolean()},null,])},})
+export const getGetPingResponseMock = (): GetPing200 => ({...{success: faker.datatype.boolean(), code: faker.number.float({fractionDigits: 2}), message: faker.string.alpha({length: {min: 10, max: 20}}), timestamp: faker.string.alpha({length: {min: 10, max: 20}}), traceId: faker.string.alpha({length: {min: 10, max: 20}})},...{data: faker.helpers.arrayElement([{pong: faker.datatype.boolean()},null,])},})
 

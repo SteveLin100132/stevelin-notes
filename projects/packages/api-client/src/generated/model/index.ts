@@ -9,7 +9,6 @@
  */
 
 export * from './apiResponseDto';
-export * from './apiResponseDtoData';
 export * from './getHealth200';
 export * from './getHealth503';
 export * from './getHealth503Data';

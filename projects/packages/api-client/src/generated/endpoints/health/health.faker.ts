@@ -16,5 +16,5 @@ import type {
 } from '../../model';
 
 
-export const getGetHealthResponseMock = (): GetHealth200 => ({...{success: faker.datatype.boolean(), code: faker.number.float({fractionDigits: 2}), message: faker.string.alpha({length: {min: 10, max: 20}}), data: faker.helpers.arrayElement([{}, null]), timestamp: faker.string.alpha({length: {min: 10, max: 20}}), traceId: faker.string.alpha({length: {min: 10, max: 20}})},...{data: faker.helpers.arrayElement([{status: faker.helpers.arrayElement(['ok','error'] as const), details: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])},null,])},})
+export const getGetHealthResponseMock = (): GetHealth200 => ({...{success: faker.datatype.boolean(), code: faker.number.float({fractionDigits: 2}), message: faker.string.alpha({length: {min: 10, max: 20}}), timestamp: faker.string.alpha({length: {min: 10, max: 20}}), traceId: faker.string.alpha({length: {min: 10, max: 20}})},...{data: faker.helpers.arrayElement([{status: faker.helpers.arrayElement(['ok','error'] as const), details: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])},null,])},})
 

@@ -11,5 +11,6 @@ import type { ApiResponseDto } from './apiResponseDto';
 import type { PingDto } from './pingDto';
 
 export type GetPing200 = ApiResponseDto & ({
+  /** 原始回應資料（錯誤時為 null） */
   data?: PingDto | null;
 });
