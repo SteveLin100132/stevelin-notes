@@ -1,6 +1,6 @@
 ---
 title: NestJS API 腳手架盤點：開箱就有的基礎建設
-description: 盤點 nestjs-api-scaffold 內建了哪些基礎建設：Middleware、Guard、Interceptor、Exception Filter 各放了什麼，加上設定、Prometheus 指標、Swagger、TypeORM、健康檢查、優雅關機與測試。
+description: 盤點 nestjs-api-scaffold 內建了哪些基礎建設：Middleware、Guard、Interceptor、Exception Filter 各放了什麼，加上設定、Prometheus 指標、Swagger 與前端 API Client 產生、TypeORM、健康檢查、優雅關機與測試。
 tags: [nestjs, nodejs, backend, scaffold, tech-sharing]
 category: 技術分享
 createdAt: '2026-10-01'
@@ -27,7 +27,8 @@ updatedAt: '2026-10-01'
 | 例外處理 | Exception Filter | `@Catch()`、`HttpException`、`Logger`（Nest 內建） | `AllExceptionsFilter`，遮蔽未預期錯誤的細節 | `common/filters/all-exceptions.filter.ts` |
 | 設定管理 | Dynamic Module | `@nestjs/config`（官方）：`ConfigModule`、`ConfigService` | `.env` + `ConfigService`，其他模組以 `forRootAsync` 注入 | `.env.example`、`app.module.ts` |
 | Prometheus 指標 | 自訂 Module | `prom-client`（第三方）：`Registry`、`Counter`、`Histogram` | `MetricsService` + `GET /metrics` | `metrics/` |
-| API 文件 | Decorator + Dynamic Module | `@nestjs/swagger`（官方）：`SwaggerModule`、`DocumentBuilder`、`@ApiProperty` 等 | `/api-docs`、`/openapi.json` | `main.ts`、`openapi/`、`common/dto/` |
+| API 文件 | Decorator + Dynamic Module | `@nestjs/swagger`（官方）：`SwaggerModule`、`DocumentBuilder`、`@ApiProperty` 等 | `/api-docs`、`/openapi.json`；`buildOpenApiDocument()` 集中建構，operationId 取 method 名稱 | `main.ts`、`openapi/`、`common/dto/` |
+| 前端 API Client | 建置腳本（不在請求管線內） | `orval`、`msw`、`@faker-js/faker`（第三方）；產出依賴 `@tanstack/react-query` | `openapi:export` 輸出靜態 `openapi.json`，Orval 產生 TanStack Query hooks、型別與 MSW mock | `openapi/export-openapi.ts`、`projects/packages/api-client/` |
 | 資料庫 | Dynamic Module | `@nestjs/typeorm`（官方）、`typeorm`、`better-sqlite3`（第三方） | `TypeOrmModule.forRootAsync`，SQLite 檔案或 `:memory:` | `app.module.ts` |
 | 健康檢查 | 自訂 Module | `DataSource`（`typeorm`）；`@nestjs/terminus`（官方，已引入、尚未使用其 indicator） | `GET /health`，以 `SELECT 1` 做深度檢查 | `health/` |
 | 優雅關機 | Lifecycle hook + process signal | `app.enableShutdownHooks()`（Nest 內建）、`process.on`（Node.js） | SIGTERM / SIGINT 時等請求做完，逾時強制結束 | `shutdown.ts`、`main.ts` |
@@ -433,6 +434,19 @@ async getHealth(): Promise<HealthStatusDto> { /* ... */ }
 1. 產生「`ApiResponseDto` 外殼 + `data` 是 `HealthStatusDto`」的 schema。`@nestjs/swagger` 在執行期讀不到 TypeScript 泛型，所以需要這個工廠方法。
 :::
 
+### 從文件產生前端 API Client
+
+同一份文件也是前端 codegen 的輸入。`npm run api:openapi:export` 不啟動 server、直接把文件輸出成 `openapi.json`，`npm run api:client:generate` 再以 [Orval](https://orval.dev) 產生 `projects/packages/api-client`：TanStack Query hooks（如 `useGetPing()`）、DTO 型別與 MSW mock。後端改了 API，前端重新產生後，對不上的地方會在編譯時直接報錯。
+
+| 項目 | 說明 |
+| :--- | :--- |
+| 文件建構 | `src/openapi/openapi-document.ts` 的 `buildOpenApiDocument()`，`main.ts`、e2e 測試與 export script 共用 |
+| operationId | 只取 method 名稱，產出 `useGetPing` 而不是 `usePingControllerGetPing`；method 名稱因此必須全專案唯一 |
+| 版本控制 | `openapi.json` 與產出的 `src/generated/` 都提交，PR 的 diff 就是 API 變更紀錄 |
+| 執行環境 | Orval 8 需要 Node ≥ 22.18 |
+
+完整流程、Orval 設定與踩過的型別陷阱，見 [從 NestJS 到 React：用 OpenAPI Codegen 產生型別安全的 API Client](./nestjs-openapi-codegen.mdx)。
+
 ## 資料庫：TypeORM + SQLite
 
 資料庫用 TypeORM 搭配 better-sqlite3，不需要另外架資料庫服務就能啟動。設定同樣用 `forRootAsync` 延後到 `ConfigService` 可用時才建立：
@@ -559,6 +573,7 @@ import NestjsScaffoldGracefulShutdown from '@notes/components/nestjs-scaffold-gr
 | :--- | :--- | :--- |
 | 錯誤被記兩次 | Controller 丟出的例外會先經過 `LoggingInterceptor`，再到 `AllExceptionsFilter`，兩邊各印一行日誌、各加一次 `http_errors_total`。實測一個 500 請求，計數器加 2 | 二擇一記錄，例如 Interceptor 只記請求數與耗時，錯誤統一交給 Filter |
 | Filter 一律用 ERROR | Filter 不分狀態碼都用 `logger.error()`，404、429 這類用戶端錯誤也會出現在 ERROR 日誌 | 比照 Interceptor，4xx 改用 WARN |
+| 業務日誌不帶 traceId | traceId 雖然在整條請求鏈上都能用 `TraceContext.get()` 取得，但只有 `LoggingInterceptor` 與 `AllExceptionsFilter` 手動把它接在訊息尾端；Service 裡用 `new Logger(...)` 印的日誌不會自動帶 traceId，只能每行自己附加 | 新增繼承 `ConsoleLogger` 的 logger，在輸出時自動讀 `TraceContext.get()` 附加 traceId，於 `main.ts` 以 `app.useLogger()` 註冊；Interceptor 與 Filter 手動附加的部分一併移除 |
 | 404 的指標 | 找不到路由時不會經過 Interceptor，只有 `http_errors_total` 加 1；而且 `route` 標籤是原始 URL，被掃描時標籤值會無限增長 | 404 的 `route` 統一記成固定字串，例如 `unmatched` |
 | 資料表自動同步 | `synchronize: true`，沒有 migration 與 seed 機制 | 有正式資料前改成 TypeORM migration |
 | `appConfigFactory` 沒有接上 | `src/config/app.config.ts` 定義了型別化的設定工廠，但 `ConfigModule.forRoot` 沒有 `load` 它，各處仍直接讀環境變數字串 | 用 `load: [appConfigFactory]` 接上，順便集中預設值 |
@@ -571,7 +586,7 @@ import NestjsScaffoldGracefulShutdown from '@notes/components/nestjs-scaffold-gr
 
 | 項目 | 狀態 | 現況 | 方向 |
 | :--- | :--- | :--- | :--- |
-| OpenAPI Codegen | :badge[進行中]{variant="tip"} | 已輸出靜態 `openapi.json`，並在 `projects/packages/api-client` 以 Orval 產生 React（TanStack Query）client 與 MSW mock，詳見 [OpenAPI Codegen](./nestjs-openapi-codegen.mdx)；CI 同步檢查尚未接上 | 從 `/openapi.json` 產生前端可直接使用的型別與 API client，並納入 CI 檢查文件與程式碼是否同步 |
+| OpenAPI Codegen | :badge[完成]{variant="success"} | `npm run api:client:generate` 輸出 `openapi.json` 並以 Orval 產生 `projects/packages/api-client`（TanStack Query hooks、型別、MSW mock），詳見 [OpenAPI Codegen](./nestjs-openapi-codegen.mdx) | 後續可在 CI 重新產生並以 `git diff --exit-code` 檢查文件與程式碼是否同步（尚未接上） |
 | Authentication | :badge[規劃中]{variant="info"} | 尚未有任何登入或身分驗證機制 | 介接 [Casdoor](https://casdoor.org/)（OIDC），後端驗證 Casdoor 簽發的 JWT，以全域 Guard 掛上 |
 | Authorization | :badge[未開始]{variant="neutral"} | 尚未有角色或權限控管 | 待 Authentication 完成後決定，評估沿用 Casdoor 的權限模型或在後端自行實作 RBAC |
 | Validation 選型 | :badge[待評估]{variant="warning"} | 沒有 `ValidationPipe`，請求參數未做驗證 | 比較 `class-validator` 與 schema 型方案（如 Zod），需考慮和 Swagger 文件產生的整合 |
