@@ -1,0 +1,583 @@
+---
+title: NestJS API 腳手架盤點：開箱就有的基礎建設
+description: 盤點 nestjs-api-scaffold 內建了哪些基礎建設：Middleware、Guard、Interceptor、Exception Filter 各放了什麼，加上設定、Prometheus 指標、Swagger、TypeORM、健康檢查、優雅關機與測試。
+tags: [nestjs, nodejs, backend, scaffold, tech-sharing]
+category: 技術分享
+createdAt: '2026-10-01'
+updatedAt: '2026-10-01'
+---
+
+# NestJS API 腳手架盤點
+
+:::note{title="範圍"}
+本篇盤點的是本專案的 `projects/apps/nestjs-api-scaffold`（NestJS 11，來源為 [ai-sdd-todo-app/backend](https://github.com/SteveLin100132/ai-sdd-todo-app/tree/010-nestjs-rate-limit/backend)），所有描述都以實際程式碼與測試結果為準。從專案根目錄執行 `npm run api:dev` 即可啟動，Swagger UI 在 `http://localhost:3000/api-docs`。
+:::
+
+開一個新的 API 專案，花時間的往往不是第一支 Controller，而是它周圍那一圈：日誌怎麼印、錯誤怎麼回、回應格式是否統一、怎麼知道服務還活著、關機時會不會把請求砍到一半。這個腳手架做的事，是**把這些每個專案都要重做一次的橫切關注點，固定放進 NestJS 請求管線的各層**，業務程式只需要專心寫 Controller 與 Service。
+
+## 盤點總覽
+
+| 基礎建設 | NestJS 機制 | 實作 | 主要檔案 |
+| :--- | :--- | :--- | :--- |
+| HTTP 安全標頭 | Middleware | `helmet`，依 `NODE_ENV` 切換策略 | `common/middleware/helmet.middleware.ts` |
+| 請求追蹤 Trace ID | Middleware + AsyncLocalStorage | 沿用或產生 `X-Trace-Id`，整條請求共用 | `common/trace/` |
+| 速率限制 | Guard | `@nestjs/throttler` 的 `ThrottlerGuard` | `app.module.ts` |
+| 請求日誌 | Interceptor | `LoggingInterceptor`，依狀態碼分 LOG / WARN / ERROR | `common/interceptors/logging.interceptor.ts` |
+| 統一回應格式 | Interceptor | `ResponseInterceptor`，包成 `ApiResponseDto` | `common/interceptors/response.interceptor.ts` |
+| 例外處理 | Exception Filter | `AllExceptionsFilter`，遮蔽未預期錯誤的細節 | `common/filters/all-exceptions.filter.ts` |
+| 設定管理 | `@nestjs/config` | `.env` + `ConfigService` | `.env.example`、`app.module.ts` |
+| Prometheus 指標 | 自訂 Module | `prom-client`，`GET /metrics` | `metrics/` |
+| API 文件 | `@nestjs/swagger` | `/api-docs`、`/openapi.json` | `main.ts`、`common/dto/` |
+| 資料庫 | `@nestjs/typeorm` | TypeORM + better-sqlite3 | `app.module.ts` |
+| 健康檢查 | 自訂 Module | `GET /health`，以 `SELECT 1` 做深度檢查 | `health/` |
+| 優雅關機 | Lifecycle hook + process signal | SIGTERM / SIGINT 時等請求做完，逾時強制結束 | `shutdown.ts`、`main.ts` |
+| 自動化測試 | Jest + Supertest | unit 與 e2e 測試，Allure 報告 | `test/`、`src/**/*.spec.ts` |
+
+:::tip{title="兩個和直覺不太一樣的位置"}
+- **請求日誌放在 Interceptor，不是 Middleware。** Interceptor 包住 handler，拿得到執行後的最終狀態碼與丟出的例外；Middleware 只看得到請求進來的那一刻。
+- **Trace ID 反而放在最外層的 Middleware。** Exception Filter 在 Interceptor 外面執行，如果 context 在 Interceptor 才建立，Filter 就讀不到同一個 traceId，錯誤日誌會對不上請求日誌。
+:::
+
+## 模組怎麼組起來
+
+![AppModule 的組裝方式：左側 imports 由 ConfigModule 以 ConfigService 提供設定給 TypeOrmModule 與 ThrottlerModule，HealthModule 使用 DataSource，MetricsModule 提供 MetricsService；右側是全域掛載的 Middleware、APP_GUARD、APP_INTERCEPTOR 與 APP_FILTER；下方是 main.ts 負責的 Swagger、openapi.json、優雅關機與程序層級例外處理](../assets/illustrations/nestjs-api-scaffold-infra-modules.svg)
+
+所有基礎建設都在 `AppModule` 組裝。全域的 Guard、Interceptor、Filter 是用 `APP_GUARD`、`APP_INTERCEPTOR`、`APP_FILTER` 這類 DI token 註冊，而不是在 `main.ts` 寫 `app.useGlobalGuards(new ...)`：
+
+:::annotate
+```ts title="src/app.module.ts" {13-16,21}
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === "test", // (1)!
+    }),
+    ThrottlerModule.forRootAsync({ /* 依 ConfigService 讀 TTL 與上限 */ }),
+    TypeOrmModule.forRootAsync({ /* 依 ConfigService 讀資料庫路徑 */ }),
+    HealthModule,
+    MetricsModule,
+  ],
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard }, // (2)!
+    { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor }, // (3)!
+    { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
+  ],
+})
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(HelmetMiddleware, TraceMiddleware).forRoutes("*"); // (4)!
+  }
+}
+```
+
+1. 測試環境不讀 `.env`，避免本機開發設定污染測試結果。
+2. 用 DI token 註冊，NestJS 才能替 `ThrottlerGuard` 注入 `ThrottlerStorage` 與 `Reflector`；自己 `new` 出來的實例拿不到這些依賴。
+3. 兩個 Interceptor 依註冊順序由外而內包住 handler：`LoggingInterceptor` 在外層，`ResponseInterceptor` 在內層。
+4. Helmet 排在 Trace 前面，安全標頭在任何自訂邏輯之前就先套上。
+:::
+
+## 一個請求會經過哪些層
+
+NestJS 處理一個請求的固定順序是 **Middleware → Guard → Interceptor（前段）→ Controller → Interceptor（後段）**，過程中任何一層丟出例外，就交給 **Exception Filter** 收尾。腳手架在每一層各放了一樣東西，下面用四種情境實際走一遍，留意每種情境下哪幾層有執行、回應長什麼樣子、日誌與指標各記了什麼。
+
+{/* @ai-visualize
+id: nestjs-scaffold-request-pipeline
+type: motion
+prompt: |
+  核心洞察：腳手架的基礎建設都掛在 NestJS 請求管線的固定位置；同一個請求在不同情境下，
+            會走過不同的層、由不同的元件產生回應，而 traceId 從頭到尾都是同一個。
+  互動：四個情境分頁（正常請求 GET /health、超過速率限制 429、程式丟出未預期錯誤 500、GET /metrics 跳過包裝），
+        每個情境有 4–6 個步驟，可點上一步 / 下一步、自動播放、重置。
+  圖形：上方是橫向的請求管線示意：Client、Middleware（Helmet、Trace）、Guard（Throttler）、
+        Interceptor（Logging 外層、Response 內層）、Controller 五欄，Exception Filter 是管線下方橫跨的長條；
+        請求以帶 traceId 的藍色小標籤沿管線前進，回應以返回箭頭表示，錯誤路徑改走橘色並落到 Filter；
+        本步驟執行的層以實線強調，未經過的層淡化並標「未執行」。
+        下方三個面板：回應（狀態列、關鍵標頭、JSON body）、日誌輸出（LOG / WARN / ERROR 等級著色）、
+        指標變化（http_requests_total、http_errors_total 本步驟的增量）。
+  資料/數值：traceId 3f2a…；500 情境的 body message 固定為 Internal Server Error，且日誌出現兩行 ERROR、
+            http_errors_total 增加 2；429 情境帶 Retry-After，LoggingInterceptor 未執行；
+            /metrics 回傳 text/plain，不經 ResponseInterceptor 包裝。
+caption: 切換情境、逐步推進，看每一層何時出手、最後由誰產生回應
+status: generated
+*/}
+import GeneratedFrame from '@/components/GeneratedFrame.astro'
+import NestjsScaffoldRequestPipeline from '@notes/components/nestjs-scaffold-request-pipeline'
+
+<GeneratedFrame id="nestjs-scaffold-request-pipeline" type="motion" prompt={"核心洞察：腳手架的基礎建設都掛在 NestJS 請求管線的固定位置；同一個請求在不同情境下，\n          會走過不同的層、由不同的元件產生回應，而 traceId 從頭到尾都是同一個。\n互動：四個情境分頁（正常請求 GET /health、超過速率限制 429、程式丟出未預期錯誤 500、GET /metrics 跳過包裝），\n      每個情境有 4–6 個步驟，可點上一步 / 下一步、自動播放、重置。\n圖形：上方是橫向的請求管線示意：Client、Middleware（Helmet、Trace）、Guard（Throttler）、\n      Interceptor（Logging 外層、Response 內層）、Controller 五欄，Exception Filter 是管線下方橫跨的長條；\n      請求以帶 traceId 的藍色小標籤沿管線前進，回應以返回箭頭表示，錯誤路徑改走橘色並落到 Filter；\n      本步驟執行的層以實線強調，未經過的層淡化並標「未執行」。\n      下方三個面板：回應（狀態列、關鍵標頭、JSON body）、日誌輸出（LOG / WARN / ERROR 等級著色）、\n      指標變化（http_requests_total、http_errors_total 本步驟的增量）。\n資料/數值：traceId 3f2a…；500 情境的 body message 固定為 Internal Server Error，且日誌出現兩行 ERROR、\n          http_errors_total 增加 2；429 情境帶 Retry-After，LoggingInterceptor 未執行；\n          /metrics 回傳 text/plain，不經 ResponseInterceptor 包裝。\n"} caption="切換情境、逐步推進，看每一層何時出手、最後由誰產生回應">
+  <NestjsScaffoldRequestPipeline client:visible />
+</GeneratedFrame>
+
+## Middleware：安全標頭與 Trace ID
+
+### Helmet 安全標頭
+
+`HelmetMiddleware` 把 [helmet](https://helmetjs.github.io/) 包成 NestJS Middleware，依 `NODE_ENV` 決定策略。判斷只在建構時做一次，之後每個請求直接轉呼叫已建好的 helmet 函式。
+
+| `NODE_ENV` | 策略 | 原因 |
+| :--- | :--- | :--- |
+| `development` | 關閉 CSP，其餘照 helmet 預設 | CSP 會擋掉 Swagger UI 的 inline script |
+| `production` | helmet 完整預設（含 HSTS、CSP） | 正式環境採最嚴格設定 |
+| 其他或未設定 | 視同 production，並印出 WARN | 設定漏掉時寧可偏嚴 |
+
+e2e 測試會檢查回應帶有 `X-Content-Type-Options: nosniff`、`X-Frame-Options`、`Strict-Transport-Security` 等標頭，並且**沒有** `X-Powered-By`（不對外透露後端是 Express）。如果 helmet 初始化失敗，會記一筆 WARN 並改用什麼都不做的 Middleware，服務照常啟動，不會因為安全標頭沒設上就整個起不來。
+
+### Trace ID：一條請求一個 ID
+
+分散式系統排查問題時，最需要的是「這筆錯誤日誌對應哪一個請求」。腳手架用 Node.js 內建的 `AsyncLocalStorage` 讓 traceId 跟著請求的非同步流程走，不需要一路當參數往下傳：
+
+:::annotate
+```ts title="src/common/trace/trace.middleware.ts"
+use(req: Request, _res: Response, next: NextFunction): void {
+  const headerValue = req.headers["x-trace-id"];
+  const rawId = Array.isArray(headerValue) ? headerValue[0] : headerValue;
+
+  const traceId =
+    rawId && UUID_V4_REGEX.test(rawId) ? rawId : crypto.randomUUID(); // (1)!
+
+  TraceContext.run(traceId, () => next()); // (2)!
+}
+```
+
+1. 上游（API Gateway、其他服務）帶來合法的 UUID v4 就沿用，讓整條呼叫鏈共用同一個 ID；格式不對或沒帶就自己產生。
+2. 在 context 內呼叫 `next()`，之後的 Guard、Interceptor、Controller、Filter 都在同一個 context 裡執行。
+:::
+
+存放 traceId 的 `TraceContext` 只是 `AsyncLocalStorage` 的薄包裝：
+
+:::annotate
+```ts title="src/common/trace/trace.context.ts"
+const asyncLocalStorage = new AsyncLocalStorage<string>(); // (1)!
+
+export const TraceContext = {
+  run(traceId: string, fn: () => void): void {
+    asyncLocalStorage.run(traceId, fn);
+  },
+  get(): string | undefined {
+    return asyncLocalStorage.getStore(); // (2)!
+  },
+};
+```
+
+1. 刻意做成模組層級的單例而不是 DI provider：每次 DI 建一個新實例，就會是不同的儲存空間，Middleware 寫進去的值其他地方讀不到。
+2. Interceptor 與 Filter 呼叫 `TraceContext.get()` 取得同一個值，寫進日誌與回應的 `traceId` 欄位。
+:::
+
+## Guard：速率限制
+
+`ThrottlerGuard` 以全域 Guard 掛上，預設**每個 IP 在 60 秒內最多 100 次請求**，兩個數字都可以用環境變數調整。健康檢查與指標端點加了 `@SkipThrottle()` 豁免，因為 Kubernetes probe 和 Prometheus 都會固定頻率呼叫，不該被自己的限流擋掉。
+
+:::annotate
+```ts title="src/app.module.ts"
+ThrottlerModule.forRootAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => ({
+    throttlers: [
+      {
+        ttl: parseInt(configService.get<string>("THROTTLE_TTL") ?? "60000", 10), // (1)!
+        limit: parseInt(configService.get<string>("THROTTLE_LIMIT") ?? "100", 10),
+      },
+    ],
+  }),
+}),
+```
+
+1. `ttl` 單位是毫秒。沒設環境變數時用 60000 ms 與 100 次。
+:::
+
+```ts title="src/health/health.controller.ts" {2}
+@ApiTags("health")
+@SkipThrottle()
+@Controller()
+export class HealthController { /* ... */ }
+```
+
+`@SkipThrottle()` 標在 class 上，整個 Controller 都不受限流；`MetricsController` 也有同樣的標記。
+
+實際行為要看 `@nestjs/throttler` v6 的預設儲存實作，它和常見的「固定時間窗」不太一樣：
+
+- **每一次請求各自計時**：每筆請求記下自己的到期時間（當下 + `ttl`），到期就不再計入。這比較接近滑動視窗，不是每 60 秒整批歸零。
+- **超過上限就整段封鎖**：第 `limit + 1` 次請求觸發封鎖，從那一刻起封鎖 `ttl` 這麼長（`blockDuration` 預設等於 `ttl`），期間所有請求都回 429，而且**不計數**。
+- **回應標頭**：未封鎖時帶 `X-RateLimit-Limit`、`X-RateLimit-Remaining`、`X-RateLimit-Reset`；被擋下時帶 `Retry-After`，告訴用戶端還要等幾秒。
+
+{/* @ai-visualize
+id: nestjs-scaffold-rate-limit
+type: motion
+prompt: |
+  核心洞察：@nestjs/throttler v6 不是固定時間窗，而是「每筆請求各自計時 + 超過上限整段封鎖 ttl」；
+            所以一次爆量之後，即使之前的請求已經到期，仍要等封鎖結束才能恢復。
+  互動：slider 調整請求速率（0.5–6 次/秒），分段按鈕切換 limit（5 / 10）與 ttl（5 / 10 秒）；
+        按鈕「突發 8 個請求」；播放 / 暫停與重置。模擬時鐘持續推進 30 秒。
+  圖形：上方是請求時間軸（秒，含刻度與格線）：通過的請求是藍色短豎線，被擋下的是橘色短豎線，
+        封鎖期間以淺橘色帶狀區間標示並寫「封鎖中 · Retry-After n s」；目前時間以深藍游標表示。
+        下方是折線圖：視窗內仍有效的請求數隨時間變化，水平虛線標出 limit。
+        右側是目前回應標頭面板（X-RateLimit-Limit / Remaining / Reset 或 429 + Retry-After），
+        以及三個數字卡：通過數、被擋數、目前狀態（正常 / 封鎖中）。
+  資料/數值：預設 limit 5、ttl 10 秒、速率 1 次/秒；腳手架正式預設為 100 次 / 60 秒，按比例縮小方便觀察。
+caption: 調整請求速率或來一波突發流量，看何時開始回 429、要等多久才恢復
+status: generated
+*/}
+import NestjsScaffoldRateLimit from '@notes/components/nestjs-scaffold-rate-limit'
+
+<GeneratedFrame id="nestjs-scaffold-rate-limit" type="motion" prompt={"核心洞察：@nestjs/throttler v6 不是固定時間窗，而是「每筆請求各自計時 + 超過上限整段封鎖 ttl」；\n          所以一次爆量之後，即使之前的請求已經到期，仍要等封鎖結束才能恢復。\n互動：slider 調整請求速率（0.5–6 次/秒），分段按鈕切換 limit（5 / 10）與 ttl（5 / 10 秒）；\n      按鈕「突發 8 個請求」；播放 / 暫停與重置。模擬時鐘持續推進 30 秒。\n圖形：上方是請求時間軸（秒，含刻度與格線）：通過的請求是藍色短豎線，被擋下的是橘色短豎線，\n      封鎖期間以淺橘色帶狀區間標示並寫「封鎖中 · Retry-After n s」；目前時間以深藍游標表示。\n      下方是折線圖：視窗內仍有效的請求數隨時間變化，水平虛線標出 limit。\n      右側是目前回應標頭面板（X-RateLimit-Limit / Remaining / Reset 或 429 + Retry-After），\n      以及三個數字卡：通過數、被擋數、目前狀態（正常 / 封鎖中）。\n資料/數值：預設 limit 5、ttl 10 秒、速率 1 次/秒；腳手架正式預設為 100 次 / 60 秒，按比例縮小方便觀察。\n"} caption="調整請求速率或來一波突發流量，看何時開始回 429、要等多久才恢復">
+  <NestjsScaffoldRateLimit client:visible />
+</GeneratedFrame>
+
+:::warning{title="放到正式環境前要注意的兩件事"}
+- **計數依據是 `req.ip`。** 服務放在反向代理或負載平衡器後面時，要設定 Express 的 `trust proxy`，否則所有人看起來都是同一個 IP，會一起被限流。e2e 測試裡「不同 X-Forwarded-For 各自計數」這個案例目前是 `xit`（略過），就是因為還沒設定。
+- **計數存在記憶體。** 開多個實例時每個實例各算各的，實際上限會變成「實例數 × limit」。需要跨實例共用時，要換成 Redis 之類的共用儲存。
+:::
+
+## Interceptor：請求日誌與統一回應格式
+
+### LoggingInterceptor：一行看懂一個請求
+
+每個請求結束時印一行日誌，等級依狀態碼決定，traceId 附在行尾，方便 log 平台用關鍵字搜尋：
+
+```text
+[Nest] 60808  - 10/01/2026, 09:12:03 AM     LOG [HTTP] GET /health 200 +2ms | traceId=3f2a9c1e-...
+[Nest] 60808  - 10/01/2026, 09:12:05 AM    WARN [HTTP] GET /todos/99 404 +1ms | traceId=8b71e0d4-...
+[Nest] 60808  - 10/01/2026, 09:12:07 AM   ERROR [HTTP] POST /todos 500 +5ms | traceId=c04d5a77-...
+```
+
+| 狀態碼 | 等級 | 附加內容 |
+| :--- | :--- | :--- |
+| 2xx / 3xx | `LOG` | 無 |
+| 4xx | `WARN` | 無 |
+| 5xx | `ERROR` | 換行附上 stack trace |
+
+同一個地方也順便呼叫 `MetricsService` 記錄請求數與耗時，所以**日誌和指標的數字來源一致**。`NODE_ENV=test` 時整個 Interceptor 不輸出，避免測試輸出被請求日誌洗版。
+
+### ResponseInterceptor：Controller 只回傳資料
+
+Controller 直接 `return` 資料就好，`ResponseInterceptor` 會用 RxJS 的 `map()` 包成統一結構；錯誤則由下一節的 Exception Filter 包成同樣的結構，兩條路徑的欄位一致：
+
+::::tabs
+:::tab{label="成功（ResponseInterceptor）"}
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "OK",
+  "data": { "status": "ok" },
+  "timestamp": "2026-10-01T01:12:03.120Z",
+  "traceId": "3f2a9c1e-7b4d-4e1a-9c2f-5d8e6a1b0c3d"
+}
+```
+:::
+:::tab{label="錯誤（AllExceptionsFilter）"}
+```json
+{
+  "success": false,
+  "code": 503,
+  "message": "db unreachable",
+  "data": null,
+  "timestamp": "2026-10-01T01:12:05.004Z",
+  "traceId": "8b71e0d4-2c6a-4f3e-b5d1-9a0e7c4f2b18"
+}
+```
+:::
+::::
+
+少數端點不適合包裝，例如 Prometheus 要的是純文字格式。這時在 Controller 或方法上加 `@SkipResponseWrapper()`，Interceptor 讀到這個 metadata 就直接放行：
+
+:::annotate
+```ts title="src/common/interceptors/response.interceptor.ts"
+intercept(context: ExecutionContext, next: CallHandler<T>) {
+  const skip =
+    this.reflector.get<boolean>(SKIP_RESPONSE_WRAPPER, context.getHandler()) ??
+    this.reflector.get<boolean>(SKIP_RESPONSE_WRAPPER, context.getClass()); // (1)!
+
+  if (skip) return next.handle();
+
+  return next.handle().pipe(
+    map((data: T) => ({
+      success: true,
+      code: context.switchToHttp().getResponse<Response>().statusCode, // (2)!
+      message: "OK",
+      data,
+      timestamp: new Date().toISOString(),
+      traceId: TraceContext.get() ?? crypto.randomUUID(), // (3)!
+    })),
+  );
+}
+```
+
+1. 先看方法上的標記，沒有再看 Controller class 上的，所以可以整個 Controller 跳過，也可以只跳過單一方法。
+2. 狀態碼取自 response 物件，`@HttpCode(201)` 之類的設定會正確反映在 `code` 欄位。
+3. 和日誌用同一個 traceId，用戶端回報問題時附上這個值，就能直接查到對應的日誌。
+:::
+
+## Exception Filter：統一錯誤回應
+
+`AllExceptionsFilter` 用 `@Catch()` 不帶參數，接住**所有**沒被處理的例外。它最重要的工作是區分兩種錯誤：
+
+| 例外類型 | 回應狀態碼 | 回應的 `message` | 日誌 |
+| :--- | :--- | :--- | :--- |
+| `HttpException`（含 `NotFoundException`、`ServiceUnavailableException` 等） | 例外本身的狀態碼 | 例外本身的訊息 | ERROR + stack |
+| 其他（`TypeError`、資料庫驅動錯誤等） | 500 | 固定為 `Internal Server Error` | ERROR + 原始訊息 + stack |
+
+:::annotate
+```ts title="src/common/filters/all-exceptions.filter.ts"
+@Catch() // (1)!
+export class AllExceptionsFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost): void {
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const responseMessage =
+      exception instanceof HttpException
+        ? exception.message
+        : "Internal Server Error"; // (2)!
+
+    this.logger.error(mainLine, detailBlock); // (3)!
+    this.metricsService?.recordError(method, route, status); // (4)!
+
+    response.status(status).json({
+      success: false, code: status, message: responseMessage,
+      data: null, timestamp: new Date().toISOString(), traceId,
+    });
+  }
+}
+```
+
+1. 不指定例外類型，404（找不到路由）、429（被限流）、資料庫錯誤全都會進來。
+2. 未預期錯誤的原始訊息可能含有 SQL、檔案路徑甚至連線字串，只寫進日誌，不回給用戶端。
+3. 日誌第一行格式和 `LoggingInterceptor` 一致，第二行起是錯誤名稱、訊息與完整 stack。
+4. `MetricsService` 以 `@Optional()` 注入，單元測試不提供也能運作。
+:::
+
+Filter 直接呼叫 `response.json()`，不會再經過 `ResponseInterceptor`，所以不會發生「錯誤回應被包兩層」的狀況。
+
+## 設定管理
+
+`ConfigModule.forRoot({ isGlobal: true })` 在啟動時讀取專案根目錄的 `.env`（底層用 dotenv），之後任何模組都能注入 `ConfigService`，不必各自 import。需要設定的模組（Throttler、TypeORM）用 `forRootAsync` + `useFactory`，等 `ConfigService` 準備好才建立。
+
+| 變數 | 預設值 | 用途 |
+| :--- | :--- | :--- |
+| `PORT` | `3000` | HTTP 監聽埠 |
+| `NODE_ENV` | `development` | 影響 Helmet 策略、日誌輸出、資料庫模式 |
+| `DATABASE_PATH` | `./data/todo.sqlite` | SQLite 檔案位置 |
+| `THROTTLE_TTL` | `60000` | 速率限制的時間長度（毫秒） |
+| `THROTTLE_LIMIT` | `100` | 時間內允許的請求數 |
+| `SHUTDOWN_TIMEOUT_MS` | `10000` | 優雅關機的等待上限（毫秒），`.env.example` 沒有列出 |
+
+第一次啟動前複製一份範本即可：
+
+```bash
+cp .env.example .env
+```
+
+## Prometheus 指標
+
+`GET /metrics` 回傳 Prometheus 純文字格式，內容是三個 HTTP 指標，標籤都是 `method`、`route`、`status_code`：
+
+| 指標 | 型別 | 記錄時機 |
+| :--- | :--- | :--- |
+| `http_requests_total` | Counter | `LoggingInterceptor` 在每個請求結束時記錄 |
+| `http_errors_total` | Counter | 狀態碼 ≥ 400 時，由 Interceptor 與 Filter 記錄 |
+| `http_request_duration_seconds` | Histogram | 與請求數一起記錄；bucket 從 5 ms 到 5 s 共 10 級 |
+
+```text title="GET /metrics（節錄）"
+http_requests_total{method="GET",route="/health",status_code="200"} 42
+http_errors_total{method="GET",route="/nope",status_code="404"} 1
+http_request_duration_seconds_bucket{le="0.005",method="GET",route="/health",status_code="200"} 40
+http_request_duration_seconds_count{method="GET",route="/health",status_code="200"} 42
+```
+
+幾個設計選擇：
+
+- **獨立的 Registry**：不用 prom-client 的全域 Registry，每個 `MetricsService` 實例各有一份，測試之間不會互相污染。
+- **沒有開 `collectDefaultMetrics()`**：不收 Node.js 的 CPU、記憶體、event loop 等系統指標，需要時再打開。
+- **`route` 用路由樣板**：記的是 `/todos/:id` 而不是 `/todos/42`，避免標籤值無限增長，拖垮 Prometheus。
+
+## Swagger API 文件
+
+啟動後有三個文件相關端點：
+
+| 端點 | 內容 |
+| :--- | :--- |
+| `/api-docs` | Swagger UI 互動頁面 |
+| `/api-docs-json` | `SwaggerModule.setup` 自帶的 OpenAPI JSON |
+| `/openapi.json` | 同一份文件，另外掛一個慣用路徑，方便給程式碼產生器或 API Gateway 匯入 |
+
+因為所有回應都被包在 `ApiResponseDto` 裡，Swagger 需要知道 `data` 欄位實際是什麼型別。腳手架提供兩個小工具，讓這件事只需要寫一行：
+
+:::annotate
+```ts title="src/health/dto/health-status.dto.ts"
+@RegisterDto() // (1)!
+export class HealthStatusDto {
+  @ApiProperty({ enum: ["ok", "error"], example: "ok" })
+  status!: "ok" | "error";
+}
+```
+
+1. 把 DTO 登記到一份清單，`main.ts` 產生文件時用 `getRegisteredDtos()` 一次全部交給 Swagger，不用在每個 Controller 重複寫 `@ApiExtraModels`。
+:::
+
+:::annotate
+```ts title="src/health/health.controller.ts"
+@Get("health")
+@ApiResponse({
+  status: 200,
+  schema: ApiResponseDto.of(HealthStatusDto), // (1)!
+})
+async getHealth(): Promise<HealthStatusDto> { /* ... */ }
+```
+
+1. 產生「`ApiResponseDto` 外殼 + `data` 是 `HealthStatusDto`」的 schema。`@nestjs/swagger` 在執行期讀不到 TypeScript 泛型，所以需要這個工廠方法。
+:::
+
+## 資料庫：TypeORM + SQLite
+
+資料庫用 TypeORM 搭配 better-sqlite3，不需要另外架資料庫服務就能啟動。設定同樣用 `forRootAsync` 延後到 `ConfigService` 可用時才建立：
+
+:::annotate
+```ts title="src/app.module.ts"
+TypeOrmModule.forRootAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => ({
+    type: "better-sqlite3" as const,
+    database:
+      process.env.NODE_ENV === "test"
+        ? ":memory:" // (1)!
+        : (configService.get<string>("DATABASE_PATH") ?? "./data/todo.sqlite"),
+    entities: [], // (2)!
+    synchronize: true, // (3)!
+    dropSchema: process.env.NODE_ENV === "test",
+  }),
+}),
+```
+
+1. 測試用記憶體資料庫，每次都是乾淨的狀態，也沒有檔案 I/O。
+2. 目前還沒有任何 Entity，新增業務模組時把 Entity 加進來。
+3. 依 Entity 自動建立或修改資料表，開發時很方便；正式環境應改成 migration，避免改了 Entity 就直接動到正式資料表。
+:::
+
+## 健康檢查
+
+`GET /health` 給負載平衡器與 Kubernetes probe 使用。它不只確認程式還在跑，還會實際對資料庫執行 `SELECT 1`：
+
+| 狀況 | 回應 | 給呼叫方的意義 |
+| :--- | :--- | :--- |
+| 資料庫可用 | `200`，`data.status = "ok"` | 可以把流量導過來 |
+| 資料庫不可用 | `503`，`message = "db unreachable"` | 服務還活著，但依賴暫時故障，先別導流量 |
+
+用 503 而不是 500，是為了區分「服務本身壞了」和「依賴暫時不可用」。資料庫的原始錯誤（例如 `SQLITE_CANTOPEN`）只會被吞掉換成固定訊息，不會出現在回應裡。`HealthModule` 已經 import `@nestjs/terminus`，之後要加記憶體、磁碟等檢查項目時可以直接用。
+
+## 優雅關機與程序層級的保護
+
+在 Kubernetes 滾動更新或縮容時，Pod 會先收到 SIGTERM。如果程式立刻結束，正在處理的請求就會被中斷。腳手架在 `main.ts` 綁定 SIGTERM 與 SIGINT，交給 `createShutdownHandler` 處理：
+
+:::annotate
+```ts title="src/shutdown.ts"
+return async (signal: string): Promise<void> => {
+  if (isShuttingDown) {
+    log({ event: "forced_exit", exit_code: 1 }); // (1)!
+    process.exit(1);
+  }
+  isShuttingDown = true;
+  log({ event: "shutdown_start", active_connections_count, timeout_ms });
+
+  const result = await Promise.race([
+    app.close().then(() => "closed" as const), // (2)!
+    new Promise((resolve) => {
+      timer = setTimeout(() => resolve(TIMEOUT_SENTINEL), options.timeoutMs); // (3)!
+    }),
+  ]);
+
+  if (result === TIMEOUT_SENTINEL) {
+    log({ event: "shutdown_timeout", exit_code: 1 });
+    process.exit(1);
+  }
+  log({ event: "shutdown_complete", exit_code: 0 });
+  process.exit(0);
+};
+```
+
+1. 關機中又收到一次訊號（例如開發時連按兩次 Ctrl+C），直接強制結束，不再等待。
+2. `app.close()` 停止接受新連線、等進行中的請求完成，並觸發各模組的 `onModuleDestroy` 等生命週期 hook（例如關閉資料庫連線）。
+3. 和逾時計時器賽跑，預設 10 秒；設定時要比 Kubernetes 的 `terminationGracePeriodSeconds`（預設 30 秒）短，才來得及自己收尾。
+:::
+
+這裡為了易讀，把 `process.stdout.write(JSON.stringify(...))` 簡寫成 `log(...)`。實際輸出是一行一個 JSON，方便 log 平台解析。
+
+{/* @ai-visualize
+id: nestjs-scaffold-graceful-shutdown
+type: motion
+prompt: |
+  核心洞察：優雅關機是「等進行中的請求」與「逾時計時器」之間的賽跑；
+            誰先到決定 exit code 是 0 還是 1，關機中再收到一次訊號則直接強制結束。
+  互動：slider 調整進行中請求還需要的時間（0–15 秒）與關機逾時 SHUTDOWN_TIMEOUT_MS（5 / 10 / 15 秒分段按鈕）；
+        按鈕「送出 SIGTERM」開始模擬、「再按一次 Ctrl+C」在關機中觸發第二次訊號；重置。
+  圖形：水平時間軸（秒，含刻度）：上方一條是進行中請求的處理長條（藍色），
+        下方一條是逾時計時器（橘色虛線框，終點標 timeout）；SIGTERM 時間點以直線標記，
+        時間游標推進時兩條長條同步填滿，先到終點的一方亮起並標示結果。
+        右側是程序狀態：接受新請求（是 / 否）、進行中連線數、最後的 exit code。
+        下方是結構化日誌輸出區，依序出現 shutdown_start、shutdown_complete / shutdown_timeout / forced_exit 的 JSON 行。
+  資料/數值：預設請求剩餘 3 秒、逾時 10 秒（腳手架預設值）；
+            shutdown_start 帶 active_connections_count 與 timeout_ms，結束事件帶 shutdown_duration_ms 與 exit_code。
+caption: 調整請求剩餘時間與逾時，送出 SIGTERM，看誰先到終點
+status: generated
+*/}
+import NestjsScaffoldGracefulShutdown from '@notes/components/nestjs-scaffold-graceful-shutdown'
+
+<GeneratedFrame id="nestjs-scaffold-graceful-shutdown" type="motion" prompt={"核心洞察：優雅關機是「等進行中的請求」與「逾時計時器」之間的賽跑；\n          誰先到決定 exit code 是 0 還是 1，關機中再收到一次訊號則直接強制結束。\n互動：slider 調整進行中請求還需要的時間（0–15 秒）與關機逾時 SHUTDOWN_TIMEOUT_MS（5 / 10 / 15 秒分段按鈕）；\n      按鈕「送出 SIGTERM」開始模擬、「再按一次 Ctrl+C」在關機中觸發第二次訊號；重置。\n圖形：水平時間軸（秒，含刻度）：上方一條是進行中請求的處理長條（藍色），\n      下方一條是逾時計時器（橘色虛線框，終點標 timeout）；SIGTERM 時間點以直線標記，\n      時間游標推進時兩條長條同步填滿，先到終點的一方亮起並標示結果。\n      右側是程序狀態：接受新請求（是 / 否）、進行中連線數、最後的 exit code。\n      下方是結構化日誌輸出區，依序出現 shutdown_start、shutdown_complete / shutdown_timeout / forced_exit 的 JSON 行。\n資料/數值：預設請求剩餘 3 秒、逾時 10 秒（腳手架預設值）；\n          shutdown_start 帶 active_connections_count 與 timeout_ms，結束事件帶 shutdown_duration_ms 與 exit_code。\n"} caption="調整請求剩餘時間與逾時，送出 SIGTERM，看誰先到終點">
+  <NestjsScaffoldGracefulShutdown client:visible />
+</GeneratedFrame>
+
+除了關機訊號，`main.ts` 還在最外層註冊了 `uncaughtException` 與 `unhandledRejection` 處理：沒被任何地方接住的例外，會先以一行 JSON 記下訊息與 stack，再以 exit code 1 結束。程序不會在狀態可能已經不一致的情況下繼續跑，交給 Kubernetes 或 PM2 重新啟動。
+
+## 自動化測試
+
+腳手架附帶完整的測試，而且測試環境的行為有特別處理：
+
+| 項目 | 指令 | 內容 |
+| :--- | :--- | :--- |
+| Unit | `npm run api:test` | 11 個測試檔、57 個案例，涵蓋 Middleware、Interceptor、Filter、Service、關機流程 |
+| e2e | 進 `projects/` 執行 `npm run test:e2e -- --filter=nestjs-api-scaffold` | 5 個測試檔：健康檢查與安全標頭、指標、OpenAPI、速率限制、優雅關機 |
+| 報告 | `report:generate` / `report:open` | 用 Allure v3 產生 HTML 報告，不需要安裝 Java |
+
+`NODE_ENV=test` 時，腳手架會自動切換以下行為，讓測試快速且彼此獨立：
+
+- 不讀 `.env`
+- 資料庫改用 `:memory:`，並在啟動時清空 schema
+- `LoggingInterceptor` 不輸出日誌
+- Helmet 採 production 等級策略，e2e 測試驗的就是正式環境會看到的標頭
+
+## 已知限制與可以補強的地方
+
+盤點時順手驗證了幾個行為，下面這些是直接拿來用之前值得知道的：
+
+| 項目 | 現況 | 建議 |
+| :--- | :--- | :--- |
+| 錯誤被記兩次 | Controller 丟出的例外會先經過 `LoggingInterceptor`，再到 `AllExceptionsFilter`，兩邊各印一行日誌、各加一次 `http_errors_total`。實測一個 500 請求，計數器加 2 | 二擇一記錄，例如 Interceptor 只記請求數與耗時，錯誤統一交給 Filter |
+| Filter 一律用 ERROR | Filter 不分狀態碼都用 `logger.error()`，404、429 這類用戶端錯誤也會出現在 ERROR 日誌 | 比照 Interceptor，4xx 改用 WARN |
+| 404 的指標 | 找不到路由時不會經過 Interceptor，只有 `http_errors_total` 加 1；而且 `route` 標籤是原始 URL，被掃描時標籤值會無限增長 | 404 的 `route` 統一記成固定字串，例如 `unmatched` |
+| 資料表自動同步 | `synchronize: true`，沒有 migration 與 seed 機制 | 有正式資料前改成 TypeORM migration |
+| `appConfigFactory` 沒有接上 | `src/config/app.config.ts` 定義了型別化的設定工廠，但 `ConfigModule.forRoot` 沒有 `load` 它，各處仍直接讀環境變數字串 | 用 `load: [appConfigFactory]` 接上，順便集中預設值 |
+| 限流的 IP 與儲存 | 未設 `trust proxy`；計數存在單一實例的記憶體 | 見上方「速率限制」的提醒 |
+| Node.js 16 polyfill | `main.ts` 開頭為 Node 16 補上 `globalThis.crypto` | 專案已要求 Node 22，可以移除 |
+
+## 小結：新增一個業務模組時要做的事
+
+基礎建設都就位後，新增功能時只需要專注在業務本身：
+
+::::steps
+:::step{title="寫 Entity 與 Module"}
+建立 `todos/` 之類的資料夾，把 Entity 加進 `TypeOrmModule` 的 `entities`，Module 加進 `AppModule.imports`。
+:::
+:::step{title="Controller 只回傳資料"}
+直接 `return` 物件或陣列，回應格式、traceId、日誌、指標、速率限制全部自動套上。
+:::
+:::step{title="錯誤用 HttpException 表達"}
+找不到資料丟 `NotFoundException`、參數錯誤丟 `BadRequestException`，Filter 會轉成統一格式；其他未預期錯誤會自動遮蔽成 500。
+:::
+:::step{title="DTO 加上 @RegisterDto"}
+搭配 `ApiResponseDto.of(YourDto)`，Swagger 就會顯示完整的回應結構。
+:::
+::::

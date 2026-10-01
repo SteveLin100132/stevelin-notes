@@ -14,6 +14,12 @@
       "port": 4400
     },
     {
+      "name": "notes-serve-node22",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "source ~/.nvm/nvm.sh && nvm use 22.16.0 >/dev/null && npm run serve -- --port 4400 --no-open"],
+      "port": 4400
+    },
+    {
       "name": "notes-dev-alt",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--port", "4330"],
