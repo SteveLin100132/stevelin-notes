@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { HealthModule } from "./health/health.module";
 import { MetricsModule } from "./metrics/metrics.module";
+import { PingModule } from "./ping/ping.module";
 import { TraceMiddleware } from "./common/trace/trace.middleware";
 import { HelmetMiddleware } from "./common/middleware/helmet.middleware";
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor";
@@ -22,6 +23,7 @@ import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
  *    以便在測試環境中注入不同的 DB 設定（`:memory:`）
  * 4. `HealthModule`：功能模組，依賴 TypeORM DataSource
  * 5. `MetricsModule`：提供 MetricsService 與 GET /metrics 端點
+ * 6. `PingModule`：受 Rate Limit 限制的 GET /ping 測試端點
  *
  * **全域 Provider 策略（APP_GUARD / APP_FILTER / APP_INTERCEPTOR）**：
  * 使用 NestJS DI token 而非 `main.ts` 的 `new` 實例化，
@@ -81,6 +83,7 @@ import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
     }),
     HealthModule,
     MetricsModule,
+    PingModule,
   ],
   providers: [
     // 全域 Rate Limit Guard：ThrottlerGuard 須透過 DI 管理（注入 ThrottlerStorage + Reflector），
