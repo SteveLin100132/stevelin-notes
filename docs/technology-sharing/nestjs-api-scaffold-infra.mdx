@@ -571,7 +571,7 @@ import NestjsScaffoldGracefulShutdown from '@notes/components/nestjs-scaffold-gr
 
 | 項目 | 狀態 | 現況 | 方向 |
 | :--- | :--- | :--- | :--- |
-| OpenAPI Codegen | :badge[進行中]{variant="tip"} | 已有 `/openapi.json`；正在建立 `projects/packages/api-client`，以 Orval 產生 React（TanStack Query）client 與 MSW mock | 從 `/openapi.json` 產生前端可直接使用的型別與 API client，並納入 CI 檢查文件與程式碼是否同步 |
+| OpenAPI Codegen | :badge[進行中]{variant="tip"} | 已輸出靜態 `openapi.json`，並在 `projects/packages/api-client` 以 Orval 產生 React（TanStack Query）client 與 MSW mock，詳見 [OpenAPI Codegen](./nestjs-openapi-codegen.mdx)；CI 同步檢查尚未接上 | 從 `/openapi.json` 產生前端可直接使用的型別與 API client，並納入 CI 檢查文件與程式碼是否同步 |
 | Authentication | :badge[規劃中]{variant="info"} | 尚未有任何登入或身分驗證機制 | 介接 [Casdoor](https://casdoor.org/)（OIDC），後端驗證 Casdoor 簽發的 JWT，以全域 Guard 掛上 |
 | Authorization | :badge[未開始]{variant="neutral"} | 尚未有角色或權限控管 | 待 Authentication 完成後決定，評估沿用 Casdoor 的權限模型或在後端自行實作 RBAC |
 | Validation 選型 | :badge[待評估]{variant="warning"} | 沒有 `ValidationPipe`，請求參數未做驗證 | 比較 `class-validator` 與 schema 型方案（如 Zod），需考慮和 Swagger 文件產生的整合 |

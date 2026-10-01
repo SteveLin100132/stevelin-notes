@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 316" width="1520" height="632" role="img" aria-label="從 NestJS 到 React 的 codegen 流水線：第一步 NestJS 原始碼以 @ApiTags、@ApiOperation、@ApiResponse、@ApiProperty、@RegisterDto 描述 API；第二步 buildOpenApiDocument 建構 OpenAPI document，main.ts、e2e 測試與 export script 共用；第三步輸出 openapi.json 並提交進版控，作為前後端的契約；第四步 Orval 依 orval.config.ts 與 custom-fetch mutator 產生程式碼；第五步 packages/api-client 包含 TanStack Query hooks、model 型別與 MSW mock，供 React app 匯入。前兩步屬於後端，openapi.json 是契約，後兩步屬於前端。">
+  <defs>
+    <marker id="ar-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1b4f9c"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace; }
+  </style>
+  <rect x="0.5" y="0.5" width="759" height="315" rx="12" fill="#ffffff" stroke="#e1e6ee"/>
+  <text x="24" y="34" font-size="15" font-weight="800" fill="#112f5d">一份 OpenAPI 契約，串起後端程式碼與前端 client</text>
+  <text x="24" y="54" font-size="11" fill="#6c798e">由左到右是資料流向；改後端之後重跑一次，前端型別就跟著更新</text>
+
+  <!-- 1 NestJS 原始碼 -->
+  <rect x="24" y="76" width="124" height="150" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="36" y="96" font-size="10" font-weight="800" fill="#6c798e" letter-spacing="0.08em">STEP 1</text>
+  <text x="36" y="115" font-size="12.5" font-weight="800" fill="#112f5d">NestJS 原始碼</text>
+  <text x="36" y="132" font-size="10.5" fill="#3a4456">Controller + DTO</text>
+  <text class="mono" x="36" y="154" font-size="10" fill="#1b4f9c">@ApiTags</text>
+  <text class="mono" x="36" y="170" font-size="10" fill="#1b4f9c">@ApiOperation</text>
+  <text class="mono" x="36" y="186" font-size="10" fill="#1b4f9c">@ApiResponse</text>
+  <text class="mono" x="36" y="202" font-size="10" fill="#1b4f9c">@ApiProperty</text>
+  <text class="mono" x="36" y="218" font-size="10" fill="#1b4f9c">@RegisterDto</text>
+
+  <path d="M150 151 H170" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+
+  <!-- 2 建構 document -->
+  <rect x="174" y="76" width="124" height="150" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="186" y="96" font-size="10" font-weight="800" fill="#6c798e" letter-spacing="0.08em">STEP 2</text>
+  <text x="186" y="115" font-size="12.5" font-weight="800" fill="#112f5d">建構 document</text>
+  <text class="mono" x="186" y="132" font-size="10" fill="#1b4f9c">buildOpenApi</text>
+  <text class="mono" x="186" y="145" font-size="10" fill="#1b4f9c">Document()</text>
+  <text x="186" y="166" font-size="10.5" font-weight="700" fill="#3a4456">三處共用同一份：</text>
+  <text x="186" y="184" font-size="10.5" fill="#3a4456">main.ts（/api-docs）</text>
+  <text x="186" y="200" font-size="10.5" fill="#3a4456">e2e 測試</text>
+  <text x="186" y="216" font-size="10.5" fill="#3a4456">export script</text>
+
+  <path d="M300 151 H320" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+
+  <!-- 3 openapi.json（契約） -->
+  <rect x="324" y="76" width="124" height="150" rx="8" fill="#fdf4e6" stroke="#e37b24" stroke-width="1.5"/>
+  <text x="336" y="96" font-size="10" font-weight="800" fill="#a04f15" letter-spacing="0.08em">STEP 3 · 契約</text>
+  <text class="mono" x="336" y="115" font-size="12" font-weight="700" fill="#112f5d">openapi.json</text>
+  <text x="336" y="132" font-size="10.5" fill="#3a4456">OpenAPI 3.0</text>
+  <text class="mono" x="336" y="154" font-size="10" fill="#a04f15">paths</text>
+  <text class="mono" x="336" y="170" font-size="10" fill="#a04f15">operationId</text>
+  <text class="mono" x="336" y="186" font-size="10" fill="#a04f15">components.schemas</text>
+  <text x="336" y="212" font-size="10.5" font-weight="700" fill="#a04f15">提交進版本控制</text>
+
+  <path d="M450 151 H470" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+
+  <!-- 4 Orval -->
+  <rect x="474" y="76" width="124" height="150" rx="8" fill="#ffffff" stroke="#adc8e8" stroke-width="1.25"/>
+  <text x="486" y="96" font-size="10" font-weight="800" fill="#6c798e" letter-spacing="0.08em">STEP 4</text>
+  <text x="486" y="115" font-size="12.5" font-weight="800" fill="#112f5d">Orval</text>
+  <text class="mono" x="486" y="132" font-size="10" fill="#1b4f9c">orval.config.ts</text>
+  <text x="486" y="154" font-size="10.5" fill="#3a4456">client: react-query</text>
+  <text x="486" y="170" font-size="10.5" fill="#3a4456">httpClient: fetch</text>
+  <text x="486" y="186" font-size="10.5" fill="#3a4456">mock: true</text>
+  <text x="486" y="208" font-size="10.5" fill="#3a4456">請求經過自訂</text>
+  <text class="mono" x="486" y="221" font-size="10" fill="#1b4f9c">customFetch</text>
+
+  <path d="M600 151 H620" fill="none" stroke="#1b4f9c" stroke-width="1.5" marker-end="url(#ar-navy)"/>
+
+  <!-- 5 api-client -->
+  <rect x="624" y="76" width="112" height="150" rx="8" fill="#eef4fb" stroke="#1b4f9c" stroke-width="1.25"/>
+  <text x="636" y="96" font-size="10" font-weight="800" fill="#6c798e" letter-spacing="0.08em">STEP 5</text>
+  <text class="mono" x="636" y="115" font-size="12" font-weight="700" fill="#112f5d">api-client</text>
+  <text x="636" y="136" font-size="10.5" font-weight="700" fill="#1b4f9c">endpoints/</text>
+  <text x="636" y="150" font-size="10" fill="#3a4456">hooks、query key</text>
+  <text x="636" y="170" font-size="10.5" font-weight="700" fill="#1b4f9c">model/</text>
+  <text x="636" y="184" font-size="10" fill="#3a4456">DTO 型別</text>
+  <text x="636" y="204" font-size="10.5" font-weight="700" fill="#1b4f9c">*.msw.ts</text>
+  <text x="636" y="218" font-size="10" fill="#3a4456">MSW mock</text>
+
+  <!-- 責任區 -->
+  <path d="M24 244 V252 H298 V244" fill="none" stroke="#cbd3df" stroke-width="1"/>
+  <text x="161" y="270" text-anchor="middle" font-size="11" font-weight="800" fill="#112f5d">後端：nestjs-api-scaffold</text>
+  <text class="mono" x="161" y="287" text-anchor="middle" font-size="10" fill="#6c798e">npm run openapi:export</text>
+
+  <path d="M324 244 V252 H448 V244" fill="none" stroke="#e37b24" stroke-width="1"/>
+  <text x="386" y="270" text-anchor="middle" font-size="11" font-weight="800" fill="#a04f15">前後端的契約</text>
+  <text x="386" y="287" text-anchor="middle" font-size="10" fill="#6c798e">diff 就是 API 變更紀錄</text>
+
+  <path d="M474 244 V252 H736 V244" fill="none" stroke="#cbd3df" stroke-width="1"/>
+  <text x="605" y="270" text-anchor="middle" font-size="11" font-weight="800" fill="#112f5d">前端：packages/api-client</text>
+  <text class="mono" x="605" y="287" text-anchor="middle" font-size="10" fill="#6c798e">npm run generate → React app 匯入</text>
+</svg>
