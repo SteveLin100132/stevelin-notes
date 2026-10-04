@@ -143,184 +143,196 @@ const TOTAL = {
   overtime: SEGMENTS.filter((s) => s.cat === "overtime").reduce((a, s) => a + s.to - s.from, 0),
 };
 
-// ---------- 插圖 ----------
+// ---------- 插圖：辦公室平面示意 ----------
+// 俯視平面圖：小明的位置標記在各區之間移動，窗戶顏色表示天色，打卡機記錄上下班時間。
 const C = {
-  navy: "var(--blue-700)",
-  blue: "var(--blue-500)",
-  blue100: "var(--blue-100)",
-  blue200: "var(--blue-200)",
-  blue50: "var(--blue-50)",
-  night: "var(--blue-900)",
-  orange: "var(--orange-400)",
-  orangeDeep: "var(--orange-500)",
-  orange200: "var(--orange-200)",
-  orange100: "var(--orange-100)",
-  orange50: "var(--orange-50)",
-  n100: "var(--neutral-100)",
-  n200: "var(--neutral-200)",
-  n300: "var(--neutral-300)",
-  n400: "var(--neutral-400)",
-  n500: "var(--neutral-500)",
-  paper: "#ffffff",
+  ink: "#3a4456", // neutral-700：牆線、主要文字
+  line: "#9aa6b8", // neutral-400：家具線
+  faint: "#cbd3df", // neutral-300：分區虛線
+  frame: "#e1e6ee", // neutral-200：外框
+  muted: "#6c798e", // neutral-500：次要文字
+  blue: "#1b4f9c", // blue-700
+  blue500: "#2c6ebb",
+  blue100: "#d6e4f5",
+  orange: "#e37b24", // orange-500
+  white: "#ffffff",
 };
 
 function skyAt(t: number) {
-  if (t < hm(17)) return { sky: C.blue200, orb: C.orange, night: false };
-  if (t < hm(18, 30)) return { sky: C.orange200, orb: C.orangeDeep, night: false };
-  return { sky: C.night, orb: C.orange100, night: true };
+  if (t < hm(17)) return { fill: "#adc8e8", label: "白天" }; // blue-200
+  if (t < hm(18, 30)) return { fill: "#f6cd86", label: "傍晚" }; // orange-200
+  return { fill: "#112f5d", label: "入夜" }; // blue-900
 }
 
-// 小明：坐姿或站姿
-function Person({ x, pose }: { x: number; pose: "sit" | "stand" }) {
-  if (pose === "sit") {
-    return (
-      <g transform={`translate(${x} 0)`}>
-        <rect x="-4" y="148" width="26" height="8" rx="4" fill={C.navy} />
-        <rect x="16" y="148" width="8" height="30" rx="4" fill={C.navy} />
-        <rect x="-10" y="112" width="22" height="40" rx="9" fill={C.blue} />
-        <circle cx="1" cy="100" r="11" fill={C.orange100} stroke={C.navy} strokeWidth="1.5" />
-        <path d="M-10 98 a11 11 0 0 1 22 -2 l-4 -3 l-6 3 z" fill={C.navy} />
-        <rect x="6" y="122" width="22" height="7" rx="3.5" fill={C.blue} />
-      </g>
-    );
-  }
+type Spot = { x: number; y: number; where: string; tag: "above" | "below" | "left" };
+
+const DESKS = [34, 92, 150]; // 桌子左緣 x；中間那張是小明的座位
+const TABLE = { x: 100, y: 168 };
+
+const SPOTS: Record<SceneId, Spot> = {
+  before: { x: 326, y: 182, where: "公司外", tag: "above" },
+  after: { x: 326, y: 182, where: "公司外", tag: "above" },
+  arrive: { x: 264, y: 90, where: "置物櫃前", tag: "below" },
+  work: { x: 115, y: 92, where: "座位", tag: "below" },
+  overtime: { x: 115, y: 92, where: "座位", tag: "below" },
+  lunch: { x: TABLE.x - 20, y: TABLE.y, where: "休息區", tag: "left" },
+  chat: { x: 160, y: 170, where: "茶水間", tag: "above" },
+};
+
+const PILL: Record<Cat, { fill: string; stroke: string; text: string; dash?: string }> = {
+  normal: { fill: C.blue, stroke: C.blue, text: C.white },
+  overtime: { fill: C.orange, stroke: C.orange, text: C.white },
+  break: { fill: C.frame, stroke: C.frame, text: C.ink },
+  excluded: { fill: C.white, stroke: C.line, text: C.ink, dash: "3 2" },
+  outside: { fill: C.white, stroke: C.faint, text: C.muted },
+};
+
+// 同事位置：上班時段在座位，午休在休息區，閒聊時在茶水間
+function colleaguesAt(t: number, scene: SceneId) {
+  const inSchedule = SCENARIO.schedule.some((b) => t >= b.from && t < b.to);
+  if (inSchedule) return { atDesk: true, others: [] as { x: number; y: number }[] };
+  if (t >= hm(12) && t < hm(13)) return { atDesk: false, others: [{ x: TABLE.x + 20, y: TABLE.y }, { x: TABLE.x, y: TABLE.y - 19 }] };
+  if (scene === "chat") return { atDesk: false, others: [{ x: 184, y: 178 }] };
+  return { atDesk: false, others: [] };
+}
+
+function Tag({ text, cat, tag }: { text: string; cat: Cat; tag: Spot["tag"] }) {
+  const s = PILL[cat];
+  const w = text.length * 9.5 + 14;
+  const h = 16;
+  const x = tag === "left" ? -11 - w : -w / 2;
+  const y = tag === "above" ? -12 - h : tag === "below" ? 12 : -h / 2;
   return (
-    <g transform={`translate(${x} 0)`}>
-      <rect x="-9" y="148" width="8" height="34" rx="4" fill={C.navy} />
-      <rect x="1" y="148" width="8" height="34" rx="4" fill={C.navy} />
-      <rect x="-11" y="108" width="22" height="44" rx="9" fill={C.blue} />
-      <circle cx="0" cy="95" r="11" fill={C.orange100} stroke={C.navy} strokeWidth="1.5" />
-      <path d="M-11 93 a11 11 0 0 1 22 -2 l-4 -3 l-6 3 z" fill={C.navy} />
+    <g>
+      <rect x={x} y={y} width={w} height={h} rx={h / 2} fill={s.fill} stroke={s.stroke} strokeWidth="1" strokeDasharray={s.dash} />
+      <text x={x + w / 2} y={y + 11.2} fontSize="9.5" fontWeight="600" fill={s.text} textAnchor="middle">
+        {text}
+      </text>
     </g>
   );
 }
 
-function Office({ t, scene, reduce }: { t: number; scene: SceneId; reduce: boolean }) {
-  const { sky, orb, night } = skyAt(t);
+function Office({ t, scene, seg, reduce }: { t: number; scene: SceneId; seg: Segment | null; reduce: boolean }) {
+  const sky = skyAt(t);
+  const spot = SPOTS[scene];
+  const cat: Cat = seg?.cat ?? "outside";
+  const tagText = seg?.label ?? (scene === "before" ? "尚未到班" : "已下班");
+  const { atDesk, others } = colleaguesAt(t, scene);
+  const myMonitorOn = scene === "work" || scene === "overtime";
+  const punching = scene === "arrive" || scene === "chat";
   const hourAngle = ((t / 60) % 12) * 30;
   const minuteAngle = (t % 60) * 6;
-  const monitorOn = scene === "work" || scene === "overtime";
-  const fade = reduce ? { duration: 0 } : { duration: 0.25 };
+  const move = reduce ? { duration: 0 } : { type: "tween" as const, duration: 0.55, ease: "easeInOut" as const };
+  const fade = reduce ? { duration: 0 } : { duration: 0.2 };
 
   return (
-    <svg viewBox="0 0 360 220" width="100%" role="img" aria-label={`小明 ${clock(t)} 的辦公室插圖`} style={{ fontFamily: "var(--font-sans)" }}>
-      {/* 牆與地板 */}
-      <rect x="0" y="0" width="360" height="220" rx="12" fill={night ? C.n100 : C.blue50} />
-      <rect x="0" y="182" width="360" height="38" fill={C.n200} />
-      <line x1="0" y1="182" x2="360" y2="182" stroke={C.n300} strokeWidth="2" />
+    <svg
+      viewBox="0 0 360 220"
+      width="100%"
+      role="img"
+      aria-label={`辦公室平面示意：${clock(t)} 小明在${spot.where}，${tagText}`}
+      style={{ display: "block", fontFamily: "var(--font-sans)" }}
+    >
+      <rect x="0.5" y="0.5" width="359" height="219" rx="8" fill={C.white} stroke={C.frame} />
 
-      {/* 窗戶：天色隨時間變化 */}
-      <rect x="24" y="26" width="92" height="78" rx="6" fill={sky} stroke={C.navy} strokeWidth="3" style={{ transition: "fill 400ms" }} />
-      <circle cx={night ? 92 : 50} cy={night ? 46 : 52} r="11" fill={orb} style={{ transition: "all 400ms" }} />
-      {night && (
-        <g fill={C.paper}>
-          <circle cx="42" cy="40" r="1.5" />
-          <circle cx="60" cy="74" r="1.2" />
-          <circle cx="102" cy="82" r="1.5" />
-        </g>
-      )}
-      <line x1="70" y1="26" x2="70" y2="104" stroke={C.navy} strokeWidth="3" />
-      <line x1="24" y1="65" x2="116" y2="65" stroke={C.navy} strokeWidth="3" />
+      {/* 標題列：圖例、天色、時鐘 */}
+      <text x="16" y="23" fontSize="10" fontWeight="600" fill={C.ink}>辦公室平面</text>
+      <circle cx="84" cy="19.5" r="4" fill={C.blue} />
+      <text x="92" y="23" fontSize="9" fill={C.muted}>小明</text>
+      <circle cx="122" cy="19.5" r="3.5" fill={C.white} stroke={C.line} strokeWidth="1.2" />
+      <text x="130" y="23" fontSize="9" fill={C.muted}>同事</text>
 
-      {/* 掛鐘：指針跟著時間 */}
-      <circle cx="176" cy="48" r="22" fill={C.paper} stroke={C.navy} strokeWidth="3" />
+      <rect x="240" y="15" width="9" height="9" rx="2" fill={sky.fill} stroke={C.line} strokeWidth="0.75" style={{ transition: "fill 400ms" }} />
+      <text x="253" y="23" fontSize="9" fill={C.muted}>{sky.label}</text>
+      <circle cx="290" cy="19.5" r="8" fill={C.white} stroke={C.ink} strokeWidth="1" />
       {[0, 90, 180, 270].map((a) => (
-        <line key={a} x1="176" y1="30" x2="176" y2="34" stroke={C.navy} strokeWidth="2" transform={`rotate(${a} 176 48)`} />
+        <line key={a} x1="290" y1="12.5" x2="290" y2="14" stroke={C.line} strokeWidth="1" transform={`rotate(${a} 290 19.5)`} />
       ))}
-      <line x1="176" y1="48" x2="176" y2="36" stroke={C.navy} strokeWidth="3.5" strokeLinecap="round" transform={`rotate(${hourAngle} 176 48)`} />
-      <line x1="176" y1="48" x2="176" y2="31" stroke={C.orange} strokeWidth="2" strokeLinecap="round" transform={`rotate(${minuteAngle} 176 48)`} />
-      <circle cx="176" cy="48" r="2.5" fill={C.orange} />
-
-      {/* 門與打卡機 */}
-      <rect x="292" y="66" width="50" height="116" rx="3" fill={C.orange100} stroke={C.navy} strokeWidth="2.5" />
-      <circle cx="301" cy="128" r="3" fill={C.navy} />
-      <rect x="258" y="96" width="22" height="30" rx="4" fill={C.paper} stroke={C.navy} strokeWidth="2" />
-      <rect x="262" y="101" width="14" height="8" rx="1.5" fill={scene === "arrive" || scene === "chat" ? C.orange : C.n200} />
-      <text x="269" y="121" fontSize="6.5" fill={C.n500} textAnchor="middle">打卡</text>
-
-      {/* 桌子、螢幕、椅子 */}
-      <rect x="112" y="136" width="120" height="7" rx="2" fill={C.navy} />
-      <line x1="120" y1="143" x2="120" y2="182" stroke={C.navy} strokeWidth="4" />
-      <line x1="224" y1="143" x2="224" y2="182" stroke={C.navy} strokeWidth="4" />
-      <rect x="170" y="100" width="48" height="32" rx="3" fill={monitorOn ? C.blue100 : C.n300} stroke={C.navy} strokeWidth="2.5" />
-      {monitorOn && (
-        <g stroke={C.blue} strokeWidth="2" strokeLinecap="round">
-          <line x1="177" y1="109" x2="200" y2="109" />
-          <line x1="177" y1="116" x2="210" y2="116" />
-          <line x1="177" y1="123" x2="194" y2="123" />
-        </g>
-      )}
-      <rect x="190" y="132" width="8" height="4" fill={C.navy} />
-      <rect x="126" y="150" width="30" height="6" rx="3" fill={C.n400} />
-      <line x1="141" y1="156" x2="141" y2="178" stroke={C.n400} strokeWidth="3" />
-      <line x1="130" y1="180" x2="152" y2="180" stroke={C.n400} strokeWidth="3" strokeLinecap="round" />
-
-      {/* 依情境換小明的動作與道具 */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.g key={scene} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-          {scene === "before" && (
-            <g>
-              <rect x="120" y="60" width="120" height="22" rx="11" fill={C.paper} stroke={C.n300} />
-              <text x="180" y="75" fontSize="10" fill={C.n500} textAnchor="middle">小明還沒到公司</text>
-            </g>
-          )}
-          {scene === "arrive" && (
-            <g>
-              <Person x={228} pose="stand" />
-              <rect x="236" y="128" width="16" height="20" rx="3" fill={C.orange} stroke={C.navy} strokeWidth="1.5" />
-              <path d="M239 128 a5 5 0 0 1 10 0" fill="none" stroke={C.navy} strokeWidth="1.5" />
-            </g>
-          )}
-          {(scene === "work" || scene === "overtime") && (
-            <g>
-              <Person x={144} pose="sit" />
-              {scene === "overtime" && (
-                <g>
-                  <path d="M222 136 l0 -26 l-10 -6" fill="none" stroke={C.navy} strokeWidth="2.5" />
-                  <path d="M204 100 l16 0 l-4 -10 l-8 0 z" fill={C.orange} stroke={C.navy} strokeWidth="1.5" />
-                  <path d="M206 100 l-10 36 l36 0 l-10 -36 z" fill={C.orange} opacity="0.15" />
-                  {[0, 1, 2].map((i) => (
-                    <rect key={i} x={116 + i * 2} y={130 - i * 4} width="30" height="4" rx="1" fill={C.paper} stroke={C.n400} />
-                  ))}
-                </g>
-              )}
-            </g>
-          )}
-          {scene === "lunch" && (
-            <g>
-              <Person x={144} pose="sit" />
-              <rect x="164" y="126" width="26" height="10" rx="3" fill={C.orange} stroke={C.navy} strokeWidth="1.5" />
-              <line x1="166" y1="124" x2="186" y2="118" stroke={C.navy} strokeWidth="1.5" />
-              <line x1="168" y1="125" x2="188" y2="120" stroke={C.navy} strokeWidth="1.5" />
-            </g>
-          )}
-          {scene === "chat" && (
-            <g>
-              <Person x={228} pose="stand" />
-              <rect x="208" y="124" width="10" height="12" rx="2" fill={C.paper} stroke={C.navy} strokeWidth="1.5" />
-              <path d="M208 127 a4 4 0 0 0 0 6" fill="none" stroke={C.navy} strokeWidth="1.5" />
-              <rect x="236" y="130" width="16" height="20" rx="3" fill={C.orange} stroke={C.navy} strokeWidth="1.5" />
-              <g>
-                <rect x="232" y="58" width="44" height="22" rx="11" fill={C.paper} stroke={C.navy} strokeWidth="1.5" />
-                <path d="M240 80 l-4 8 l10 -8 z" fill={C.paper} stroke={C.navy} strokeWidth="1.5" />
-                <text x="254" y="73" fontSize="10" fill={C.navy} textAnchor="middle">聊聊</text>
-              </g>
-            </g>
-          )}
-          {scene === "after" && (
-            <g>
-              <rect x="120" y="60" width="120" height="22" rx="11" fill={C.paper} stroke={C.n300} />
-              <text x="180" y="75" fontSize="10" fill={C.n500} textAnchor="middle">小明已經下班</text>
-            </g>
-          )}
-        </motion.g>
-      </AnimatePresence>
-
-      {/* 底部時間 */}
-      <rect x="128" y="190" width="104" height="22" rx="11" fill={C.navy} />
-      <text x="180" y="205" fontSize="11" fontWeight="700" fill={C.paper} textAnchor="middle" fontFamily="var(--font-mono)">
+      <line x1="290" y1="19.5" x2="290" y2="15" stroke={C.ink} strokeWidth="1.4" strokeLinecap="round" transform={`rotate(${hourAngle} 290 19.5)`} />
+      <line x1="290" y1="19.5" x2="290" y2="13" stroke={C.orange} strokeWidth="1" strokeLinecap="round" transform={`rotate(${minuteAngle} 290 19.5)`} />
+      <text x="344" y="23.5" fontSize="11" fontWeight="700" fill={C.ink} textAnchor="end" fontFamily="var(--font-mono)">
         {clock(t)}
       </text>
+
+      {/* 牆：右牆留門口 */}
+      <path d="M296 166 V40 H16 V206 H296 V200" fill="none" stroke={C.ink} strokeWidth="1.5" />
+      {/* 窗戶：天色隨時間變化 */}
+      {[40, 98, 156].map((x) => (
+        <rect key={x} x={x} y="38" width="40" height="4" fill={sky.fill} stroke={C.ink} strokeWidth="1" style={{ transition: "fill 400ms" }} />
+      ))}
+      {/* 門 */}
+      <line x1="296" y1="166" x2="262" y2="166" stroke={C.ink} strokeWidth="1.5" />
+      <path d="M262 166 A34 34 0 0 0 296 200" fill="none" stroke={C.line} strokeWidth="1" strokeDasharray="3 3" />
+      <text x="326" y="56" fontSize="8.5" fill={C.muted} textAnchor="middle">室外</text>
+
+      {/* 分區 */}
+      <line x1="228" y1="40" x2="228" y2="206" stroke={C.faint} strokeWidth="1" strokeDasharray="2 3" />
+      <line x1="16" y1="138" x2="228" y2="138" stroke={C.faint} strokeWidth="1" strokeDasharray="2 3" />
+      <text x="22" y="132" fontSize="8.5" fill={C.muted}>工作區</text>
+      <text x="22" y="200" fontSize="8.5" fill={C.muted}>休息區</text>
+      <text x="234" y="200" fontSize="8.5" fill={C.muted}>入口</text>
+
+      {/* 座位：桌、螢幕、椅子 */}
+      {DESKS.map((x, i) => {
+        const mine = i === 1;
+        const on = mine ? myMonitorOn : atDesk;
+        return (
+          <g key={x}>
+            <rect x={x} y="52" width="46" height="18" rx="2" fill={C.white} stroke={mine ? C.blue500 : C.line} strokeWidth={mine ? 1.25 : 1} />
+            <rect x={x + 11} y="56" width="24" height="4" rx="1" fill={on ? C.blue500 : C.frame} style={{ transition: "fill 250ms" }} />
+            <rect x={x + 16} y="86" width="14" height="12" rx="3" fill={C.white} stroke={C.line} strokeWidth="1" />
+            {!mine && atDesk && <circle cx={x + 23} cy="92" r="6" fill={C.white} stroke={C.ink} strokeWidth="1.2" />}
+          </g>
+        );
+      })}
+      <text x="115" y="80" fontSize="7.5" fill={C.blue500} textAnchor="middle">小明座位</text>
+
+      {/* 休息區：圓桌與茶水檯 */}
+      <circle cx={TABLE.x} cy={TABLE.y} r="13" fill={C.white} stroke={C.line} strokeWidth="1" />
+      {[
+        [-20, 0],
+        [20, 0],
+        [0, -19],
+        [0, 19],
+      ].map(([dx, dy]) => (
+        <rect key={`${dx},${dy}`} x={TABLE.x + dx - 5} y={TABLE.y + dy - 5} width="10" height="10" rx="2.5" fill={C.white} stroke={C.line} strokeWidth="1" />
+      ))}
+      <rect x="150" y="192" width="50" height="10" rx="1.5" fill={C.white} stroke={C.line} strokeWidth="1" />
+      <text x="175" y="199.6" fontSize="7" fill={C.muted} textAnchor="middle">茶水</text>
+
+      {/* 入口：置物櫃與打卡機 */}
+      {[0, 1, 2, 3].map((i) => (
+        <rect key={i} x={244 + i * 11} y="46" width="11" height="14" fill={C.white} stroke={C.line} strokeWidth="1" />
+      ))}
+      <text x="266" y="71" fontSize="7.5" fill={C.muted} textAnchor="middle">置物櫃</text>
+      <rect x="286" y="124" width="8" height="16" rx="1.5" fill={punching ? C.orange : C.white} stroke={C.ink} strokeWidth="1" style={{ transition: "fill 250ms" }} />
+      <text x="280" y="131" fontSize="8" fill={C.muted} textAnchor="end">打卡機</text>
+      {t >= SCENARIO.punchIn && (
+        <text x="280" y="143" fontSize="8" fill={C.ink} textAnchor="end" fontFamily="var(--font-mono)">
+          上 {clock(SCENARIO.punchIn)}
+        </text>
+      )}
+      {t >= SCENARIO.punchOut && (
+        <text x="280" y="154" fontSize="8" fill={C.ink} textAnchor="end" fontFamily="var(--font-mono)">
+          下 {clock(SCENARIO.punchOut)}
+        </text>
+      )}
+
+      {/* 同事（休息區、茶水間） */}
+      {others.map((o) => (
+        <circle key={`${o.x},${o.y}`} cx={o.x} cy={o.y} r="6" fill={C.white} stroke={C.ink} strokeWidth="1.2" />
+      ))}
+
+      {/* 小明：位置標記在各區之間移動，旁邊標目前時段與分類 */}
+      <motion.g initial={false} animate={{ x: spot.x, y: spot.y }} transition={move}>
+        <circle r="7.5" fill={C.blue} stroke={C.white} strokeWidth="1.5" />
+        <text y="3.2" fontSize="8.5" fontWeight="700" fill={C.white} textAnchor="middle">明</text>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.g key={`${scene}-${seg?.id ?? ""}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
+            <Tag text={tagText} cat={cat} tag={spot.tag} />
+          </motion.g>
+        </AnimatePresence>
+      </motion.g>
     </svg>
   );
 }
@@ -405,8 +417,8 @@ export default function DayHoursScrubber() {
     <div className="not-prose space-y-4">
       {/* 插圖＋目前狀態 */}
       <div className="grid items-center gap-4 sm:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-        <div className="overflow-hidden rounded-xl">
-          <Office t={t} scene={scene} reduce={reduce} />
+        <div>
+          <Office t={t} scene={scene} seg={seg} reduce={reduce} />
         </div>
 
         <div className="min-w-0 space-y-3">
