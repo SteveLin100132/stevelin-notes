@@ -1,0 +1,8 @@
+{
+  "$schema": "https://cdn.jsdelivr.net/npm/notecraftapp/schemas/ignore.schema.json",
+  "ignore": [
+    "# 私人筆記：檔名以 .private.md / .private.mdx 結尾者不進入 NoteCraft",
+    "**/*.private.md",
+    "**/*.private.mdx"
+  ]
+}
