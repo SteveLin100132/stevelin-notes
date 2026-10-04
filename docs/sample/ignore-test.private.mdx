@@ -1,0 +1,32 @@
+---
+title: ignore.json 排除測試（私人筆記）
+description: 用來驗證 .notecraft/ignore.json 會排除 *.private.mdx 的測試筆記；正常情況下不應出現在站上。
+tags: [notecraft, test]
+category: 範例
+createdAt: '2026-10-04'
+updatedAt: '2026-10-04'
+---
+
+# ignore.json 排除測試
+
+:::warning{title="如果你在站上看到這篇"}
+代表 `.notecraft/ignore.json` 的 `**/*.private.mdx` 規則沒有生效。
+:::
+
+這篇筆記的檔名以 `.private.mdx` 結尾，預期行為：
+
+- 不出現在側邊欄資料夾樹與搜尋結果
+- `/notes/sample/ignore-test.private` 不存在
+- build 產物（`dist/`）中找不到這篇的內容
+
+## 驗證方式
+
+```bash
+npm run notes:build
+```
+
+build log 會印出規則數與排除的檔案數；產物中若出現被排除的檔，build 會直接失敗。
+
+:::note
+ignore.json 不是存取控制：這個檔案仍在硬碟上，也仍會被 git commit。
+:::
