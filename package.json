@@ -34,6 +34,6 @@
     "node": ">=22.0.0"
   },
   "devDependencies": {
-    "notecraftapp": "^1.10.0"
+    "notecraftapp": "^1.10.1"
   }
 }
