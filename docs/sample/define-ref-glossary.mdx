@@ -1,0 +1,128 @@
+---
+title: 定義與引用範例（一）：API 設計術語表
+description: 示範 NoteCraft 的 ::::define：把一段說明標成可被引用的定義，讓其他筆記嵌入或行內引用。
+tags: [sample, notecraft, define-ref, api]
+category: 範例
+createdAt: '2026-10-07'
+updatedAt: '2026-10-07'
+---
+
+# 定義與引用範例（一）：API 設計術語表
+
+這篇是「定義的來源」。每段用 `::::define{id="…"}` 包起來的內容都會變成一段**可被引用的定義**，
+其他筆記只要寫 id 就能嵌入或引用，不需要知道這篇的檔名或路徑。搭配的使用端示範見
+[定義與引用範例（二）](./define-ref-usage.mdx)。
+
+## 語法重點
+
+```md
+::::define{id="api.idempotency" label="冪等性"}
+定義的內容，可以放提示框、分頁、步驟、程式碼區塊……
+::::
+```
+
+- `id`：必填。字母（含中文）、數字、`_`、`-`，可以用 `.` 分段當命名空間，例如 `api.idempotency`
+- `label`：選填，是這段定義的顯示名稱；沒寫時取內文第一個**粗體**，再沒有就用 id
+- define 只能放在**最上層**，不能放在 `:::tip`、`::::tabs` 等容器裡，也不能巢狀
+- define 裡面可以有其他容器，但**每一層的冒號都要比它裡面那層多**，否則收尾的冒號會對錯層、
+  在頁面上留下多餘的 `::::`。例如放分頁時寫成 `:::::define` > `::::tabs` > `:::tab`；
+  只放 `:::tip` 這類單層提示框時，`::::define` 就夠了
+- define 裡不能有 `import`／`export`；要用元件時，import 寫在檔案開頭
+
+每段定義旁會顯示「被 N 篇引用」，點開可以看到是哪些筆記在用，`view` 模式下也能直接複製 include／ref 語法。
+
+## 術語
+
+### 冪等性
+
+::::define{id="api.idempotency" label="冪等性"}
+**冪等性（Idempotency）**：同一個請求送一次和送很多次，對伺服器狀態造成的影響相同。
+
+| 方法       | 冪等 | 說明                                     |
+| :--------- | :--- | :--------------------------------------- |
+| `GET`      | 是   | 只讀取，不改變狀態                       |
+| `PUT`      | 是   | 以完整資源覆寫，送幾次結果都一樣         |
+| `DELETE`   | 是   | 第一次刪除後，之後的請求不再改變狀態     |
+| `POST`     | 否   | 每次都可能新增一筆資源                   |
+| `PATCH`    | 視實作 | 「設為某值」冪等，「遞增某值」不冪等   |
+
+:::tip
+冪等不代表回應相同：第二次 `DELETE` 可能回 `404`，但伺服器狀態沒有再改變，仍然算冪等。
+:::
+::::
+
+### 冪等鍵
+
+:::::define{id="api.idempotency-key" label="冪等鍵"}
+**冪等鍵（Idempotency Key）**：讓本身不冪等的 `POST` 也能安全重試的做法。用戶端為每個「操作意圖」產生一個唯一值，
+放在請求標頭；伺服器記住這個值與第一次的回應，重複的請求直接回傳同一份結果。
+它解決的正是 :ref[冪等性]{id="api.idempotency"} 表格中 `POST` 不冪等的問題。
+
+```http title="建立訂單（可安全重試）"
+POST /orders HTTP/1.1
+Idempotency-Key: 7c1f2a9e-4b3d-4f0a-9d2e-1a5b6c7d8e9f
+Content-Type: application/json
+
+{ "productId": "P-1001", "quantity": 2 }
+```
+
+::::steps
+:::step{title="檢查鍵是否存在"}
+查詢儲存區（例如 Redis）有沒有這個 key。
+:::
+:::step{title="不存在：執行並記錄"}
+處理請求，把回應與 key 一起存起來，設定保存期限（例如 24 小時）。
+:::
+:::step{title="已存在：直接回放"}
+不再執行商業邏輯，回傳第一次存下的回應。
+:::
+::::
+:::::
+
+### 錯誤回應格式
+
+:::::define{id="api.error-format" label="統一錯誤回應格式"}
+**統一錯誤回應格式**：所有 API 失敗時回傳同一種結構，前端只需要一套錯誤處理邏輯。
+
+::::tabs
+:::tab{label="JSON 範例"}
+```json
+{
+  "statusCode": 409,
+  "code": "ORDER_ALREADY_PAID",
+  "message": "訂單已付款，不能重複付款",
+  "traceId": "a1b2c3d4"
+}
+```
+:::
+:::tab{label="欄位說明"}
+| 欄位         | 說明                                   |
+| :----------- | :------------------------------------- |
+| `statusCode` | HTTP 狀態碼，與回應標頭一致            |
+| `code`       | 穩定的機器可讀錯誤碼，前端以此判斷分支 |
+| `message`    | 給人看的說明，可在地化，不要拿來判斷   |
+| `traceId`    | 對應伺服器 log，回報問題時附上         |
+:::
+::::
+:::::
+
+### 速率限制
+
+::::define{id="api.rate-limit" label="速率限制"}
+**速率限制（Rate Limiting）**：限制一個用戶端在一段時間內能送出的請求數，保護後端不被突發流量壓垮。
+超過上限時回 `429 Too Many Requests`，並以 `Retry-After` 標頭告知多久後可以重試。
+
+:::warning{title="重試要搭配冪等"}
+用戶端收到 `429` 或逾時後自動重試時，寫入類請求要帶 :ref[冪等鍵]{id="api.idempotency-key"}，
+否則可能重複下單。
+:::
+::::
+
+## 同一篇內的引用
+
+同一篇筆記裡也可以用 `:ref` 互相引用，例如：設計付款 API 時，先確認 :ref{id="api.idempotency"}，
+再決定要不要要求 :ref{id="api.idempotency-key"}；失敗時一律回 :ref[統一的錯誤格式]{id="api.error-format"}。
+
+:::note
+同一篇的定義只能用 `:ref` 引用，不能用 `::include` 嵌入（同頁會出現兩份相同內容，build 會失敗）。
+:::
