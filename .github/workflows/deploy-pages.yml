@@ -1,0 +1,71 @@
+name: Deploy notes to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'docs/**'
+      - '.notecraft/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時間只跑一個部署；新的 push 進來時讓進行中的部署跑完，不中途取消
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # notecraftapp 首次執行會把 viewer app 複製到 ~/.notecraft/app-<version>/ 並 npm install（約 3 分鐘），
+      # 以 lockfile 為 key 快取，notecraftapp 升版時才重裝
+      - name: Cache NoteCraft viewer app
+        uses: actions/cache@v4
+        with:
+          path: ~/.notecraft/app-*
+          key: notecraft-app-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      # 專案頁部署在 /<repo>/ 子路徑，NOTECRAFT_BASE 讓站內連結與資產路徑都帶上前綴
+      - name: Build notes
+        run: npm run notes:build:force
+        env:
+          NOTECRAFT_BASE: ${{ steps.pages.outputs.base_path }}
+
+      # 產物在 ~/.notecraft/cache/<hash>/dist/，hash 由筆記資料夾的絕對路徑算出
+      - name: Locate dist
+        id: dist
+        run: echo "dir=$(ls -d "$HOME"/.notecraft/cache/*/dist)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ steps.dist.outputs.dir }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
