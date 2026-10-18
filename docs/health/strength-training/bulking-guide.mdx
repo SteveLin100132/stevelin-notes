@@ -1,0 +1,85 @@
+---
+title: 增肌期執行準則
+description: 8～12 個月緩慢增肌的飲食、監測、有氧與睡眠準則，以及何時該轉減脂期。
+tags: [健身, 增肌, 飲食, 睡眠]
+category: 健康
+createdAt: '2026-10-18'
+updatedAt: '2026-10-18'
+---
+
+## 增肌目標
+
+練到更接近彭于晏的上半身：體脂已接近（留意 :ref[BIA 量測限制]{id="fit.bia-limit"}），差距主要在肩、手臂、胸的肌肉量（見 :ref[從夯到拉評價]{id="fit.physique-review"}）。預估 1.5～2.5 年；路線為 8～12 個月緩慢增肌，接 3～4 個月減脂。
+
+訓練端的對應目標：
+
+::include{id="fit.strength-goals"}
+
+{/* @ai-visualize
+id: bulking-roadmap
+type: diagram
+status: generated
+prompt: |
+  畫一張增肌計畫時間軸：
+  2026/10 起增肌期（8～12 個月，每月 +0.25～0.5kg，停止點體脂 15%）
+  → 減脂期（3～4 個月）→ 視情況進入第二輪。
+  每個階段標上飲食重點、有氧安排、檢查指標。
+*/}
+import GeneratedFrame from '@/components/GeneratedFrame.astro'
+import BulkingRoadmap from '@notes/components/bulking-roadmap'
+
+<GeneratedFrame id="bulking-roadmap" type="diagram" prompt={"畫一張增肌計畫時間軸：\n2026/10 起增肌期（8～12 個月，每月 +0.25～0.5kg，停止點體脂 15%）\n→ 減脂期（3～4 個月）→ 視情況進入第二輪。\n每個階段標上飲食重點、有氧安排、檢查指標。"}>
+  <BulkingRoadmap client:visible />
+</GeneratedFrame>
+
+## 飲食
+
+::::define{id="fit.bulk-diet" label="增肌期飲食"}
+**增肌期飲食**：
+
+- 熱量盈餘：比維持熱量多 200～300 大卡
+- 增重速度：每月 0.25～0.5kg（約體重 0.5%），一個月超過 1kg 代表吃太多
+- 蛋白質：每公斤 1.6～2.2g，約每天 115～155g，分 3～4 餐
+- 多出來的熱量優先給碳水，放在訓練前後
+::::
+
+::::define{id="fit.bulk-stop" label="增肌期停止點"}
+:::warning{title="停止點"}
+**增肌期停止點**：體脂約 15% 或腰圍明顯變粗，就轉減脂期。
+:::
+::::
+
+## 監測
+
+::::define{id="fit.bulk-monitoring" label="增肌期監測"}
+**增肌期監測**：
+
+- 每天早上空腹量體重，看週平均
+- 每 2 週量一次腰圍（肚臍高度、早上空腹）並拍照，固定地點、光線、服裝
+- 腰圍增加得比體重快 → 熱量往下調 100～200 大卡
+- 體重漲但主要動作力量沒漲 → 盈餘沒被利用，檢查訓練（是否照 :ref[雙進度法]{id="fit.double-progression"} 加重）
+::::
+
+實際體重紀錄與目前的 :ref[調整決定]{id="fit.weight-decision"} 見 [身體組成追蹤](./body-composition.mdx)。
+
+## 有氧
+
+::::define{id="fit.bulk-cardio" label="增肌期有氧安排"}
+**增肌期有氧安排**：
+
+- 取消重訓後爬坡走（強度低，主要是燒熱量，增肌期不需要；見 :ref[推日調整理由]{id="fit.push-adjustments"}）
+- 晨跑每週 3～4 次，其中 1 次間歇（快跑 1 分鐘、慢跑 2 分鐘 × 6～8 輪）
+- 腿日當天或隔天早上可休息不跑
+::::
+
+## 睡眠
+
+- 目前約 10:30～11:30 睡、05:30 起，只有 6～7 小時
+- 目標至少 7 小時，增肌期最好 7.5～8 小時
+- 做法：取消練後有氧、不跑步的日子睡到 06:30、晚餐提前準備、下午 2～3 點後避免咖啡因
+
+:::note
+睡眠不足影響全身增肌效率與恢復，不是只影響上半身。
+:::
+
+訓練內容見 [推日課表 A／B](./push-day.mdx)。
