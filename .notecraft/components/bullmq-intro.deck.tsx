@@ -1767,11 +1767,11 @@ function SummaryPage({ dark }: CustomSlideProps) {
 // ── deck ────────────────────────────────────────────────────
 
 const deck: Deck = {
-  slug: "technology-sharing/bullmq-intro",
+  slug: "knowledge/technology-sharing/bullmq-intro",
   title: "BullMQ 入門",
   eyebrow: "TECH SHARING",
   generatedAt: "2026-09-28",
-  source: "technology-sharing/bullmq-intro.mdx",
+  source: "knowledge/technology-sharing/bullmq-intro.mdx",
   slides: [
     {
       layout: "cover",

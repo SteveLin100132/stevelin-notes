@@ -1,6 +1,6 @@
 {
   "openapi": "3.0.0",
-  "x-notecraft-back-to": "/notes/technology-sharing/nestjs-openapi-codegen",
+  "x-notecraft-back-to": "/notes/knowledge/technology-sharing/nestjs-openapi-codegen",
   "paths": {
     "/health": {
       "get": {

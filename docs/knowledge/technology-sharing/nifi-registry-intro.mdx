@@ -95,7 +95,7 @@ NiFi Registry 是 Apache NiFi 的子專案，一個獨立部署的應用程式�
 - **與 NiFi 整合**：在 NiFi 畫布上直接 commit、匯入、升級版本化的流程
 - **權限管理**：使用者、群組與存取政策
 
-![NiFi Registry 部署架構：DEV、QAS、PRD 三個 NiFi 各自設定 Registry Client，透過 REST API 連到同一個 NiFi Registry；DEV commit 新版本，QAS 與 PRD 匯入。Registry 內以 Bucket 組織 Flow 與版本，並有使用者與權限控管；Flow 內容交給可抽換的 Persistence Provider（檔案系統、Git、資料庫），中繼資料存在 H2、PostgreSQL 或 MySQL](../assets/illustrations/nifi-registry-intro-architecture.svg)
+![NiFi Registry 部署架構：DEV、QAS、PRD 三個 NiFi 各自設定 Registry Client，透過 REST API 連到同一個 NiFi Registry；DEV commit 新版本，QAS 與 PRD 匯入。Registry 內以 Bucket 組織 Flow 與版本，並有使用者與權限控管；Flow 內容交給可抽換的 Persistence Provider（檔案系統、Git、資料庫），中繼資料存在 H2、PostgreSQL 或 MySQL](../../assets/illustrations/nifi-registry-intro-architecture.svg)
 
 幾個部署上的重點：
 
@@ -113,7 +113,7 @@ NiFi Registry 是 Apache NiFi 的子專案，一個獨立部署的應用程式�
 
 ## 核心概念：Bucket、Flow、Version
 
-![NiFi Registry 的三層結構：Registry 底下有多個 Bucket，每個 Bucket 含多個 Flow，每個 Flow 有一條 v1、v2、v3 依序遞增的版本線；右側對照 GitLab：Bucket 對應 Group、Flow 對應 Project、Version 對應 Commit，並標示 Registry 沒有 branch](../assets/illustrations/nifi-registry-intro-bucket-flow-version.svg)
+![NiFi Registry 的三層結構：Registry 底下有多個 Bucket，每個 Bucket 含多個 Flow，每個 Flow 有一條 v1、v2、v3 依序遞增的版本線；右側對照 GitLab：Bucket 對應 Group、Flow 對應 Project、Version 對應 Commit，並標示 Registry 沒有 branch](../../assets/illustrations/nifi-registry-intro-bucket-flow-version.svg)
 
 | 概念 | 說明 | 類比 GitLab |
 | :--- | :--- | :--- |

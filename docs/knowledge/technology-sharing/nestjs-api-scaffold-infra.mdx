@@ -43,7 +43,7 @@ updatedAt: '2026-10-01'
 
 ## 模組怎麼組起來
 
-![AppModule 的組裝方式：左側 imports 由 ConfigModule 以 ConfigService 提供設定給 TypeOrmModule 與 ThrottlerModule，HealthModule 使用 DataSource，MetricsModule 提供 MetricsService；右側是全域掛載的 Middleware、APP_GUARD、APP_INTERCEPTOR 與 APP_FILTER；下方是 main.ts 負責的 Swagger、openapi.json、優雅關機與程序層級例外處理](../assets/illustrations/nestjs-api-scaffold-infra-modules.svg)
+![AppModule 的組裝方式：左側 imports 由 ConfigModule 以 ConfigService 提供設定給 TypeOrmModule 與 ThrottlerModule，HealthModule 使用 DataSource，MetricsModule 提供 MetricsService；右側是全域掛載的 Middleware、APP_GUARD、APP_INTERCEPTOR 與 APP_FILTER；下方是 main.ts 負責的 Swagger、openapi.json、優雅關機與程序層級例外處理](../../assets/illustrations/nestjs-api-scaffold-infra-modules.svg)
 
 所有基礎建設都在 `AppModule` 組裝。全域的 Guard、Interceptor、Filter 是用 `APP_GUARD`、`APP_INTERCEPTOR`、`APP_FILTER` 這類 DI token 註冊，而不是在 `main.ts` 寫 `app.useGlobalGuards(new ...)`：
 

@@ -1752,11 +1752,11 @@ function SummaryPage({ dark }: CustomSlideProps) {
 // ── deck ────────────────────────────────────────────────────
 
 const deck: Deck = {
-  slug: "technology-sharing/tus-resumable-upload",
+  slug: "knowledge/technology-sharing/tus-resumable-upload",
   title: "透過 TUS 實現可續傳的檔案上傳",
   eyebrow: "TECH SHARING",
   generatedAt: "2026-09-28",
-  source: "technology-sharing/tus-resumable-upload.mdx",
+  source: "knowledge/technology-sharing/tus-resumable-upload.mdx",
   slides: [
     {
       layout: "cover",

@@ -58,7 +58,7 @@ import TusResumeCompare from '@notes/components/tus-resume-compare'
 
 業界處理大檔案的標準思路是**化整為零**：把檔案切成許多小片段（Chunk），逐一或併發上傳，伺服器收齊後再合併回原始檔案。
 
-![分片上傳：100 GB 原始檔案切成五個 20 GB 的 Chunk，以三條連線併發上傳；Chunk 3 失敗後單獨重試，其他片段不受影響；伺服器收齊所有片段後合併、做完整性檢查，還原成原始檔案；整體進度等於已收位元組除以總大小](../assets/illustrations/tus-resumable-upload-chunk-pipeline.svg)
+![分片上傳：100 GB 原始檔案切成五個 20 GB 的 Chunk，以三條連線併發上傳；Chunk 3 失敗後單獨重試，其他片段不受影響；伺服器收齊所有片段後合併、做完整性檢查，還原成原始檔案；整體進度等於已收位元組除以總大小](../../assets/illustrations/tus-resumable-upload-chunk-pipeline.svg)
 
 ::::steps
 :::step{title="切割成 Chunks"}
@@ -168,7 +168,7 @@ TUS 核心協議是**循序**寫入：每次 PATCH 從目前 offset 往後接一
 
 TUS 在伺服器端會把一次上傳拆成兩份資料保存：**檔案本體**（原始位元組）與 **Metadata**（描述這次上傳的資訊）。續傳時需要的 offset，就記錄在 Metadata 裡。
 
-![一次上傳兩份資料：使用者把檔案拖放進 Uppy，透過 TUS 協議送到 TUS Server；伺服器把檔案本體寫入儲存空間，另外存一份 Metadata JSON，其中的 offset 記錄已收到的位元組數，是斷線後續傳的依據](../assets/illustrations/tus-resumable-upload-file-and-metadata.svg)
+![一次上傳兩份資料：使用者把檔案拖放進 Uppy，透過 TUS 協議送到 TUS Server；伺服器把檔案本體寫入儲存空間，另外存一份 Metadata JSON，其中的 offset 記錄已收到的位元組數，是斷線後續傳的依據](../../assets/illustrations/tus-resumable-upload-file-and-metadata.svg)
 
 實際的 Metadata 長這樣：
 
@@ -391,7 +391,7 @@ export class AppComponent {
 
 把三者組合起來，就是一套能處理大檔案、支援斷點續傳、並存到分散式物件儲存的上傳系統：
 
-![TUS、Uppy 與 MinIO 架構：Client 端由 Angular 承載 Uppy，負責拖放選檔、顯示進度、自動恢復上傳；Server 端是 Node.js 上的 TUS Server，負責建立上傳、接收分片、回報 Upload-Offset、驗證身分；Storage 端是相容 S3 的 MinIO，bucket 保存檔案本體與 .info metadata；Client 與 Server 之間走 TUS 協議，Server 與 MinIO 之間走 S3 multipart upload](../assets/illustrations/tus-resumable-upload-architecture.svg)
+![TUS、Uppy 與 MinIO 架構：Client 端由 Angular 承載 Uppy，負責拖放選檔、顯示進度、自動恢復上傳；Server 端是 Node.js 上的 TUS Server，負責建立上傳、接收分片、回報 Upload-Offset、驗證身分；Storage 端是相容 S3 的 MinIO，bucket 保存檔案本體與 .info metadata；Client 與 Server 之間走 TUS 協議，Server 與 MinIO 之間走 S3 multipart upload](../../assets/illustrations/tus-resumable-upload-architecture.svg)
 
 | 層 | 技術 | 職責 |
 | :--- | :--- | :--- |

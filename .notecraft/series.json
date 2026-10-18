@@ -24,10 +24,10 @@
       "accent": "orange",
       "icon": "code",
       "slugs": [
-        "technology-sharing/nifi-registry-intro",
-        "technology-sharing/bullmq-intro",
-        "technology-sharing/tus-resumable-upload",
-        "technology-sharing/micro-frontend-intro"
+        "knowledge/technology-sharing/nifi-registry-intro",
+        "knowledge/technology-sharing/bullmq-intro",
+        "knowledge/technology-sharing/tus-resumable-upload",
+        "knowledge/technology-sharing/micro-frontend-intro"
       ]
     },
     {
@@ -38,9 +38,9 @@
       "accent": "blue",
       "icon": "layers",
       "slugs": [
-        "technology-sharing/nestjs-api-scaffold-infra",
-        "view:technology-sharing/nestjs-api-scaffold.openapi",
-        "technology-sharing/nestjs-openapi-codegen"
+        "knowledge/technology-sharing/nestjs-api-scaffold-infra",
+        "view:knowledge/technology-sharing/nestjs-api-scaffold.openapi",
+        "knowledge/technology-sharing/nestjs-openapi-codegen"
       ]
     },
     {
@@ -54,6 +54,19 @@
         "knowledge/payroll/00-end-to-end-flow",
         "knowledge/payroll/01-employee-status",
         "knowledge/payroll/02-working-hours"
+      ]
+    },
+    {
+      "id": "strength-training",
+      "title": "健身",
+      "eyebrow": "STRENGTH TRAINING",
+      "description": "身體組成追蹤、訓練課表與增肌準則",
+      "accent": "orange",
+      "icon": "target",
+      "slugs": [
+        "health/strength-training/body-composition",
+        "health/strength-training/push-day",
+        "health/strength-training/bulking-guide"
       ]
     }
   ]

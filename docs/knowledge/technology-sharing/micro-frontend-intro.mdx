@@ -28,7 +28,7 @@ updatedAt: '2026-09-28'
 
 微前端（Micro Frontend）是一種類似於微服務的架構，**把微服務的理念應用在瀏覽器上**：將 Web 應用從單體架構（Monolithic Architecture）轉變為多個前端應用的聚合。各個前端應用可以獨立開發、獨立部署、獨立運行，由不同的技術團隊維護，甚至可以用不同的框架建構。
 
-![從單體前端到微前端：左側的單體前端把頁首、側欄、內容、頁尾放在同一個程式碼庫，任何團隊改動都要全站一次建置與部署；右側的微前端把應用垂直切成 Team A 到 Team D 四條切片，每條切片有自己的前端應用、微服務與資料庫，各自獨立開發部署，最後由容器應用在瀏覽器中聚合成同一個頁面](../assets/illustrations/micro-frontend-intro-architecture.svg)
+![從單體前端到微前端：左側的單體前端把頁首、側欄、內容、頁尾放在同一個程式碼庫，任何團隊改動都要全站一次建置與部署；右側的微前端把應用垂直切成 Team A 到 Team D 四條切片，每條切片有自己的前端應用、微服務與資料庫，各自獨立開發部署，最後由容器應用在瀏覽器中聚合成同一個頁面](../../assets/illustrations/micro-frontend-intro-architecture.svg)
 
 重點在「垂直切分」：一個團隊從前端頁面、後端服務到資料庫，完整負責一條業務切片，而不是前端一組人、後端一組人的水平分工。[micro-frontends.org](https://micro-frontends.org/) 把微前端的核心理念整理成幾條原則：
 
@@ -88,7 +88,7 @@ import MicroFrontendModuleVsMfe from '@notes/components/micro-frontend-module-vs
 - **容器應用（Host / Shell / Container）**：使用者實際打開的那個網址。它負責**路由管理**（哪個路徑該顯示誰）與**惰性載入**（等路由命中才去載入對應的子應用），並提供插槽讓子應用掛載
 - **子應用（Remote / Micro App）**：各團隊獨立開發、打包、部署的前端應用，各自有自己的網址。它要暴露一組 **bootstrap 啟動方法**（通常是 mount / unmount），讓容器可以把它掛到指定的 DOM 節點，也能在離開時卸載
 
-![微前端的工作原理：上方是使用者開啟的 app.example.com 容器應用，負責路由管理與惰性載入，頁面切成頁首、側欄、內容、頁尾四個插槽；下方是四個獨立部署在 Kubernetes 上的子應用，分別用 React、Vue、Angular、Svelte 開發，各自有自己的網址，打包成 JS 並附帶 bootstrap 啟動函式；容器應用在路由命中時才向對應網址下載 JS，執行 bootstrap 把子應用掛載到插槽](../assets/illustrations/micro-frontend-intro-runtime.svg)
+![微前端的工作原理：上方是使用者開啟的 app.example.com 容器應用，負責路由管理與惰性載入，頁面切成頁首、側欄、內容、頁尾四個插槽；下方是四個獨立部署在 Kubernetes 上的子應用，分別用 React、Vue、Angular、Svelte 開發，各自有自己的網址，打包成 JS 並附帶 bootstrap 啟動函式；容器應用在路由命中時才向對應網址下載 JS，執行 bootstrap 把子應用掛載到插槽](../../assets/illustrations/micro-frontend-intro-runtime.svg)
 
 要把這個架構做起來，有兩個一定要回答的問題：
 
@@ -144,7 +144,7 @@ import MicroFrontendApproachCompare from '@notes/components/micro-frontend-appro
 
 Webpack 是一個模組打包工具，可以整合眾多語法與技術。它的核心觀念是：**在 Webpack 裡，任何東西都被當作模組**。從進入點開始，`.js`、`.sass`、`.svg`、`.png` 都是相依圖上的節點，經過 loader 轉換、plugin 加工後，輸出成瀏覽器可以直接載入的靜態資源。
 
-![Webpack 把所有東西都當作模組：左側是以 index.js 為進入點的相依圖，引用到 .js、.sass、.svg、.png 等各種檔案；中間的 Webpack 依相依圖遞迴解析並打包；右側輸出成 .js、.css 與圖片等靜態資源，Module Federation 會額外輸出 remoteEntry.js 入口清單](../assets/illustrations/micro-frontend-intro-webpack.svg)
+![Webpack 把所有東西都當作模組：左側是以 index.js 為進入點的相依圖，引用到 .js、.sass、.svg、.png 等各種檔案；中間的 Webpack 依相依圖遞迴解析並打包；右側輸出成 .js、.css 與圖片等靜態資源，Module Federation 會額外輸出 remoteEntry.js 入口清單](../../assets/illustrations/micro-frontend-intro-webpack.svg)
 
 ### Module Federation：跨應用在執行期共享模組
 

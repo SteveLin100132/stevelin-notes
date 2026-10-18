@@ -35,7 +35,7 @@ updatedAt: '2026-09-28'
 
 當時團隊的 ETL 主要靠兩個現成工具：**Nifi** 負責即時整合與資料路由，**Airflow** 負責批次排程的工作流。但總有一塊需求兩者都不順手：
 
-![資料處理的五個過程中，前三個 ETL 是討論範圍；ETL 需求約 80% 由 Nifi 承接、約 5% 由 Airflow 承接，剩下約 15% 需要暫存分批、多次迴圈或特殊邏輯，只能自行開發](../assets/illustrations/bullmq-intro-etl-coverage.svg)
+![資料處理的五個過程中，前三個 ETL 是討論範圍；ETL 需求約 80% 由 Nifi 承接、約 5% 由 Airflow 承接，剩下約 15% 需要暫存分批、多次迴圈或特殊邏輯，只能自行開發](../../assets/illustrations/bullmq-intro-etl-coverage.svg)
 
 需要**暫存後分批處理**、要**跑好幾輪迴圈**才能輸出完整結果、或帶有**特殊商業邏輯**的任務，最後都只能自己寫 Job / Schedule。
 
@@ -75,7 +75,7 @@ BullMQ 的所有狀態都存在 Redis，Standalone、Cluster、Sentinel（哨兵
 
 BullMQ 裡的 MQ 就是 :tip[Message Queue]{content="訊息佇列：生產者把訊息放進佇列、消費者從佇列取出處理，兩端不必同時在線，也不必知道彼此。"}。寫進佇列的資料都包在 **Job** 這個載體裡，Job 的資料與狀態都記錄在 Redis：
 
-![Producer 呼叫 queue.add 把 Job 放進 Redis 裡的 Queue，多個 Worker 從 Queue 取出 Job 執行，並把進度、日誌與結果寫回 Redis；QueueEvents 監聽事件，Bull Board 讀取同一份資料做網頁監控](../assets/illustrations/bullmq-intro-architecture.svg)
+![Producer 呼叫 queue.add 把 Job 放進 Redis 裡的 Queue，多個 Worker 從 Queue 取出 Job 執行，並把進度、日誌與結果寫回 Redis；QueueEvents 監聽事件，Bull Board 讀取同一份資料做網頁監控](../../assets/illustrations/bullmq-intro-architecture.svg)
 
 | 角色 | 職責 |
 | :--- | :--- |
@@ -360,7 +360,7 @@ Bull Board 可以直接刪除與重試 Job，部署時務必放在內網或加�
 
 Dashboard 解決了「看得到」，但沒人盯著的時候，還需要**有人被通知**。做法是把各佇列的 Job 數量暴露成 Prometheus 指標，再用告警規則把異常送到值班工具：
 
-![監控告警鏈：BullMQ 產生各狀態的 Job 數量，Exporter 用 prom-client 暴露在 /metrics，Prometheus 定期抓取並以 Alert Rule 判斷，Alertmanager 分組去重後路由到 Opsgenie，依等級以 Email 或 Outlook 通知值班；Bull Board 則是收到通知後進去查看與處理的介面](../assets/illustrations/bullmq-intro-monitoring.svg)
+![監控告警鏈：BullMQ 產生各狀態的 Job 數量，Exporter 用 prom-client 暴露在 /metrics，Prometheus 定期抓取並以 Alert Rule 判斷，Alertmanager 分組去重後路由到 Opsgenie，依等級以 Email 或 Outlook 通知值班；Bull Board 則是收到通知後進去查看與處理的介面](../../assets/illustrations/bullmq-intro-monitoring.svg)
 
 ```ts title="metrics.ts"
 import client from 'prom-client';

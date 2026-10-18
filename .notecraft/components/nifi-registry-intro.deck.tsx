@@ -1260,11 +1260,11 @@ function SummaryPage({ dark }: CustomSlideProps) {
 // ── deck ────────────────────────────────────────────────────
 
 const deck: Deck = {
-  slug: "technology-sharing/nifi-registry-intro",
+  slug: "knowledge/technology-sharing/nifi-registry-intro",
   title: "NiFi Registry 入門",
   eyebrow: "TECH SHARING",
   generatedAt: "2026-09-28",
-  source: "technology-sharing/nifi-registry-intro.mdx",
+  source: "knowledge/technology-sharing/nifi-registry-intro.mdx",
   slides: [
     {
       layout: "cover",
